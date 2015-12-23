@@ -25,6 +25,15 @@ if len (sys.argv) == 1:
     print "Run 'clay COMMAND --help' for more information on a command."
     exit ()
 
+class Behavior:
+    uuid = None
+    transform = None
+    behaviors = []
+
+class Unit:
+    uuid = None
+    behavior = []
+
 # Parse command-line arguments.
 command = None
 if len (sys.argv) > 1:
@@ -41,6 +50,7 @@ if command == "start":
     last_broadcast_time = 0
     broadcast_frequency = 1000
 
+    # Generate UUID for Clay
     uuid = uuid.uuid4()
 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -56,12 +66,12 @@ if command == "start":
     while 1:
         # Send broadcast
         if (millis() > (last_broadcast_time + broadcast_frequency)):
-            #print "sending broadcast"
-            internetAddress = "192.168.1.105" # internetAddress = socket.gethostbyname(socket.gethostname())
-            data = "connect to " + internetAddress
+            # print "sending broadcast"
+            internetAddress = "192.168.1.140" # internetAddress = socket.gethostbyname(socket.gethostname())
+            data = "set unit " + str(uuid) + " address to " + internetAddress
             print data
             s.sendto(data, ('<broadcast>', DISCOVERY_BROADCAST_PORT))
-        #    s.sendto(data, ('192.168.1.104', PORT))
+            # s.sendto(data, ('192.168.1.104', PORT))
             last_broadcast_time = millis()
 
             #delay = random.randint(1, 3)
