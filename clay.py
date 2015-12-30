@@ -1,11 +1,13 @@
 # Send UDP broadcast packets
 
+#DISCOVERY_BROADCAST_ADDRESS = '<broadcast>'
+DISCOVERY_BROADCAST_ADDRESS = '192.168.2.255'
+
 DISCOVERY_BROADCAST_PORT = 4445
 BROADCAST_PORT = 4446
 MESSAGE_PORT = BROADCAST_PORT
 
 import sys, time
-#from socket import *
 import socket
 import uuid
 import random
@@ -24,6 +26,24 @@ if len (sys.argv) == 1:
     print ""
     print "Run 'clay COMMAND --help' for more information on a command."
     exit ()
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+def get_broadcast_address():
+    address = get_ip_address()
+    print 'address:', address
+    octets = address.split('.')
+    print 'octets:', octets
+    octets[3] = '255'
+    print 'octets:', octets
+    broadcast_address = '.'.join(octets)
+    print broadcast_address
+    return broadcast_address
+
+print get_broadcast_address()
 
 class Behavior:
     uuid = None
@@ -67,11 +87,10 @@ if command == "start":
         # Send broadcast
         if (millis() > (last_broadcast_time + broadcast_frequency)):
             # print "sending broadcast"
-            internetAddress = "192.168.1.140" # internetAddress = socket.gethostbyname(socket.gethostname())
+            internetAddress = get_ip_address() # internetAddress = socket.gethostbyname(socket.gethostname())
             data = "set unit " + str(uuid) + " address to " + internetAddress
             print data
-            s.sendto(data, ('<broadcast>', DISCOVERY_BROADCAST_PORT))
-            # s.sendto(data, ('192.168.1.104', PORT))
+            s.sendto(data, (DISCOVERY_BROADCAST_ADDRESS, DISCOVERY_BROADCAST_PORT))
             last_broadcast_time = millis()
 
             #delay = random.randint(1, 3)
