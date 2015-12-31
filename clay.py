@@ -59,6 +59,17 @@ command = None
 if len (sys.argv) > 1:
     command = sys.argv[1] # Get the command.
 
+# Parse command line options.
+i = 0
+for option in sys.argv:
+    if option == "-h": # i.e., discovery broadcast address (used to infer broadcast address)
+        DISCOVERY_BROADCAST_ADDRESS = sys.argv[i + 1]
+    elif option == "-p": # i.e., ports for incoming and outgoing UDP traffic
+        udp_ports = sys.argv[i + 1]
+        DISCOVERY_BROADCAST_PORT = int(udp_ports.split(',')[0])
+        BROADCAST_PORT = int(udp_ports.split(',')[1])
+    i = i + 1
+
 if command == "start":
 
     #
