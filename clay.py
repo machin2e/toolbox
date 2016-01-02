@@ -63,12 +63,19 @@ if len (sys.argv) > 1:
 i = 0
 for option in sys.argv:
     if option == "-h": # i.e., discovery broadcast address (used to infer broadcast address)
-        DISCOVERY_BROADCAST_ADDRESS = sys.argv[i + 1]
+        DISCOVERY_BROADCAST_ADDRESS = sys.argv[i+1]
     elif option == "-p": # i.e., ports for incoming and outgoing UDP traffic
         udp_ports = sys.argv[i + 1]
+        print "udp_ports:", udp_ports
         DISCOVERY_BROADCAST_PORT = int(udp_ports.split(',')[0])
         BROADCAST_PORT = int(udp_ports.split(',')[1])
     i = i + 1
+
+print "DISCOVERY_BROADCAST_PORT", DISCOVERY_BROADCAST_PORT
+print "BROADCAST_PORT", BROADCAST_PORT
+
+# TODO: if command == "start simulator"
+# TODO: if command == "monitor simulator"
 
 if command == "start":
 
