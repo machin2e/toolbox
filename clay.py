@@ -1,7 +1,7 @@
 # Send UDP broadcast packets
 
 #DISCOVERY_BROADCAST_ADDRESS = '<broadcast>'
-DISCOVERY_BROADCAST_ADDRESS = '192.168.2.255'
+DISCOVERY_BROADCAST_ADDRESS = '192.168.1.255'
 
 DISCOVERY_BROADCAST_PORT = 4445
 BROADCAST_PORT = 4446
@@ -12,6 +12,7 @@ import socket
 import uuid
 import random
 import time
+import traceback
 
 if len (sys.argv) == 1:
     print "Usage: clay [OPTIONS] COMMAND [arg...]"
@@ -43,7 +44,7 @@ def get_broadcast_address():
     print broadcast_address
     return broadcast_address
 
-print get_broadcast_address()
+print "Computed boradcast address:", get_broadcast_address()
 
 class Behavior:
     uuid = None
@@ -74,16 +75,13 @@ for option in sys.argv:
 print "DISCOVERY_BROADCAST_PORT", DISCOVERY_BROADCAST_PORT
 print "BROADCAST_PORT", BROADCAST_PORT
 
-# TODO: if command == "start simulator"
-# TODO: if command == "monitor simulator"
-
+# Starts a simulation of multiple units of Clay.
+# This simulation can be monitored with the "monitor" command.
 if command == "start":
 
-    #
-    # Simulate units of Clay.
-    #
+    print "Starting Clay"
 
-    # define "millis()" function
+    # "millis()" function
     millis = lambda: int(round(time.time() * 1000))
     last_broadcast_time = 0
     broadcast_frequency = 1000
@@ -91,42 +89,56 @@ if command == "start":
     # Generate UUID for Clay
     uuid = uuid.uuid4()
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.bind(('', 0))
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    outgoingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    outgoingSocket.bind(('', 0))
+    outgoingSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-    s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s2.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    s2.bind(('', MESSAGE_PORT))
-    s2.settimeout(1)
+    incomingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    incomingSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    incomingSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    incomingSocket.bind(('', MESSAGE_PORT))
+    incomingSocket.settimeout(1)
 
     while 1:
+
         # Send broadcast
         if (millis() > (last_broadcast_time + broadcast_frequency)):
             # print "sending broadcast"
             internetAddress = get_ip_address() # internetAddress = socket.gethostbyname(socket.gethostname())
             data = "set unit " + str(uuid) + " address to " + internetAddress
             print data
-            s.sendto(data, (DISCOVERY_BROADCAST_ADDRESS, DISCOVERY_BROADCAST_PORT))
+            outgoingSocket.sendto(data, (DISCOVERY_BROADCAST_ADDRESS, DISCOVERY_BROADCAST_PORT))
             last_broadcast_time = millis()
 
-            #delay = random.randint(1, 3)
-            #delay = 0.5 + random.random() * 3
-            #time.sleep(delay)
-
         try:
-            message, address = s2.recvfrom(DISCOVERY_BROADCAST_PORT) # Block until a packet is received on the port
-            print "Received message from %s: %s" % (address[0], message) # Print the received message
-            #s.sendto("Hello from server", address) # Send a response (optionally)
+            message, address = incomingSocket.recvfrom (DISCOVERY_BROADCAST_PORT) # Block until a packet is received on the port
+            print "Received from %s: %s" % (address[0], message) # Print the received message
             data = "got " + message
-            s.sendto(data, (address[0], DISCOVERY_BROADCAST_PORT))
-            #print "Listening for broadcasts..."
+            outgoingSocket.sendto(data, (address[0], DISCOVERY_BROADCAST_PORT))
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
             print "Timeout (broadcast receive)"
             #traceback.print_exc()
+
+# Monitor the simulation started with the "start" command.
+elif command == "monitor":
+
+    print "Monitoring Clay"
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.bind(('', DISCOVERY_BROADCAST_PORT))
+
+    while 1:
+        try:
+            message, address = s.recvfrom(DISCOVERY_BROADCAST_PORT) # 8192
+            print "from %s: %s" % (address, message)
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            traceback.print_exc()
 
 elif command == "connect":
 
