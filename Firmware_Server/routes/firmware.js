@@ -6,12 +6,14 @@ var router = express.Router();
 /* GET firmware listing. */
 router.get('/', function(req, res, next) {
 
+  // To download firmware, send HTTP GET requests of the form (<em>e.g.,</em>) <a href="http://clay.computer/firmware?startByte=0&byteCount=500">http://clay.computer/firmware?startByte=0&byteCount=500</a>. Change the parameters <strong>startByte</strong> and <strong>byteCount</strong> to change the first byte received and the number of bytes received of the firmware from the bootloader server.
+
   // Parse query
   // Reference: http://expressjs.com/en/4x/api.html#req.query
   startByte = parseInt (req.query.startByte);
   byteCount = parseInt (req.query.byteCount);
 
-  var firmwareFilePath = './public/firmware/Clay_C5_Firmware_2015_12_20_20_29_00.hex';
+  var firmwareFilePath = './public/firmware/firmware.hex';
   var firmwareFileSize = 0;
 
   var resultString = '';
