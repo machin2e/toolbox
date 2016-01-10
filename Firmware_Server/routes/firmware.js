@@ -8,6 +8,8 @@ router.get('/', function(req, res, next) {
 
   // To download firmware, send HTTP GET requests of the form (<em>e.g.,</em>) <a href="http://clay.computer/firmware?startByte=0&byteCount=500">http://clay.computer/firmware?startByte=0&byteCount=500</a>. Change the parameters <strong>startByte</strong> and <strong>byteCount</strong> to change the first byte received and the number of bytes received of the firmware from the bootloader server.
 
+  // To test this request handler, you may use the cURL command "curl --request GET 'http://localhost:3000/firmware/?startByte=0&byteCount=500'"
+
   // Parse query
   // Reference: http://expressjs.com/en/4x/api.html#req.query
   startByte = parseInt (req.query.startByte);
