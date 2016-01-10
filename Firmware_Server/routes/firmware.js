@@ -6,6 +6,8 @@ var router = express.Router();
 /* GET firmware listing. */
 router.get('/', function(req, res, next) {
 
+  // res.setEncoding('binary');
+
   // To download firmware, send HTTP GET requests of the form (<em>e.g.,</em>) <a href="http://clay.computer/firmware?startByte=0&byteCount=500">http://clay.computer/firmware?startByte=0&byteCount=500</a>. Change the parameters <strong>startByte</strong> and <strong>byteCount</strong> to change the first byte received and the number of bytes received of the firmware from the bootloader server.
 
   // To test this request handler, you may use the cURL command "curl --request GET 'http://localhost:3000/firmware/?startByte=0&byteCount=500'"
@@ -22,49 +24,74 @@ router.get('/', function(req, res, next) {
   fs.exists(firmwareFilePath, function(exists) {
     if (exists) {
       fs.stat(firmwareFilePath, function(error, stats) {
-        fs.open(firmwareFilePath, 'r', function (status, fd) {
-          if (status) {
-            console.log(status.message);
-            return;
-          }
+        fd = fs.openSync(firmwareFilePath, 'r');
 
-          // Create buffer to store the firmware file then load the firmware file into the buffer.
-          var buffer = new Buffer (stats.size);
+        buff = new Buffer(byteCount);
+        bytesRead = 1;
+        pos = 0;
+        while (bytesRead > 0) {
+          // bytesRead = fs.readSync(fd, buff, 0, byteCount, pos);
+          bytesRead = fs.readSync(fd, buff, 0, 1, pos);
+          // fs.writeSync(fdw, buff, 0, bytesRead);
+          console.log(buff);
+          pos += bytesRead;
+        }
 
-          // Update the byte count if it exceeds the number of remaining bytes given the start byte.
-          if ((startByte + byteCount) > stats.size) {
-            byteCount = stats.size - startByte;
-          }
+        // Create buffer to store the firmware file then load the firmware file into the buffer.
+        var buffer = new Buffer (stats.size);
 
-          console.log ('firmwareFilePath: ' + firmwareFilePath);
-          console.log ("firmwareSize: " + stats.size);
-          console.log ('startByte: ' + startByte);
-          console.log ('byteCount: ' + byteCount);
+        // Update the byte count if it exceeds the number of remaining bytes given the start byte.
+        if ((startByte + byteCount) > stats.size) {
+          byteCount = stats.size - startByte;
+        }
 
-          // Read the firmware file from disk.
-          fs.read (fd, buffer, 0, buffer.length, 0, function (err, num) { // fs.read (fd, buffer, 0, 100, 0, function (err, num) {
+        console.log ('firmwareFilePath: ' + firmwareFilePath);
+        console.log ("firmwareSize: " + stats.size);
+        console.log ('startByte: ' + startByte);
+        console.log ('byteCount: ' + byteCount);
 
-            // Copy the bytes in the specified range to a second buffer, which contains the bytes to send in the response.
-            // Reference: https://nodejs.org/api/buffer.html#buffer_buf_copy_targetbuffer_targetstart_sourcestart_sourceend
-            var resultBuffer = new Buffer (byteCount);
-            buffer.copy (resultBuffer, 0, startByte, startByte + byteCount);
+        // Read the firmware file from disk.
+        fs.read (fd, buffer, 0, buffer.length, 0, function (err, num) { // fs.read (fd, buffer, 0, 100, 0, function (err, num) {
 
-            // Calculate the CRC16 of the buffer.
-            // Reference: https://github.com/alexgorbatchev/node-crc
-            var resultCrc = crc.crc16(resultBuffer).toString(16);
-            console.log ("crc16: " + resultCrc);
+          // Copy the bytes in the specified range to a second buffer, which contains the bytes to send in the response.
+          // Reference: https://nodejs.org/api/buffer.html#buffer_buf_copy_targetbuffer_targetstart_sourcestart_sourceend
+          var resultBuffer = new Buffer (byteCount);
+          // buffer.copy (resultBuffer, 0, startByte, startByte + byteCount);
+          buffer.copy (resultBuffer, 0, startByte, startByte + byteCount);
 
-            // TODO: Add the resultCrc bytes to the resultString.
+          // Calculate the CRC16 of the buffer.
+          // Reference: https://github.com/alexgorbatchev/node-crc
+          var resultCrc = crc.crc16(resultBuffer).toString(16);
+          console.log ("crc16: " + resultCrc);
 
-            // Generate a string of UTF-8 bytes to send in the response.
-            resultString = resultBuffer.toString ('utf-8', 0, byteCount);
+          // TODO: Add the resultCrc bytes to the resultString.
 
-            // Send the response
-            res.append ('Content-Type', 'application/octet-stream');
-            res.append ('Content-Length', byteCount);
-            res.send (resultString);
+          // Generate a string of UTF-8 bytes to send in the response.
+          // resultString = resultBuffer.toString ('utf-8', 0, byteCount);
+          resultString = resultBuffer.toString ('hex', 0, byteCount);
+          resultString = new Buffer (resultString, "hex");
 
-          });
+          console.log ("hex:");
+          console.log (resultBuffer.toString ('hex', 0, byteCount));
+          console.log ("\n");
+
+          console.log ("binary:");
+          console.log (resultBuffer.toString ('binary', 0, byteCount));
+          console.log ("\n");
+
+          console.log ("ascii:");
+          console.log (resultBuffer.toString ('ascii', 0, byteCount));
+          console.log ("\n");
+
+          console.log ("utf-8:");
+          console.log (resultBuffer.toString ('utf-8', 0, byteCount));
+          console.log ("\n");
+
+          // Send the response
+          res.append ('Content-Type', 'application/octet-stream');
+          res.append ('Content-Length', byteCount);
+          res.send (resultString);
+
         });
       });
     }
