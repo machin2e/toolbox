@@ -9,6 +9,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var firmware = require('./routes/firmware');
 var firmwareVersion = require('./routes/firmware-version');
+var firmwareSize = require('./routes/firmware-size')
+var firmwareChecksum = require('./routes/firmware-checksum')
 
 var app = express();
 
@@ -28,6 +30,8 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/firmware', firmware);
 app.use('/firmware/version', firmwareVersion);
+app.use('/firmware/size', firmwareSize);
+app.use('/firmware/checksum', firmwareChecksum);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

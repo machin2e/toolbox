@@ -71,21 +71,21 @@ router.get('/', function(req, res, next) {
           resultString = resultBuffer.toString ('hex', 0, byteCount);
           resultString = new Buffer (resultString, "hex");
 
-          console.log ("hex:");
-          console.log (resultBuffer.toString ('hex', 0, byteCount));
-          console.log ("\n");
-
-          console.log ("binary:");
-          console.log (resultBuffer.toString ('binary', 0, byteCount));
-          console.log ("\n");
-
-          console.log ("ascii:");
-          console.log (resultBuffer.toString ('ascii', 0, byteCount));
-          console.log ("\n");
-
-          console.log ("utf-8:");
-          console.log (resultBuffer.toString ('utf-8', 0, byteCount));
-          console.log ("\n");
+          // console.log ("hex:");
+          // console.log (resultBuffer.toString ('hex', 0, byteCount));
+          // console.log ("\n");
+          //
+          // console.log ("binary:");
+          // console.log (resultBuffer.toString ('binary', 0, byteCount));
+          // console.log ("\n");
+          //
+          // console.log ("ascii:");
+          // console.log (resultBuffer.toString ('ascii', 0, byteCount));
+          // console.log ("\n");
+          //
+          // console.log ("utf-8:");
+          // console.log (resultBuffer.toString ('utf-8', 0, byteCount));
+          // console.log ("\n");
 
           // Send the response
           res.append ('Content-Type', 'application/octet-stream');

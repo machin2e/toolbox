@@ -37,7 +37,7 @@ router.get('/', function(req, res, next) {
           // }
 
           // console.log ('firmwareFilePath: ' + firmwareFilePath);
-          // console.log ("firmwareSize: " + stats.size);
+          console.log ("firmwareSize: " + stats.size);
           // console.log ('startByte: ' + startByte);
           // console.log ('byteCount: ' + byteCount);
 
@@ -51,7 +51,7 @@ router.get('/', function(req, res, next) {
 
             // Get the version of the latest firmware.
             // resultString = resultBuffer.toString ('utf-8', 0, byteCount);
-            resultString = "2016-01-09-20-07-47"
+            resultString = "" + stats.size;
 
             // Send the response
             res.append ('Content-Type', 'application/text');

@@ -46,12 +46,17 @@ router.get('/', function(req, res, next) {
 
             // Copy the bytes in the specified range to a second buffer, which contains the bytes to send in the response.
             // Reference: https://nodejs.org/api/buffer.html#buffer_buf_copy_targetbuffer_targetstart_sourcestart_sourceend
-            // var resultBuffer = new Buffer (byteCount);
-            // buffer.copy (resultBuffer, 0, startByte, startByte + byteCount);
+            var resultBuffer = new Buffer (byteCount);
+            buffer.copy (resultBuffer, 0, startByte, startByte + byteCount);
+
+            // Calculate the CRC16 of the buffer.
+            // Reference: https://github.com/alexgorbatchev/node-crc
+            var resultCrc = crc.crc16(resultBuffer).toString(16);
+            console.log ("crc16: " + resultCrc);
 
             // Get the version of the latest firmware.
-            // resultString = resultBuffer.toString ('utf-8', 0, byteCount);
-            resultString = "2016-01-09-20-07-47"
+            resultString = resultBuffer.toString ('utf-8', 0, byteCount);
+            resultString = "" + resultCrc;
 
             // Send the response
             res.append ('Content-Type', 'application/text');
