@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
           // bytesRead = fs.readSync(fd, buff, 0, byteCount, pos);
           bytesRead = fs.readSync(fd, buff, 0, 1, pos);
           // fs.writeSync(fdw, buff, 0, bytesRead);
-          console.log(buff);
+          //console.log(buff);
           pos += bytesRead;
         }
 

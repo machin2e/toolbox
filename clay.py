@@ -24,6 +24,8 @@ if len (sys.argv) == 1:
     print "    start    Start a simulated unit of Clay"
     print "    stop     Stop a simulated unit of Clay"
     print "    connect  Connect to a physical unit of Clay."
+    print "    monitor  Listen for communicaitons from Clay."
+    print "    update   Update a feature of Clay."
     print ""
     print "Run 'clay COMMAND --help' for more information on a command."
     exit ()
@@ -139,6 +141,27 @@ elif command == "monitor":
             raise
         except:
             traceback.print_exc()
+
+elif command == "update":
+
+    # Get command arguments.
+    target = sys.argv[2] # Get the target of the update.
+
+    if target == "firmware":
+
+        # TODO: address = sys.argv[3]
+
+        # s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        # s.bind(('', BROADCAST_PORT))
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.bind(('', 0))
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+        message = "update"
+        s.sendto(message, ('<broadcast>', 4446))
 
 elif command == "connect":
 

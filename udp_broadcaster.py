@@ -20,6 +20,8 @@ while 1:
     # data = { 'client': address, 'text': message }
     # data = "turn light 2 on"
     internetAddress = socket.gethostbyname(socket.gethostname())
-    data = "connect to " + internetAddress
+    # data = "connect to " + internetAddress
+    # s.sendto(data, ('<broadcast>', MYPORT))
+    data = "update"
     s.sendto(data, ('<broadcast>', MYPORT))
     time.sleep(2)

@@ -4,15 +4,23 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
+var morgan = require('morgan');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var firmware = require('./routes/firmware');
 var firmwareVersion = require('./routes/firmware-version');
-var firmwareSize = require('./routes/firmware-size')
-var firmwareChecksum = require('./routes/firmware-checksum')
+var firmwareSize = require('./routes/firmware-size');
+var firmwareChecksum = require('./routes/firmware-checksum');
 
 var app = express();
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
+
+// setup the logger
+app.use(morgan('combined', {stream: accessLogStream}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,11 +35,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
-app.use('/firmware', firmware);
-app.use('/firmware/version', firmwareVersion);
-app.use('/firmware/size', firmwareSize);
-app.use('/firmware/checksum', firmwareChecksum);
+//app.use('/users', users);
+app.use('/clay/firmware', firmware);
+app.use('/clay/firmware/version', firmwareVersion);
+app.use('/clay/firmware/size', firmwareSize);
+app.use('/clay/firmware/checksum', firmwareChecksum);
+// TODO: /early-adopters/apply
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

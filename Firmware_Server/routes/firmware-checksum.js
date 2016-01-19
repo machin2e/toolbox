@@ -12,8 +12,15 @@ router.get('/', function(req, res, next) {
 
   // Parse query
   // Reference: http://expressjs.com/en/4x/api.html#req.query
-  startByte = parseInt (req.query.startByte);
-  byteCount = parseInt (req.query.byteCount);
+  var startByte = 0;
+  if (req.query.startByte !== undefined) {
+    startByte = parseInt (req.query.startByte);
+  }
+
+  var byteCount = undefined;
+  if (req.query.byteCount !== undefined) {
+    byteCount = parseInt (req.query.byteCount);
+  }
 
   var firmwareFilePath = './public/firmware/firmware.hex';
   var firmwareFileSize = 0;
@@ -26,6 +33,11 @@ router.get('/', function(req, res, next) {
           if (status) {
             console.log(status.message);
             return;
+          }
+
+          // Store the size of the block
+          if (byteCount === undefined) {
+            byteCount = stats.size;
           }
 
           // Create buffer to store the firmware file then load the firmware file into the buffer.
@@ -51,8 +63,12 @@ router.get('/', function(req, res, next) {
 
             // Calculate the CRC16 of the buffer.
             // Reference: https://github.com/alexgorbatchev/node-crc
-            var resultCrc = crc.crc16(resultBuffer).toString(16);
+            // var resultCrc = crc.crc16(resultBuffer).toString(16); // Hexadecimal representation
+            var resultCrc = crc.crc16(resultBuffer); // Decimal representation
             console.log ("crc16: " + resultCrc);
+
+            // resultCrc = crc.crc16("hello").toString(16);
+            // console.log ("crc16 \"hello\": " + resultCrc);
 
             // Get the version of the latest firmware.
             resultString = resultBuffer.toString ('utf-8', 0, byteCount);
