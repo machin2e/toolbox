@@ -1,7 +1,7 @@
 # Send UDP broadcast packets
 
 #DISCOVERY_BROADCAST_ADDRESS = '<broadcast>'
-DISCOVERY_BROADCAST_ADDRESS = '192.168.1.255'
+DISCOVERY_BROADCAST_ADDRESS = '192.168.255.255'
 
 DISCOVERY_BROADCAST_PORT = 4445
 BROADCAST_PORT = 4446
@@ -57,6 +57,9 @@ class Unit:
     uuid = None
     behavior = []
 
+# Initialize defaults
+UNIT_UUID = uuid.uuid4()
+
 # Parse command-line arguments.
 command = None
 if len (sys.argv) > 1:
@@ -72,6 +75,9 @@ for option in sys.argv:
         print "udp_ports:", udp_ports
         DISCOVERY_BROADCAST_PORT = int(udp_ports.split(',')[0])
         BROADCAST_PORT = int(udp_ports.split(',')[1])
+    elif option == "-uuid": # i.e., the uuid to use for the simulated unit
+        UNIT_UUID = uuid.UUID("{" + sys.argv[i + 1] + "}");
+        print "-uuid: ", UNIT_UUID
     i = i + 1
 
 print "DISCOVERY_BROADCAST_PORT", DISCOVERY_BROADCAST_PORT
@@ -89,7 +95,8 @@ if command == "start":
     broadcast_frequency = 1000
 
     # Generate UUID for Clay
-    uuid = uuid.uuid4()
+    # uuid = uuid.uuid4()
+    uuid = UNIT_UUID
 
     outgoingSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     outgoingSocket.bind(('', 0))
@@ -113,7 +120,7 @@ if command == "start":
             last_broadcast_time = millis()
 
         try:
-            message, address = incomingSocket.recvfrom (DISCOVERY_BROADCAST_PORT) # Block until a packet is received on the port
+            message, address = incomingSocket.recvfrom (MESSAGE_PORT) # Block until a packet is received on the port
             print "Received from %s: %s" % (address[0], message) # Print the received message
             data = "got " + message
             outgoingSocket.sendto(data, (address[0], DISCOVERY_BROADCAST_PORT))
