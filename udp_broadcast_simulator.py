@@ -4,7 +4,7 @@ import uuid
 
 DATAGRAM_BROADCAST_PORT = 4445
 
-config_frame_count = 5
+config_frame_count = 3
 
 def generate_broadcast_messages(count):
 
@@ -51,16 +51,27 @@ def generate_display_message(message, format):
 
 print "Clay"
 
-# Generate messages
-frame_broadcast_messages = generate_broadcast_messages(config_frame_count)
+print ""
 
+print "Opening socket.",
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind(('', 0))
 s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+print "Done."
+
+# Generate frames
+print "Getting Internet address.",
+frame_internet_address = socket.gethostbyname(socket.gethostname())
+print "Done."
+
+print "Generating messages.",
+frame_broadcast_messages = generate_broadcast_messages(config_frame_count)
+print "Done."
+
+print ""
 
 i = 0
 while 1:
-    internetAddress = socket.gethostbyname(socket.gethostname())
 
     # "\f<content_length>\t<content_checksum>\t<content_type>\t<content>"
     # e.g., "\f52\t16561\ttext\tannounce device 002fffff-ffff-ffff-4e45-3158200a0015"
