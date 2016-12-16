@@ -1,0 +1,92 @@
+{
+  "profile": {
+    "type": "host",
+    "uuid": "4c5fe0ac-b074-11e6-80f5-76304dec7eb7",
+    "label": "Clay",
+    "description": {
+      "processors": {
+        "uuid": "4c5fe0ac-b074-11e6-80f5-76304dec7eb7",
+        "label": "k64f",
+        "cpu": "120mhz",
+        "ram": "",
+        "flash": ""
+      },
+      "power": ""
+    },
+    "ports": [
+      {
+        "type": "port",
+        "number": 1,
+        "label": "1",
+        "modes": {
+          "input": [
+            "disconnected",
+            "ground",
+            "3.3v",
+            "5v",
+            "digital",
+            "analog",
+            "pwm",
+            "i2c",
+            "spi",
+            "uart",
+            "high-resistive",
+            "capacitive"
+          ],
+          "output": [
+            "disconnected",
+            "ground",
+            "3.3v",
+            "5v",
+            "digital",
+            "analog",
+            "pwm",
+            "i2c",
+            "spi",
+            "uart",
+            "high-resistive",
+            "capacitive"
+          ]
+        }
+      }
+    ],
+    "radios": [
+      {
+        "type": "radio",
+        "mode": "wifi",
+        "protocol": [
+          "udp",
+          "tcp",
+          "http"
+        ]
+      },
+      {
+        "type": "radio",
+        "mode": "thread"
+      },
+      {
+        "type": "radio",
+        "mode": "bluetooth"
+      }
+    ],
+    "model/image-default": {
+      "uuid": "4c5fe0ac-b074-11e6-80f5-76304dec7eb7"
+    }
+  },
+  "state": {
+    "process": {
+      "actions": [
+        {
+          "type": "action",
+          "uuid": "4c5fe0ac-b074-11e6-80f5-76304dec7eb7",
+          "label": "Print Data",
+          "script": {
+            "type": "script",
+            "uuid": "4c5fe0ac-b074-11e6-80f5-76304dec7eb7",
+            "code": "var action = function(data) { print(data); }"
+          }
+        }
+      ]
+    }
+  }
+}

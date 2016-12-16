@@ -21,7 +21,8 @@ while 1:
     # "\f<content_length>\t<content_checksum>\t<content_type>\t<content>"
     # e.g., "\f52	16561	text	announce device 002fffff-ffff-ffff-4e45-3158200a0015"
     # data = "\f52\t16561\ttext\tannounce device 002fffff-ffff-ffff-4e45-3158200a0015";
-    data = "\f52\t33439\ttext\tannounce device f1aceb8b-e8e9-4cda-b29c-de7bc7cc390f"
+    # data = "\f52\t33439\ttext\tannounce device f1aceb8b-e8e9-4cda-b29c-de7bc7cc390f"
+    data = "announce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
 
     print data
 
@@ -29,6 +30,7 @@ while 1:
     i = i+1
     time.sleep(1)
 
-    data = "\f52\t58392\ttext\tannounce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
+    # data = "\f52\t58392\ttext\tannounce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
+    data = "announce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
     print data
     s.sendto(data, ('<broadcast>', PORT))
