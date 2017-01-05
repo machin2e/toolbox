@@ -4,12 +4,29 @@ import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.platform_infrastructure.LoadBuildFileTask;
 
 import java.util.Scanner;
 
 public class Interpreter {
 
-    Workspace workspace = new Workspace();
+    private static Interpreter instance = null;
+
+    Workspace workspace;
+
+    private Interpreter() {
+        Interpreter.instance = this;
+        workspace = new Workspace();
+    }
+
+    public static Interpreter getInstance() {
+        if (Interpreter.instance == null) {
+            Interpreter interpreter = new Interpreter();
+            return interpreter;
+        } else {
+            return Interpreter.instance;
+        }
+    }
 
     public void start() {
 
@@ -17,6 +34,9 @@ public class Interpreter {
         String inputLine = null;
 
         while(true) {
+
+            // TODO: start file
+            // TODO: save file <filename>
 
             // TODO: add path <sourcePortUid>, <targetPortUid>
             // TODO: set port supported modes
@@ -27,64 +47,83 @@ public class Interpreter {
             // TODO: clone (add from description by UUID, or at uri/path) project, device
             // TODO: Explore/Search devices
 
+            // TODO: simulate vertical integration of virtual host shared by (or distributed across) connected devices
+            // TODO: list hosts
+
+            // TODO: TaskConstruct that is composable, sequencable (in live-editing loop), live-loadable (simulated/placeholder for C?).
+
+            // TODO: Select saved project, auto-select from hosts/verify, propagate viral installation/verify, IASM for vertical integration of hosts/device(s), IASM per-host for extensions.
+
             // TODO: Redis
             // TODO: Timeline (of commands, so can reconstruct)
-            // TODO: IASM: Generate instructions, track completion status of each step!
+            // TODO: IASM: Generate instructions, track completion status/state of each step (for host/device(s), across hosts)!
             // TODO: Users: Workspace, Projects, Portfolio (not separate object, just filter shared projects)
 
             // TODO: Create "host/device server" that announces its presence and allows retrieval of its HDL, specs.
 
+            System.out.print("~ ");
+
             inputLine = scanner.nextLine().trim();
 
-            if (inputLine.equals("add project")) {
+            interpretLine(inputLine);
 
-                createProjectTask();
+        }
 
-            } else if (inputLine.equals("list projects")) {
+    }
 
-                listProjectsTask();
+    public void interpretLine(String inputLine) {
 
-            } else if (inputLine.startsWith("choose project")) {
+        if (inputLine.startsWith("import file")) {
 
-                chooseProjectTask(inputLine);
+            importFileTask(inputLine);
 
-            } else if (inputLine.startsWith("change project title")) {
+        } else if (inputLine.equals("add project")) {
 
-                changeProjectTitleTask(inputLine);
+            createProjectTask();
 
-            } else if (inputLine.equals("add device")) { // create hardware
+        } else if (inputLine.equals("list projects")) {
 
-                createDeviceTask();
+            listProjectsTask();
 
-            } else if (inputLine.equals("list devices")) { // list hardware
+        } else if (inputLine.startsWith("choose project")) {
 
-                listDevicesTask();
+            chooseProjectTask(inputLine);
 
-            } else if (inputLine.startsWith("choose device")) { // select hardware
+        } else if (inputLine.startsWith("change project title")) {
 
-                chooseDeviceTask(inputLine);
+            changeProjectTitleTask(inputLine);
 
-            } else if (inputLine.startsWith("add port")) { // create port
+        } else if (inputLine.equals("add device")) { // create hardware
 
-                createPortTask();
+            createDeviceTask();
 
-            } else if (inputLine.startsWith("list ports")) {
+        } else if (inputLine.equals("list devices")) { // list hardware
 
-                listPortsTask();
+            listDevicesTask();
 
-            } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
+        } else if (inputLine.startsWith("choose device")) { // select hardware
 
-                createPathTask(inputLine);
+            chooseDeviceTask(inputLine);
 
-            } else if (inputLine.startsWith("list paths")) {
+        } else if (inputLine.startsWith("add port")) { // create port
 
-                listPathsTask();
+            createPortTask();
 
-            } else if (inputLine.startsWith("close")) {
+        } else if (inputLine.startsWith("list ports")) {
 
-                closeTask();
+            listPortsTask();
 
-            }
+        } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
+
+            createPathTask(inputLine);
+
+        } else if (inputLine.startsWith("list paths")) {
+
+            listPathsTask();
+
+        } else if (inputLine.startsWith("close")) {
+
+            closeTask();
 
         }
 
@@ -93,9 +132,22 @@ public class Interpreter {
     // <REFACTOR>
     // TODO: Create "Command" class with command (1) keywords and (2) task to handle command.
 
+    public void importFileTask(String context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
+
+        String inputFilePath = inputLineWords[2];
+
+        new LoadBuildFileTask().execute(inputFilePath);
+
+    }
+
     public void createProjectTask() {
         ProjectConstruct projectConstruct = new ProjectConstruct();
-        System.out.println("> created project " + projectConstruct.uid);
+        System.out.println("added project " + projectConstruct.uid);
 
         workspace.projectConstructs.add(projectConstruct);
     }

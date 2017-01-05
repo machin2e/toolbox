@@ -13,9 +13,9 @@ public class Application {
 
         // TODO: Save/Load/IASM for Projects
 
-        System.out.println("Clay Builder");
+        System.out.println("Clay Hardware Builder (Version 0.0.1-alpha)");
 
-        new Interpreter().start();
+        Interpreter.getInstance().start();
 
     }
 }
