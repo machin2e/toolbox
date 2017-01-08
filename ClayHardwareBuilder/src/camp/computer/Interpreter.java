@@ -36,13 +36,16 @@ public class Interpreter {
         while(true) {
 
             // TODO: start file
-            // TODO: save file <filename>
+            // TODO: export file <filename>
+
+            // SATURDAY GOAL:
+            // TODO: ✓ add User object
+            // TODO: set port supported modes
+            // TODO: remove project, device, port
+            // TODO: export/save project (for user account)
+            // TODO: import/load project (for user account)
 
             // TODO: add path <sourcePortUid>, <targetPortUid>
-            // TODO: set port supported modes
-            // TODO: save project (for user account)
-            // TODO: load project (for user account)
-            // TODO: remove project, device, port
             // TODO: show workspace, project, device, port
             // TODO: clone (add from description by UUID, or at uri/path) project, device
             // TODO: Explore/Search devices
@@ -89,9 +92,9 @@ public class Interpreter {
 
             chooseProjectTask(inputLine);
 
-        } else if (inputLine.startsWith("change project title")) {
+        } else if (inputLine.startsWith("set project title")) {
 
-            changeProjectTitleTask(inputLine);
+            setProjectTitleTask(inputLine);
 
         } else if (inputLine.equals("add device")) { // create hardware
 
@@ -120,6 +123,14 @@ public class Interpreter {
         } else if (inputLine.startsWith("list paths")) {
 
             listPathsTask();
+
+        } else if (inputLine.startsWith("set path configuration")) {
+
+            // protocols:
+            // - electronic, rf, none
+
+            // electronic:
+            // - voltage
 
         } else if (inputLine.startsWith("close")) {
 
@@ -186,11 +197,11 @@ public class Interpreter {
             }
         }
 
-        System.out.println("> chose project " + inputProjectUid);
+        System.out.println("chose project " + inputProjectUid);
 
     }
 
-    public void changeProjectTitleTask(String context) {
+    public void setProjectTitleTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -203,7 +214,7 @@ public class Interpreter {
 
             workspace.projectConstruct.title = inputProjectTitle;
 
-            System.out.println("> project title changed to " + inputProjectTitle);
+            System.out.println("project title changed to " + inputProjectTitle);
         }
 
     }
@@ -211,7 +222,7 @@ public class Interpreter {
     public void createDeviceTask() {
 
         DeviceConstruct deviceConstruct = new DeviceConstruct();
-        System.out.println("> created device " + deviceConstruct.uid);
+        System.out.println("added device " + deviceConstruct.uid);
 
         workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 
@@ -251,7 +262,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("> chose device " + inputDeviceUid);
+        System.out.println("chose device " + inputDeviceUid);
 
     }
 
@@ -260,7 +271,7 @@ public class Interpreter {
         if (workspace.deviceConstruct != null) {
 
             PortConstruct portConstruct = new PortConstruct();
-            System.out.println("> created port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+            System.out.println("added port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
 
             workspace.deviceConstruct.portConstructs.add(portConstruct);
 
@@ -328,12 +339,12 @@ public class Interpreter {
             }
 
             PathConstruct pathConstruct = new PathConstruct();
-            pathConstruct.sourcePort = sourcePortConstruct;
-            pathConstruct.targetPort = targetPortConstruct;
+            pathConstruct.sourcePortConstruct = sourcePortConstruct;
+            pathConstruct.targetPortConstruct = targetPortConstruct;
 
             workspace.projectConstruct.pathConstructs.add(pathConstruct);
 
-            System.out.println("> created path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
+            System.out.println("added path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
         }
 
     }
@@ -343,7 +354,7 @@ public class Interpreter {
         if (workspace.projectConstruct != null) {
 
             for (int i = 0; i < workspace.projectConstruct.pathConstructs.size(); i++) {
-                System.out.println("" + workspace.projectConstruct.pathConstructs.get(i).uid + " (port " + workspace.projectConstruct.pathConstructs.get(i).sourcePort.uid + ", port " + workspace.projectConstruct.pathConstructs.get(i).targetPort.uid + ")");
+                System.out.println("" + workspace.projectConstruct.pathConstructs.get(i).uid + " (port " + workspace.projectConstruct.pathConstructs.get(i).sourcePortConstruct.uid + ", port " + workspace.projectConstruct.pathConstructs.get(i).targetPortConstruct.uid + ")");
             }
 
         }

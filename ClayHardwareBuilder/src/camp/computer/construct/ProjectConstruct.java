@@ -9,6 +9,8 @@ public class ProjectConstruct {
 
     public String title = null;
 
+    public boolean isPublished = true;
+
     public List<DeviceConstruct> deviceConstructs = new ArrayList<>();
 
     public List<PathConstruct> pathConstructs = new ArrayList<>();

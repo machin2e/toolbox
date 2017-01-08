@@ -4,8 +4,8 @@ public class PathConstruct {
 
     public long uid = DeviceConstruct.constructCounter++;
 
-    public PortConstruct sourcePort = null;
+    public PortConstruct sourcePortConstruct = null;
 
-    public PortConstruct targetPort = null;
+    public PortConstruct targetPortConstruct = null;
 
 }
