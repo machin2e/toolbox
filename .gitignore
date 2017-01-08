@@ -1,3 +1,10 @@
+# macOS
+.DS_Store
+
+# vim
+.swp
+
+# node.js
 */node_modules
 *.hex
-.DS_Store
+
