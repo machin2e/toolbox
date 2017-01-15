@@ -9,6 +9,18 @@ public class PortConstruct {
 
     // PortDescription, PortPilot/PortBuilder
 
+    // TODO: List of (mode string, INPUT | OUTPUT | IO, 0V | 3.3V | 5V – or range) + path constraint/relation resolver/arithmetic
+
+    // Power, (Output), (0V, 3.3V, 5V), (Off, On)
+    // Power, (Input), (0V), (Common)
+    // Discrete, (Input, Output), (3.3V, 5V), (True, False)
+    // Continuous, (Input, Output), (3.3V, 5V), (<function>)
+    // PWM, (Input, Output), (3.3V, 5V), (Period; Duty Cycle)
+
+    // TODO: Add supported modes for Clay 7 device (see above)
+    // TODO: Add supported modes for IR rangefinder device
+    // TODO: Add supported modes for Ultrasonic Rangefinder device
+
     public List<SignalConstruct.Channel> channels = new ArrayList<>();
     public List<SignalConstruct.Mode> modes = new ArrayList<>();
     public List<SignalConstruct.Direction> directions = new ArrayList<>();
@@ -27,8 +39,8 @@ public class PortConstruct {
 
         // Initialize supported types
         modes.add(SignalConstruct.Mode.NONE);
-        modes.add(SignalConstruct.Mode.DISCRETE);
-        modes.add(SignalConstruct.Mode.CONTINUOUS);
+        modes.add(SignalConstruct.Mode.DIGITAL);
+        modes.add(SignalConstruct.Mode.ANALOG);
 
         // Initialize default type
         mode = SignalConstruct.Mode.NONE;

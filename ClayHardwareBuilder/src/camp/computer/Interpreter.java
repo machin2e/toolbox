@@ -88,9 +88,9 @@ public class Interpreter {
 
             listProjectsTask();
 
-        } else if (inputLine.startsWith("choose project")) {
+        } else if (inputLine.startsWith("select project")) {
 
-            chooseProjectTask(inputLine);
+            selectProjectTask(inputLine);
 
         } else if (inputLine.startsWith("set project title")) {
 
@@ -104,9 +104,9 @@ public class Interpreter {
 
             listDevicesTask();
 
-        } else if (inputLine.startsWith("choose device")) { // select hardware
+        } else if (inputLine.startsWith("select device")) { // select hardware
 
-            chooseDeviceTask(inputLine);
+            selectDeviceTask(inputLine);
 
         } else if (inputLine.startsWith("add port")) { // create port
 
@@ -126,15 +126,11 @@ public class Interpreter {
 
         } else if (inputLine.startsWith("set path configuration")) {
 
-            // protocols:
-            // - electronic, rf, none
+            setPathConfigurationTask(inputLine);
 
-            // electronic:
-            // - voltage
+        } else if (inputLine.startsWith("exit")) {
 
-        } else if (inputLine.startsWith("close")) {
-
-            closeTask();
+            exitTask();
 
         }
 
@@ -181,7 +177,7 @@ public class Interpreter {
 
     }
 
-    public void chooseProjectTask(String context){
+    public void selectProjectTask(String context){
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -197,7 +193,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("chose project " + inputProjectUid);
+        System.out.println("selected project " + inputProjectUid);
 
     }
 
@@ -246,7 +242,7 @@ public class Interpreter {
 
     }
 
-    public void chooseDeviceTask(String context) {
+    public void selectDeviceTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -262,7 +258,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("chose device " + inputDeviceUid);
+        System.out.println("selected device " + inputDeviceUid);
 
     }
 
@@ -361,7 +357,25 @@ public class Interpreter {
 
     }
 
-    public void closeTask() {
+    public void setPathConfigurationTask(String context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
+
+        String inputPathConfiguration = inputLineWords[3];
+
+        System.out.println("set path configuration to \"" + inputPathConfiguration + "\"");
+
+        // protocols:
+        // - electronic, rf, none
+
+        // electronic:
+        // - voltage
+    }
+
+    public void exitTask() {
         System.exit(0);
     }
     // </REFACTOR>

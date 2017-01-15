@@ -1,0 +1,59 @@
+add project
+select project 0
+add device
+add device
+select device 1
+add port
+# select port 0
+# support/add configuration none|power|discrete|continuous|pwm|frequency_monitor|touch|i2c:sda|spi:sclk|uart:rx
+# set port configuration discrete
+
+# support configuration power;output;0V,3.3V,5V
+# support configuration power;input;0V
+# support configuration discrete;input,output;3.3V,5V
+# support configuration continuous;input,output;3.3V,5V
+# support configuration pwm;input,output;3.3V,5V
+
+# port: support configuration power,discrete,continuous,pwn,touch
+# path: set configuration power (after exists)
+
+// TODO: Define possible types;
+// TODO: specify supported per-port types;
+// TODO: specify path type/direction and resolve contained port types/directions (interactive).
+
+// Power, (Output), (0V, 3.3V, 5V), (Off, On)
+// Power, (Input), (0V), (Common)
+// Discrete, (Input, Output), (3.3V, 5V), (True, False)
+// Continuous, (Input, Output), (3.3V, 5V), (<function>)
+// PWM, (Input, Output), (3.3V, 5V), (Period; Duty Cycle)
+
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+select device 2
+add port
+add port
+add port
+add path device 1 port 3 device 2 port 15
+add path device 1 port 4 device 2 port 16
+add path device 1 port 5 # singleton path
+# select path 0
+# set path configuration discrete # in turn, assigns configurations to ports in (selected) path 0
+
+# select path 2
+# add to path 2: device 2 port 17
+
+
+# TODO: use account mokogobo
+
+// TODO: Add supported modes for Clay 7 device (see above)
+// TODO: Add supported modes for IR rangefinder device
+// TODO: Add supported modes for Ultrasonic Rangefinder device
