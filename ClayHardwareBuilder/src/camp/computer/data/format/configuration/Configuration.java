@@ -2,7 +2,7 @@ package camp.computer.data.format.configuration;
 
 import java.util.UUID;
 
-public class Configuration {
+public abstract class Configuration {
 
     private UUID uuid;
 

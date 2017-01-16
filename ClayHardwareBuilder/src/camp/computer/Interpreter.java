@@ -40,7 +40,7 @@ public class Interpreter {
 
             // SATURDAY GOAL:
             // TODO: ✓ add User object
-            // TODO: set port supported modes
+            // TODO: set port supported portConfigurations
             // TODO: remove project, device, port
             // TODO: export/save project (for user account)
             // TODO: import/load project (for user account)
@@ -280,7 +280,42 @@ public class Interpreter {
         if (workspace.deviceConstruct != null) {
 
             for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
+
+                // Port UID
                 System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
+
+                for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.size(); j++) {
+
+                    // Mode/Family
+                    System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).mode + "; ");
+
+                    // Directions
+                    if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions != null) {
+                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size(); k++) {
+                            System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.get(k));
+
+                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+                    }
+                    System.out.print("; ");
+
+                    // Voltages
+                    if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages != null) {
+                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size(); k++) {
+                            System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.get(k));
+
+                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+                    }
+
+                    System.out.println();
+
+                }
+
             }
 
         }

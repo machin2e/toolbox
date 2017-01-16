@@ -8,4 +8,6 @@ public class PathConstruct {
 
     public PortConstruct targetPortConstruct = null;
 
+    // public String portConfiguration;
+
 }
