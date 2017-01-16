@@ -1,8 +1,8 @@
 add project
-select project 0
+edit project 0
 add device
 add device
-select device 1
+edit device 1
 add port
 add port
 add port
@@ -15,7 +15,7 @@ add port
 add port
 add port
 add port
-select device 2
+edit device 2
 add port
 add port
 add port

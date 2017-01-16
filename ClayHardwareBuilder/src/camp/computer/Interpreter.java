@@ -88,9 +88,9 @@ public class Interpreter {
 
             listProjectsTask();
 
-        } else if (inputLine.startsWith("select project")) {
+        } else if (inputLine.startsWith("edit project")) {
 
-            selectProjectTask(inputLine);
+            editProjectTask(inputLine);
 
         } else if (inputLine.startsWith("set project title")) {
 
@@ -104,9 +104,9 @@ public class Interpreter {
 
             listDevicesTask();
 
-        } else if (inputLine.startsWith("select device")) { // select hardware
+        } else if (inputLine.startsWith("edit device")) { // select hardware
 
-            selectDeviceTask(inputLine);
+            editDeviceTask(inputLine);
 
         } else if (inputLine.startsWith("add port")) { // create port
 
@@ -114,7 +114,7 @@ public class Interpreter {
 
         } else if (inputLine.startsWith("list ports")) {
 
-            listPortsTask();
+            listPortsTask(inputLine);
 
         } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
 
@@ -177,7 +177,7 @@ public class Interpreter {
 
     }
 
-    public void selectProjectTask(String context){
+    public void editProjectTask(String context){
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -193,7 +193,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("selected project " + inputProjectUid);
+        System.out.println("editing project " + inputProjectUid);
 
     }
 
@@ -242,7 +242,7 @@ public class Interpreter {
 
     }
 
-    public void selectDeviceTask(String context) {
+    public void editDeviceTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -258,7 +258,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("selected device " + inputDeviceUid);
+        System.out.println("editing device " + inputDeviceUid);
 
     }
 
@@ -275,44 +275,73 @@ public class Interpreter {
 
     }
 
-    public void listPortsTask() {
+    // list ports -configurations
+    public void listPortsTask(String context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
 
-        if (workspace.deviceConstruct != null) {
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
 
-            for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
+        if (inputLineWords.length == 2) {
 
-                // Port UID
-                System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
+            if (workspace.deviceConstruct != null) {
 
-                for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.size(); j++) {
+                for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
 
-                    // Mode/Family
-                    System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).mode + "; ");
+                    // Port UID
+                    System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
 
-                    // Directions
-                    if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions != null) {
-                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size(); k++) {
-                            System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.get(k));
+                }
 
-                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size()) {
-                                System.out.print(", ");
+            }
+
+        } else if (inputLineWords.length > 2) {
+
+            String modifiers = inputLineWords[2];
+
+            if (!modifiers.equals("-configurations")) {
+                return;
+            }
+
+            if (workspace.deviceConstruct != null) {
+
+                for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
+
+                    // Port UID
+                    System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
+
+                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.size(); j++) {
+
+                        // Mode/Family
+                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).mode + "; ");
+
+                        // Directions
+                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.get(k));
+
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size()) {
+                                    System.out.print(", ");
+                                }
                             }
                         }
-                    }
-                    System.out.print("; ");
+                        System.out.print("; ");
 
-                    // Voltages
-                    if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages != null) {
-                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size(); k++) {
-                            System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.get(k));
+                        // Voltages
+                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.get(k));
 
-                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size()) {
-                                System.out.print(", ");
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size()) {
+                                    System.out.print(", ");
+                                }
                             }
                         }
-                    }
 
-                    System.out.println();
+                        System.out.println();
+
+                    }
 
                 }
 
