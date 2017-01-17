@@ -1,6 +1,7 @@
 package camp.computer;
 
 import camp.computer.construct.DeviceConstruct;
+import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Workspace {
     // <CONTEXT>
     ProjectConstruct projectConstruct = null;
     DeviceConstruct deviceConstruct = null;
+    PortConstruct portConstruct = null;
     // </CONTEXT>
 
 }

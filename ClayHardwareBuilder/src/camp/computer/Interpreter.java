@@ -4,8 +4,11 @@ import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.data.format.configuration.PortConfiguration;
+import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 
+import javax.sound.sampled.Port;
 import java.util.Scanner;
 
 public class Interpreter {
@@ -123,6 +126,10 @@ public class Interpreter {
         } else if (inputLine.startsWith("list ports")) {
 
             listPortsTask(inputLine);
+
+        } else if (inputLine.startsWith("edit port")) {
+
+            editPortTask(inputLine);
 
         } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
 
@@ -302,36 +309,95 @@ public class Interpreter {
 
         // TODO: Parse "bus(line)" mode string pattern to create bus and lines.
 
+        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
+        ValueSet<PortConfiguration.Direction> directions = null;
+        ValueSet<PortConfiguration.Voltage> voltages = null;
+
+        // <REPLACE>
         // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
+
+        // Configuration Option Mode
         if (configurationOptionMode.equals("none")) {
-
+            mode = PortConfiguration.Mode.NONE;
         } else if (configurationOptionMode.equals("digital")) {
-
+            mode = PortConfiguration.Mode.DIGITAL;
         } else if (configurationOptionMode.equals("analog")) {
-
+            mode = PortConfiguration.Mode.ANALOG;
         } else if (configurationOptionMode.equals("pwm")) {
-
+            mode = PortConfiguration.Mode.PWM;
         } else if (configurationOptionMode.equals("resistive_touch")) {
-
+            mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
         } else if (configurationOptionMode.equals("power")) {
-
+            mode = PortConfiguration.Mode.POWER;
         } else if (configurationOptionMode.equals("i2c(scl)")) {
-
+            mode = PortConfiguration.Mode.I2C_SCL;
         } else if (configurationOptionMode.equals("i2c(sda)")) {
-
+            mode = PortConfiguration.Mode.I2C_SDA;
         } else if (configurationOptionMode.equals("spi(sclk)")) {
-
+            mode = PortConfiguration.Mode.SPI_SCLK;
         } else if (configurationOptionMode.equals("spi(mosi)")) {
-
+            mode = PortConfiguration.Mode.SPI_MOSI;
         } else if (configurationOptionMode.equals("spi(miso)")) {
-
+            mode = PortConfiguration.Mode.SPI_MISO;
         } else if (configurationOptionMode.equals("spi(ss)")) {
-
+            mode = PortConfiguration.Mode.SPI_SS;
         } else if (configurationOptionMode.equals("uart(rx)")) {
-
+            mode = PortConfiguration.Mode.UART_RX;
         } else if (configurationOptionMode.equals("uart(tx)")) {
-
+            mode = PortConfiguration.Mode.UART_TX;
         }
+
+        // Configuration Option Directions
+        if (configurationOptionDirectionList.length == 1 && configurationOptionDirectionList[0].equals("null")) {
+
+            directions = null;
+
+        } else {
+
+            directions = new ValueSet<>();
+
+            for (int i = 0; i < configurationOptionDirectionList.length; i++) {
+
+                if (configurationOptionDirectionList[i].equals("none")) {
+                    directions.values.add(PortConfiguration.Direction.NONE);
+                } else if (configurationOptionDirectionList[i].equals("input")) {
+                    directions.values.add(PortConfiguration.Direction.INPUT);
+                } else if (configurationOptionDirectionList[i].equals("output")) {
+                    directions.values.add(PortConfiguration.Direction.OUTPUT);
+                } else if (configurationOptionDirectionList[i].equals("bidirectional")) {
+                    directions.values.add(PortConfiguration.Direction.BIDIRECTIONAL);
+                }
+
+            }
+        }
+
+        // Configuration Option Voltages
+        if (configurationOptionVoltageList.length == 1 && configurationOptionVoltageList[0].equals("null")) {
+
+            voltages = null;
+
+        } else {
+
+            voltages = new ValueSet<>();
+
+            for (int i = 0; i < configurationOptionVoltageList.length; i++) {
+
+                if (configurationOptionVoltageList[i].equals("none")) {
+                    voltages.values.add(PortConfiguration.Voltage.NONE);
+                } else if (configurationOptionVoltageList[i].equals("ttl")) {
+                    voltages.values.add(PortConfiguration.Voltage.TTL);
+                } else if (configurationOptionVoltageList[i].equals("cmos")) {
+                    voltages.values.add(PortConfiguration.Voltage.CMOS);
+                } else if (configurationOptionVoltageList[i].equals("common")) {
+                    voltages.values.add(PortConfiguration.Voltage.COMMON);
+                }
+
+            }
+        }
+
+        // Add configuration option
+        workspace.portConstruct.portConfigurations.add(new PortConfiguration(mode, directions, voltages));
+        // </REPLACE>
 
     }
 
@@ -408,6 +474,28 @@ public class Interpreter {
             }
 
         }
+
+    }
+
+    public void editPortTask(String context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
+
+        long inputPortUid = Long.valueOf(inputLineWords[2]);
+
+        for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+            for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
+                if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
+                    workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+                    break;
+                }
+            }
+        }
+
+        System.out.println("editing port " + inputPortUid);
 
     }
 

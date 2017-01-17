@@ -24,6 +24,7 @@ add port
 # TODO: - Also, consider renaming "option" to "constraint" or "rule" or "relation".
 
 # open configuration "clay-port-configuration"
+edit port 3
 add option none;null;null
 add option digital;input,output,bidirectional;ttl,cmos
 add option analog;input,output;ttl,cmos
@@ -52,6 +53,15 @@ add port
 # add port (power;input;ttl)
 # add port (power;output;common)
 # add port (analog;output;ttl)
+
+edit port 15
+add option power;input;ttl
+
+edit port 16
+add option power;output;common
+
+edit port 17
+add option analog;output;ttl
 
 # Paths
 add path device 1 port 3 device 2 port 15

@@ -2,6 +2,7 @@ package camp.computer.data.format.configuration;
 
 public class PortConfiguration {
 
+    // TODO: Replace with Class + searchable manager
     // Per-Port Modes
     public enum Mode {
 
@@ -30,6 +31,7 @@ public class PortConfiguration {
 
     }
 
+    // TODO: Replace with Class + searchable manager
     public enum Direction {
         NONE,
         INPUT,
@@ -37,6 +39,7 @@ public class PortConfiguration {
         BIDIRECTIONAL // Supporting bidirectional configuration is different than supporting both the input and output configurations because in the latter case, only one can be specified.
     }
 
+    // TODO: Replace with Class + searchable manager
     public enum Voltage {
         NONE,
         TTL, // 3.3V
