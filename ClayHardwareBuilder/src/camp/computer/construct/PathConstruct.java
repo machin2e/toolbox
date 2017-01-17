@@ -1,13 +1,11 @@
 package camp.computer.construct;
 
-public class PathConstruct {
-
-    public long uid = DeviceConstruct.constructCounter++;
+public class PathConstruct extends Construct {
 
     public PortConstruct sourcePortConstruct = null;
 
     public PortConstruct targetPortConstruct = null;
 
-    // public String portConfiguration;
+    // TODO: public String portConfiguration; // Used to determine configuration of contained ports.
 
 }

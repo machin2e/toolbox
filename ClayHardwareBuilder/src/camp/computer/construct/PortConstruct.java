@@ -1,16 +1,13 @@
 package camp.computer.construct;
 
 import camp.computer.data.format.configuration.PortConfiguration;
-import camp.computer.data.format.configuration.ValueSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PortConstruct {
+public class PortConstruct extends Construct {
 
-    // TODO: label/title (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.)
-
-    public long uid = DeviceConstruct.constructCounter++;
+    // TODO: label/title (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.
 
     // TODO: List of (portConfiguration string, INPUT | OUTPUT | IO, 0V | 3.3V | 5V – or range) + path constraint/relation resolver/arithmetic
 

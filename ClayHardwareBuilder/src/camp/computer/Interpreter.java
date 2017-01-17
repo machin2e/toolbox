@@ -8,7 +8,6 @@ import camp.computer.data.format.configuration.PortConfiguration;
 import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 
-import javax.sound.sampled.Port;
 import java.util.Scanner;
 
 public class Interpreter {
@@ -89,7 +88,7 @@ public class Interpreter {
 
         } else if (inputLine.equals("add project")) {
 
-            createProjectTask();
+            addProjectTask();
 
         } else if (inputLine.equals("list projects")) {
 
@@ -105,7 +104,7 @@ public class Interpreter {
 
         } else if (inputLine.equals("add device")) { // create hardware
 
-            createDeviceTask();
+            addDeviceTask();
 
         } else if (inputLine.equals("list devices")) { // list hardware
 
@@ -117,11 +116,11 @@ public class Interpreter {
 
         } else if (inputLine.startsWith("add port")) { // create port
 
-            createPortTask();
+            addPortTask();
 
         } else if (inputLine.startsWith("add option")) {
 
-            createOptionTask(inputLine);
+            addConfigurationOptionTask(inputLine);
 
         } else if (inputLine.startsWith("list ports")) {
 
@@ -133,7 +132,7 @@ public class Interpreter {
 
         } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
 
-            createPathTask(inputLine);
+            addPathTask(inputLine);
 
         } else if (inputLine.startsWith("list paths")) {
 
@@ -167,7 +166,7 @@ public class Interpreter {
 
     }
 
-    public void createProjectTask() {
+    public void addProjectTask() {
         ProjectConstruct projectConstruct = new ProjectConstruct();
         System.out.println("added project " + projectConstruct.uid);
 
@@ -230,7 +229,7 @@ public class Interpreter {
 
     }
 
-    public void createDeviceTask() {
+    public void addDeviceTask() {
 
         DeviceConstruct deviceConstruct = new DeviceConstruct();
         System.out.println("added device " + deviceConstruct.uid);
@@ -277,7 +276,7 @@ public class Interpreter {
 
     }
 
-    public void createPortTask() {
+    public void addPortTask() {
 
         if (workspace.deviceConstruct != null) {
 
@@ -292,7 +291,7 @@ public class Interpreter {
 
     // e.g.,
     // add option uart(tx);output;ttl,cmos
-    public void createOptionTask(String context) {
+    public void addConfigurationOptionTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -307,7 +306,7 @@ public class Interpreter {
         String[] configurationOptionDirectionList = configurationOptionList[1].split(",");
         String[] configurationOptionVoltageList = configurationOptionList[2].split(",");
 
-        // TODO: Parse "bus(line)" mode string pattern to create bus and lines.
+        // TODO: Parse "bus(line)" value string pattern to create bus and lines.
 
         PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
         ValueSet<PortConfiguration.Direction> directions = null;
@@ -500,7 +499,7 @@ public class Interpreter {
     }
 
     // e.g., add path device 1 port 3 device 4 port 1
-    public void createPathTask(String context) {
+    public void addPathTask(String context) {
 
         if (workspace.deviceConstruct != null) {
 

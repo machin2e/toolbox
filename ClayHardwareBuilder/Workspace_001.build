@@ -25,6 +25,10 @@ add port
 
 # open configuration "clay-port-configuration"
 edit port 3
+# add configuration mode:none;direction:null;voltage:null
+# add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+# add option mode:none;direction:null;voltage:null
+# add option mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add option none;null;null
 add option digital;input,output,bidirectional;ttl,cmos
 add option analog;input,output;ttl,cmos
@@ -87,7 +91,7 @@ add path device 1 port 5 device 2 port 17
 # TODO: store index (relative to container); per-session workspace UID (ephemeral); UUID (persistent, for persisting configurations, constructs, etc.)
 # TODO: test "import file <filename>" from within a file, and try nesting file hierarchies...
 # TODO: save/load workspace (.build file)
-# TODO: update "edit" to refer to just one construct, not one of each type of construct
+# TODO: update "edit" to refer to just one construct, not one of each title of construct
 # TODO: represent/infer "dependencies" based on configuration options---for use in IASM
 
 

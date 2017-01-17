@@ -1,5 +1,8 @@
 package camp.computer.data.format.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PortConfiguration {
 
     // TODO: Replace with Class + searchable manager
@@ -63,6 +66,8 @@ public class PortConfiguration {
      * {@code directions}). This is distinct from creating a {@code ValueSet} with no elements (i.e., an empty set).
      */
     public ValueSet<Voltage> voltages = null;
+
+    public List<AttributeSet> attributes = new ArrayList<>();
 
     // TODO: Bus dependencies (device-device interface level)
 

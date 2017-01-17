@@ -72,7 +72,7 @@ add path device 1 port 5 device 2 port 17
 # TODO: store index (relative to container); per-session workspace UID (ephemeral); UUID (persistent, for persisting configurations, constructs, etc.)
 # TODO: test "import file <filename>" from within a file, and try nesting file hierarchies...
 # TODO: save/load workspace (.build file)
-# TODO: update "edit" to refer to just one construct, not one of each type of construct
+# TODO: update "edit" to refer to just one construct, not one of each title of construct
 
 
 # BEGIN BUILD Clay_7_Port

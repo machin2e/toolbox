@@ -3,13 +3,11 @@ package camp.computer.construct;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectConstruct {
-
-    public long uid = DeviceConstruct.constructCounter++;
+public class ProjectConstruct extends Construct {
 
     public String title = null;
 
-    public boolean isPublished = true;
+    // TODO: public boolean isPublished = true; // For publishing projects into portfolio.
 
     public List<DeviceConstruct> deviceConstructs = new ArrayList<>();
 

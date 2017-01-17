@@ -19,7 +19,7 @@ add port
 
 // TODO: Define possible types;
 // TODO: specify supported per-port types;
-// TODO: specify path type/direction and resolve contained port types/directions (interactive).
+// TODO: specify path title/direction and resolve contained port types/directions (interactive).
 
 // Power, (Output), (0V, 3.3V, 5V), (Off, On)
 // Power, (Input), (0V), (Common)
