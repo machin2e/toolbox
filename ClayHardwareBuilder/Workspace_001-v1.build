@@ -1,3 +1,6 @@
+# Workspace
+
+# Project
 add project
 edit project 0
 add device
@@ -17,29 +20,21 @@ add port
 add port
 add port
 
-# TODO: - Rename "configuration" (as used here) to "option"...
-# TODO:   ...then and make "configuration" a sequence of expressions usable as a procedure...
-# TODO:   ...usable in scripts (equivalent to atomically adding).
-# TODO: - ALTERNATIVELY, create a more generic notation to define "procedure" instruction sequence that can be reused.
-# TODO: - Also, consider renaming "option" to "constraint" or "rule" or "relation".
-
-# open configuration "clay-port-configuration"
-add option none;null;null
-add option digital;input,output,bidirectional;ttl,cmos
-add option analog;input,output;ttl,cmos
-add option pwm;input,output;ttl,cmos
-add option resistive_touch;input;null
-add option power;output;ttl,cmos
-add option power;input;common
-add option i2c(scl);bidirectional;cmos
-add option i2c(sda);bidirectional;cmos
-add option spi(sclk);output;ttl,cmos
-add option spi(mosi);output;ttl,cmos
-add option spi(miso);input;ttl,cmos
-add option spi(ss);output;ttl,cmos
-add option uart(rx);input;ttl,cmos
-add option uart(tx);output;ttl,cmos
-# close configuration
+add configuration none;null;null
+add configuration digital;input,output,bidirectional;ttl,cmos
+add configuration analog;input,output;ttl,cmos
+add configuration pwm;input,output;ttl,cmos
+add configuration resistive_touch;input;null
+add configuration power;output;ttl,cmos
+add configuration power;input;common
+add configuration i2c(scl);bidirectional;cmos
+add configuration i2c(sda);bidirectional;cmos
+add configuration spi(sclk);output;ttl,cmos
+add configuration spi(mosi);output;ttl,cmos
+add configuration spi(miso);input;ttl,cmos
+add configuration spi(ss);output;ttl,cmos
+add configuration uart(rx);input;ttl,cmos
+add configuration uart(tx);output;ttl,cmos
 
 # TODO: configuration --> specification/constraint :::: AVAILABLE CONFIGURATIONS (of construct)
 # TODO: configuration is STATE (of construct)
@@ -78,7 +73,6 @@ add path device 1 port 5 device 2 port 17
 # TODO: test "import file <filename>" from within a file, and try nesting file hierarchies...
 # TODO: save/load workspace (.build file)
 # TODO: update "edit" to refer to just one construct, not one of each type of construct
-# TODO: represent/infer "dependencies" based on configuration options---for use in IASM
 
 
 # BEGIN BUILD Clay_7_Port

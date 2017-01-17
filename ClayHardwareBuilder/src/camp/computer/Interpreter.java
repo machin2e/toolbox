@@ -76,7 +76,11 @@ public class Interpreter {
 
     public void interpretLine(String inputLine) {
 
-        if (inputLine.startsWith("import file")) {
+        if (inputLine.startsWith("#")) {
+
+            // Nothing!
+
+        } else if (inputLine.startsWith("import file")) {
 
             importFileTask(inputLine);
 
@@ -111,6 +115,10 @@ public class Interpreter {
         } else if (inputLine.startsWith("add port")) { // create port
 
             createPortTask();
+
+        } else if (inputLine.startsWith("add option")) {
+
+            createOptionTask(inputLine);
 
         } else if (inputLine.startsWith("list ports")) {
 
@@ -275,7 +283,59 @@ public class Interpreter {
 
     }
 
-    // list ports -configurations
+    // e.g.,
+    // add option uart(tx);output;ttl,cmos
+    public void createOptionTask(String context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
+
+        String configurationOptionString = inputLineWords[2];
+
+        String[] configurationOptionList = configurationOptionString.split(";");
+
+        String configurationOptionMode = configurationOptionList[0];
+        String[] configurationOptionDirectionList = configurationOptionList[1].split(",");
+        String[] configurationOptionVoltageList = configurationOptionList[2].split(",");
+
+        // TODO: Parse "bus(line)" mode string pattern to create bus and lines.
+
+        // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
+        if (configurationOptionMode.equals("none")) {
+
+        } else if (configurationOptionMode.equals("digital")) {
+
+        } else if (configurationOptionMode.equals("analog")) {
+
+        } else if (configurationOptionMode.equals("pwm")) {
+
+        } else if (configurationOptionMode.equals("resistive_touch")) {
+
+        } else if (configurationOptionMode.equals("power")) {
+
+        } else if (configurationOptionMode.equals("i2c(scl)")) {
+
+        } else if (configurationOptionMode.equals("i2c(sda)")) {
+
+        } else if (configurationOptionMode.equals("spi(sclk)")) {
+
+        } else if (configurationOptionMode.equals("spi(mosi)")) {
+
+        } else if (configurationOptionMode.equals("spi(miso)")) {
+
+        } else if (configurationOptionMode.equals("spi(ss)")) {
+
+        } else if (configurationOptionMode.equals("uart(rx)")) {
+
+        } else if (configurationOptionMode.equals("uart(tx)")) {
+
+        }
+
+    }
+
+    // list ports -configuration
     public void listPortsTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
@@ -300,7 +360,7 @@ public class Interpreter {
 
             String modifiers = inputLineWords[2];
 
-            if (!modifiers.equals("-configurations")) {
+            if (!modifiers.equals("-configuration")) {
                 return;
             }
 

@@ -1,9 +1,7 @@
 package camp.computer.construct;
 
 import camp.computer.data.format.configuration.PortConfiguration;
-import camp.computer.data.format.configuration.CurrentDirectionConstraint;
 import camp.computer.data.format.configuration.ValueSet;
-import camp.computer.data.format.configuration.VoltageMagnitudeConstraint;
 
 import java.util.ArrayList;
 import java.util.List;
