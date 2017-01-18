@@ -122,6 +122,10 @@ public class Interpreter {
 
             addConfigurationOptionTask(inputLine);
 
+        } else if (inputLine.startsWith("set option")) {
+
+            setConfigurationOptionTask(inputLine);
+
         } else if (inputLine.startsWith("list ports")) {
 
             listPortsTask(inputLine);
@@ -397,6 +401,91 @@ public class Interpreter {
         // Add configuration option
         workspace.portConstruct.portConfigurations.add(new PortConfiguration(mode, directions, voltages));
         // </REPLACE>
+
+    }
+
+    // set option digital;output;ttl
+    public void setConfigurationOptionTask(String context) {
+
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String inputLine = context;
+        String[] inputLineWords = inputLine.split("[ ]+");
+
+        String configurationOptionString = inputLineWords[2];
+
+        String[] configurationOptionList = configurationOptionString.split(";");
+
+        String configurationOptionMode = configurationOptionList[0];
+        String configurationOptionDirection = configurationOptionList[1];
+        String configurationOptionVoltage = configurationOptionList[2];
+
+        // TODO: check if specified configuration is valid
+
+        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
+        PortConfiguration.Direction direction = null;
+        PortConfiguration.Voltage voltage = null;
+
+        // Configuration Option Mode
+        if (configurationOptionMode.equals("none")) {
+            mode = PortConfiguration.Mode.NONE;
+        } else if (configurationOptionMode.equals("digital")) {
+            mode = PortConfiguration.Mode.DIGITAL;
+        } else if (configurationOptionMode.equals("analog")) {
+            mode = PortConfiguration.Mode.ANALOG;
+        } else if (configurationOptionMode.equals("pwm")) {
+            mode = PortConfiguration.Mode.PWM;
+        } else if (configurationOptionMode.equals("resistive_touch")) {
+            mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
+        } else if (configurationOptionMode.equals("power")) {
+            mode = PortConfiguration.Mode.POWER;
+        } else if (configurationOptionMode.equals("i2c(scl)")) {
+            mode = PortConfiguration.Mode.I2C_SCL;
+        } else if (configurationOptionMode.equals("i2c(sda)")) {
+            mode = PortConfiguration.Mode.I2C_SDA;
+        } else if (configurationOptionMode.equals("spi(sclk)")) {
+            mode = PortConfiguration.Mode.SPI_SCLK;
+        } else if (configurationOptionMode.equals("spi(mosi)")) {
+            mode = PortConfiguration.Mode.SPI_MOSI;
+        } else if (configurationOptionMode.equals("spi(miso)")) {
+            mode = PortConfiguration.Mode.SPI_MISO;
+        } else if (configurationOptionMode.equals("spi(ss)")) {
+            mode = PortConfiguration.Mode.SPI_SS;
+        } else if (configurationOptionMode.equals("uart(rx)")) {
+            mode = PortConfiguration.Mode.UART_RX;
+        } else if (configurationOptionMode.equals("uart(tx)")) {
+            mode = PortConfiguration.Mode.UART_TX;
+        }
+
+        // Direction
+        if (configurationOptionDirection.equals("none")) {
+            direction = PortConfiguration.Direction.NONE;
+        } else if (configurationOptionDirection.equals("input")) {
+            direction = PortConfiguration.Direction.INPUT;
+        } else if (configurationOptionDirection.equals("output")) {
+            direction = PortConfiguration.Direction.OUTPUT;
+        } else if (configurationOptionDirection.equals("bidirectional")) {
+            direction = PortConfiguration.Direction.BIDIRECTIONAL;
+        }
+
+        // Voltage
+        if (configurationOptionVoltage.equals("none")) {
+            voltage = PortConfiguration.Voltage.NONE;
+        } else if (configurationOptionVoltage.equals("ttl")) {
+            voltage = PortConfiguration.Voltage.TTL;
+        } else if (configurationOptionVoltage.equals("cmos")) {
+            voltage = PortConfiguration.Voltage.CMOS;
+        } else if (configurationOptionVoltage.equals("common")) {
+            voltage = PortConfiguration.Voltage.COMMON;
+        }
+
+//        workspace.portConstruct.configuration.mode = mode;
+        workspace.portConstruct.mode = mode;
+        workspace.portConstruct.direction = direction;
+        workspace.portConstruct.voltage = voltage;
+
+        System.out.println("set configuration to " + mode + " " + direction + " " + voltage);
 
     }
 

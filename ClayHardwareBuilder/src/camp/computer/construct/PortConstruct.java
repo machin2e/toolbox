@@ -1,6 +1,7 @@
 package camp.computer.construct;
 
 import camp.computer.data.format.configuration.PortConfiguration;
+import sun.net.PortConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,12 @@ public class PortConstruct extends Construct {
 
     public List<PortConfiguration> portConfigurations = new ArrayList<>();
 
-    public PortConfiguration portConfiguration = null;
+    // <REPLACE>
+//    public PortConfiguration portConfiguration = new PortConfiguration();
+    public PortConfiguration.Mode mode = null;
+    public PortConfiguration.Direction direction = null;
+    public PortConfiguration.Voltage voltage = null;
+    // </REPLACE>
 
     public PortConstruct() {
 

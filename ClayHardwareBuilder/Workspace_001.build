@@ -25,6 +25,7 @@ add port
 
 # open configuration "clay-port-configuration"
 edit port 3
+# add configuration <attribute_title>:<attribute_value>;<attribute_title>:<input,output,bidirectional>;<voltage>:<ttl,cmos>
 # add configuration mode:none;direction:null;voltage:null
 # add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 # add option mode:none;direction:null;voltage:null
@@ -45,6 +46,15 @@ add option spi(ss);output;ttl,cmos
 add option uart(rx);input;ttl,cmos
 add option uart(tx);output;ttl,cmos
 # close configuration
+
+# OPTION 1:
+# edit port 3
+# set mode digital
+# set direction output
+# set voltage ttl
+#
+# OPTION 2: set configuration digital;output;ttl
+# OPTION 3: set configuration mode:digital;direction:output;voltage:ttl
 
 # TODO: configuration --> specification/constraint :::: AVAILABLE CONFIGURATIONS (of construct)
 # TODO: configuration is STATE (of construct)
@@ -112,3 +122,10 @@ add path device 1 port 5 device 2 port 17
 # add configuration uart(rx);input;ttl,cmos
 # add configuration uart(tx);output;ttl,cmos
 # END BUILD
+
+edit device 1
+edit port 3
+set option digital;output;ttl
+
+# TODO: add path device 1 port 3 device 2 port 15
+# TODO: >>> resolve the configuration of ^ port 3 and ^ port 15 (i.e., in this case, configure port 3 based on port 15 since port 15 has just one configuration; when there's multiple configurations available, as with connecting Clay to Arduino, show the interaction/common configurations and interactively assign it)
