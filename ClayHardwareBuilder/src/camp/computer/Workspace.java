@@ -27,6 +27,11 @@ public class Workspace {
     ProjectConstruct projectConstruct = null;
     DeviceConstruct deviceConstruct = null;
     PortConstruct portConstruct = null;
+
+    // Automatically updated each time a construct is created.
+    ProjectConstruct lastProjectConstruct = null;
+    DeviceConstruct lastDeviceConstruct = null;
+    PortConstruct lastPortConstruct = null;
     // </CONTEXT>
 
 }

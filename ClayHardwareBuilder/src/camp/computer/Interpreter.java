@@ -118,13 +118,13 @@ public class Interpreter {
 
             addPortTask();
 
-        } else if (inputLine.startsWith("add option")) {
+        } else if (inputLine.startsWith("add constraint")) { // add constraint (to set of attributes in configuration)
 
-            addConfigurationOptionTask(inputLine);
+            addConfigurationConstraintTask(inputLine);
 
-        } else if (inputLine.startsWith("set option")) {
+        } else if (inputLine.startsWith("set attributes")) { // TODO: "set configuration" or "set attributes"
 
-            setConfigurationOptionTask(inputLine);
+            setConfigurationAttributesTask(inputLine);
 
         } else if (inputLine.startsWith("list ports")) {
 
@@ -175,6 +175,9 @@ public class Interpreter {
         System.out.println("added project " + projectConstruct.uid);
 
         workspace.projectConstructs.add(projectConstruct);
+
+        // Store reference to last-created project
+        workspace.lastProjectConstruct = projectConstruct;
     }
 
     public void listProjectsTask() {
@@ -202,16 +205,26 @@ public class Interpreter {
         String inputLine = context;
         String[] inputLineWords = inputLine.split("[ ]+");
 
-        long inputProjectUid = Long.valueOf(inputLineWords[2]);
+        if (inputLineWords.length == 2) {
+            // edit project
 
-        for (int i = 0; i < workspace.projectConstructs.size(); i++) {
-            if (workspace.projectConstructs.get(i).uid == inputProjectUid) {
-                workspace.projectConstruct = workspace.projectConstructs.get(i);
-                break;
+            workspace.projectConstruct = workspace.lastProjectConstruct;
+
+        } else if (inputLineWords.length > 2) {
+            // edit project <uid>
+
+            long inputProjectUid = Long.valueOf(inputLineWords[2]);
+
+            for (int i = 0; i < workspace.projectConstructs.size(); i++) {
+                if (workspace.projectConstructs.get(i).uid == inputProjectUid) {
+                    workspace.projectConstruct = workspace.projectConstructs.get(i);
+                    break;
+                }
             }
+
         }
 
-        System.out.println("editing project " + inputProjectUid);
+        System.out.println("editing project " + workspace.projectConstruct.uid);
 
     }
 
@@ -240,6 +253,9 @@ public class Interpreter {
 
         workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 
+        // Store reference to last-created device
+        workspace.lastDeviceConstruct= deviceConstruct;
+
     }
 
     public void listDevicesTask() {
@@ -267,16 +283,22 @@ public class Interpreter {
         String inputLine = context;
         String[] inputLineWords = inputLine.split("[ ]+");
 
-        long inputDeviceUid = Long.valueOf(inputLineWords[2]);
+        if (inputLineWords.length == 2) {
 
-        for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-            if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-                workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                break;
+            workspace.deviceConstruct = workspace.lastDeviceConstruct;
+
+        } else if (inputLineWords.length > 2) {
+            long inputDeviceUid = Long.valueOf(inputLineWords[2]);
+
+            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                    workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                    break;
+                }
             }
         }
 
-        System.out.println("editing device " + inputDeviceUid);
+        System.out.println("editing device " + workspace.deviceConstruct.uid);
 
     }
 
@@ -289,13 +311,16 @@ public class Interpreter {
 
             workspace.deviceConstruct.portConstructs.add(portConstruct);
 
+            // Store reference to last-created port
+            workspace.lastPortConstruct = portConstruct;
+
         }
 
     }
 
     // e.g.,
-    // add option uart(tx);output;ttl,cmos
-    public void addConfigurationOptionTask(String context) {
+    // add constraint uart(tx);output;ttl,cmos
+    public void addConfigurationConstraintTask(String context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
@@ -305,6 +330,14 @@ public class Interpreter {
         String configurationOptionString = inputLineWords[2];
 
         String[] configurationOptionList = configurationOptionString.split(";");
+
+        // Default Configuration
+        // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
+        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
+        ValueSet<PortConfiguration.Direction> directions = null;
+        ValueSet<PortConfiguration.Voltage> voltages = null;
+
+        // TODO: Parse "bus(line)" value string pattern to create bus and lines.
 
         for (int i = 0; i < configurationOptionList.length; i++) {
 
@@ -316,127 +349,104 @@ public class Interpreter {
 
                 String configurationOptionMode = attributeValues;
 
-                System.out.println(">>> MODE: " + configurationOptionMode);
+                // Configuration Option Mode
+                if (configurationOptionMode.equals("none")) {
+                    mode = PortConfiguration.Mode.NONE;
+                } else if (configurationOptionMode.equals("digital")) {
+                    mode = PortConfiguration.Mode.DIGITAL;
+                } else if (configurationOptionMode.equals("analog")) {
+                    mode = PortConfiguration.Mode.ANALOG;
+                } else if (configurationOptionMode.equals("pwm")) {
+                    mode = PortConfiguration.Mode.PWM;
+                } else if (configurationOptionMode.equals("resistive_touch")) {
+                    mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
+                } else if (configurationOptionMode.equals("power")) {
+                    mode = PortConfiguration.Mode.POWER;
+                } else if (configurationOptionMode.equals("i2c(scl)")) {
+                    mode = PortConfiguration.Mode.I2C_SCL;
+                } else if (configurationOptionMode.equals("i2c(sda)")) {
+                    mode = PortConfiguration.Mode.I2C_SDA;
+                } else if (configurationOptionMode.equals("spi(sclk)")) {
+                    mode = PortConfiguration.Mode.SPI_SCLK;
+                } else if (configurationOptionMode.equals("spi(mosi)")) {
+                    mode = PortConfiguration.Mode.SPI_MOSI;
+                } else if (configurationOptionMode.equals("spi(miso)")) {
+                    mode = PortConfiguration.Mode.SPI_MISO;
+                } else if (configurationOptionMode.equals("spi(ss)")) {
+                    mode = PortConfiguration.Mode.SPI_SS;
+                } else if (configurationOptionMode.equals("uart(rx)")) {
+                    mode = PortConfiguration.Mode.UART_RX;
+                } else if (configurationOptionMode.equals("uart(tx)")) {
+                    mode = PortConfiguration.Mode.UART_TX;
+                }
 
             } else if (attributeTitle.equals("direction")) {
 
                 String[] configurationOptionDirectionList = attributeValues.split(",");
 
-                System.out.println(">>> DIRECTION: " + attributeValues);
+                // Configuration Option Directions
+                if (configurationOptionDirectionList.length == 1 && configurationOptionDirectionList[0].equals("null")) {
+
+                    directions = null;
+
+                } else {
+
+                    directions = new ValueSet<>();
+
+                    for (int j = 0; j < configurationOptionDirectionList.length; j++) {
+
+                        if (configurationOptionDirectionList[j].equals("none")) {
+                            directions.values.add(PortConfiguration.Direction.NONE);
+                        } else if (configurationOptionDirectionList[j].equals("input")) {
+                            directions.values.add(PortConfiguration.Direction.INPUT);
+                        } else if (configurationOptionDirectionList[j].equals("output")) {
+                            directions.values.add(PortConfiguration.Direction.OUTPUT);
+                        } else if (configurationOptionDirectionList[j].equals("bidirectional")) {
+                            directions.values.add(PortConfiguration.Direction.BIDIRECTIONAL);
+                        }
+
+                    }
+                }
 
             } else if (attributeTitle.equals("voltage")) {
 
                 String[] configurationOptionVoltageList = attributeValues.split(",");
 
-                System.out.println(">>> VOLTAGE: " + attributeValues);
+                // Configuration Option Voltages
+                if (configurationOptionVoltageList.length == 1 && configurationOptionVoltageList[0].equals("null")) {
 
-            }
+                    voltages = null;
 
-        }
+                } else {
 
+                    voltages = new ValueSet<>();
 
+                    for (int j = 0; j < configurationOptionVoltageList.length; j++) {
 
+                        if (configurationOptionVoltageList[j].equals("none")) {
+                            voltages.values.add(PortConfiguration.Voltage.NONE);
+                        } else if (configurationOptionVoltageList[j].equals("ttl")) {
+                            voltages.values.add(PortConfiguration.Voltage.TTL);
+                        } else if (configurationOptionVoltageList[j].equals("cmos")) {
+                            voltages.values.add(PortConfiguration.Voltage.CMOS);
+                        } else if (configurationOptionVoltageList[j].equals("common")) {
+                            voltages.values.add(PortConfiguration.Voltage.COMMON);
+                        }
 
-        String configurationOptionMode = configurationOptionList[0];
-        String[] configurationOptionDirectionList = configurationOptionList[1].split(",");
-        String[] configurationOptionVoltageList = configurationOptionList[2].split(",");
-
-        // TODO: Parse "bus(line)" value string pattern to create bus and lines.
-
-        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
-        ValueSet<PortConfiguration.Direction> directions = null;
-        ValueSet<PortConfiguration.Voltage> voltages = null;
-
-        // <REPLACE>
-        // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
-
-        // Configuration Option Mode
-        if (configurationOptionMode.equals("none")) {
-            mode = PortConfiguration.Mode.NONE;
-        } else if (configurationOptionMode.equals("digital")) {
-            mode = PortConfiguration.Mode.DIGITAL;
-        } else if (configurationOptionMode.equals("analog")) {
-            mode = PortConfiguration.Mode.ANALOG;
-        } else if (configurationOptionMode.equals("pwm")) {
-            mode = PortConfiguration.Mode.PWM;
-        } else if (configurationOptionMode.equals("resistive_touch")) {
-            mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
-        } else if (configurationOptionMode.equals("power")) {
-            mode = PortConfiguration.Mode.POWER;
-        } else if (configurationOptionMode.equals("i2c(scl)")) {
-            mode = PortConfiguration.Mode.I2C_SCL;
-        } else if (configurationOptionMode.equals("i2c(sda)")) {
-            mode = PortConfiguration.Mode.I2C_SDA;
-        } else if (configurationOptionMode.equals("spi(sclk)")) {
-            mode = PortConfiguration.Mode.SPI_SCLK;
-        } else if (configurationOptionMode.equals("spi(mosi)")) {
-            mode = PortConfiguration.Mode.SPI_MOSI;
-        } else if (configurationOptionMode.equals("spi(miso)")) {
-            mode = PortConfiguration.Mode.SPI_MISO;
-        } else if (configurationOptionMode.equals("spi(ss)")) {
-            mode = PortConfiguration.Mode.SPI_SS;
-        } else if (configurationOptionMode.equals("uart(rx)")) {
-            mode = PortConfiguration.Mode.UART_RX;
-        } else if (configurationOptionMode.equals("uart(tx)")) {
-            mode = PortConfiguration.Mode.UART_TX;
-        }
-
-        // Configuration Option Directions
-        if (configurationOptionDirectionList.length == 1 && configurationOptionDirectionList[0].equals("null")) {
-
-            directions = null;
-
-        } else {
-
-            directions = new ValueSet<>();
-
-            for (int i = 0; i < configurationOptionDirectionList.length; i++) {
-
-                if (configurationOptionDirectionList[i].equals("none")) {
-                    directions.values.add(PortConfiguration.Direction.NONE);
-                } else if (configurationOptionDirectionList[i].equals("input")) {
-                    directions.values.add(PortConfiguration.Direction.INPUT);
-                } else if (configurationOptionDirectionList[i].equals("output")) {
-                    directions.values.add(PortConfiguration.Direction.OUTPUT);
-                } else if (configurationOptionDirectionList[i].equals("bidirectional")) {
-                    directions.values.add(PortConfiguration.Direction.BIDIRECTIONAL);
+                    }
                 }
 
             }
+
         }
 
-        // Configuration Option Voltages
-        if (configurationOptionVoltageList.length == 1 && configurationOptionVoltageList[0].equals("null")) {
-
-            voltages = null;
-
-        } else {
-
-            voltages = new ValueSet<>();
-
-            for (int i = 0; i < configurationOptionVoltageList.length; i++) {
-
-                if (configurationOptionVoltageList[i].equals("none")) {
-                    voltages.values.add(PortConfiguration.Voltage.NONE);
-                } else if (configurationOptionVoltageList[i].equals("ttl")) {
-                    voltages.values.add(PortConfiguration.Voltage.TTL);
-                } else if (configurationOptionVoltageList[i].equals("cmos")) {
-                    voltages.values.add(PortConfiguration.Voltage.CMOS);
-                } else if (configurationOptionVoltageList[i].equals("common")) {
-                    voltages.values.add(PortConfiguration.Voltage.COMMON);
-                }
-
-            }
-        }
-
-        // Add configuration option
+        // Add Configuration Option/Constraint
         workspace.portConstruct.portConfigurations.add(new PortConfiguration(mode, directions, voltages));
-        // </REPLACE>
 
     }
 
-    // set option digital;output;ttl
-    public void setConfigurationOptionTask(String context) {
+    // set attribute digital;output;ttl
+    public void setConfigurationAttributesTask(String context) {
 
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
@@ -603,18 +613,26 @@ public class Interpreter {
         String inputLine = context;
         String[] inputLineWords = inputLine.split("[ ]+");
 
-        long inputPortUid = Long.valueOf(inputLineWords[2]);
+        if (inputLineWords.length == 2) {
 
-        for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-            for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
-                if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
-                    workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
-                    break;
+            workspace.portConstruct = workspace.lastPortConstruct;
+
+        } else if (inputLineWords.length > 2) {
+
+            long inputPortUid = Long.valueOf(inputLineWords[2]);
+
+            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
+                        workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+                        break;
+                    }
                 }
             }
+
         }
 
-        System.out.println("editing port " + inputPortUid);
+        System.out.println("editing port " + workspace.portConstruct.uid);
 
     }
 
