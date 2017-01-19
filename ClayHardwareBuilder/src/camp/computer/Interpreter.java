@@ -306,6 +306,37 @@ public class Interpreter {
 
         String[] configurationOptionList = configurationOptionString.split(";");
 
+        for (int i = 0; i < configurationOptionList.length; i++) {
+
+            String[] configurationAttributeList = configurationOptionList[i].split(":");
+            String attributeTitle = configurationAttributeList[0];
+            String attributeValues = configurationAttributeList[1];
+
+            if (attributeTitle.equals("mode")) {
+
+                String configurationOptionMode = attributeValues;
+
+                System.out.println(">>> MODE: " + configurationOptionMode);
+
+            } else if (attributeTitle.equals("direction")) {
+
+                String[] configurationOptionDirectionList = attributeValues.split(",");
+
+                System.out.println(">>> DIRECTION: " + attributeValues);
+
+            } else if (attributeTitle.equals("voltage")) {
+
+                String[] configurationOptionVoltageList = attributeValues.split(",");
+
+                System.out.println(">>> VOLTAGE: " + attributeValues);
+
+            }
+
+        }
+
+
+
+
         String configurationOptionMode = configurationOptionList[0];
         String[] configurationOptionDirectionList = configurationOptionList[1].split(",");
         String[] configurationOptionVoltageList = configurationOptionList[2].split(",");

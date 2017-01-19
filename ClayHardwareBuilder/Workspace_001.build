@@ -1,45 +1,27 @@
 add project
 edit project 0
+
 add device
-# add device
-
-# workspace
-# └ project
-#   └ device
-#     └ port (<mode>)
-#     └ port (...)
-#     └ port
-#     └ port
-#     └ port
-#     └ port
-#   └ device
-#     └ port
-#     └ port
-#     └ port
-#   └ device
-#     └ port
-#     └ port
-#   └ path (device X port Y » device A port B)
-#     └ source: port
-#     └ destination: port
-# └ project
-
 edit device 1
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+add port
+
+# TODO: Support "statement compression" for some constructs:
 # TODO: add devices (2)
 # TODO: add device (12 ports)
 # TODO: add ports (12)
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
+
+# TODO:
 
 # TODO: - Rename "configuration" (as used here) to "option"...
 # TODO:   ...then and make "configuration" a sequence of expressions usable as a procedure...
@@ -54,21 +36,22 @@ edit port 3
 # add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 # add option mode:none;direction:null;voltage:null
 # add option mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add option none;null;null
-add option digital;input,output,bidirectional;ttl,cmos
-add option analog;input,output;ttl,cmos
-add option pwm;input,output;ttl,cmos
-add option resistive_touch;input;null
-add option power;output;ttl,cmos
-add option power;input;common
-add option i2c(scl);bidirectional;cmos
-add option i2c(sda);bidirectional;cmos
-add option spi(sclk);output;ttl,cmos
-add option spi(mosi);output;ttl,cmos
-add option spi(miso);input;ttl,cmos
-add option spi(ss);output;ttl,cmos
-add option uart(rx);input;ttl,cmos
-add option uart(tx);output;ttl,cmos
+
+add option mode:none;direction:null;voltage:null
+add option mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add option mode:analog;direction:input,output;voltage:ttl,cmos
+add option mode:pwm;direction:input,output;voltage:ttl,cmos
+add option mode:resistive_touch;direction:input;voltage:null
+add option mode:power;direction:output;voltage:ttl,cmos
+add option mode:power;direction:input;voltage:common
+add option mode:i2c(scl);direction:bidirectional;voltage:cmos
+add option mode:i2c(sda);direction:bidirectional;voltage:cmos
+add option mode:spi(sclk);direction:output;voltage:ttl,cmos
+add option mode:spi(mosi);direction:output;voltage:ttl,cmos
+add option mode:spi(miso);direction:input;voltage:ttl,cmos
+add option mode:spi(ss);direction:output;voltage:ttl,cmos
+add option mode:uart(rx);direction:input;voltage:ttl,cmos
+add option mode:uart(tx);direction:output;voltage:ttl,cmos
 # close configuration
 
 # OPTION 1:
@@ -94,13 +77,13 @@ add port
 # add port (analog;output;ttl)
 
 edit port 15
-add option power;input;ttl
+add option mode:power;direction:input;voltage:ttl
 
 edit port 16
-add option power;output;common
+add option mode:power;direction:output;voltage:common
 
 edit port 17
-add option analog;output;ttl
+add option mode:analog;direction:output;voltage:ttl
 
 # Paths
 add path device 1 port 3 device 14 port 15
@@ -157,3 +140,26 @@ set option digital;output;ttl
 
 # TODO: add path device 1 port 3 device 2 port 15
 # TODO: >>> resolve the configuration of ^ port 3 and ^ port 15 (i.e., in this case, configure port 3 based on port 15 since port 15 has just one configuration; when there's multiple configurations available, as with connecting Clay to Arduino, show the interaction/common configurations and interactively assign it)
+
+
+
+# workspace
+# └ project
+#   └ device
+#     └ port (<mode>)
+#     └ port (...)
+#     └ port
+#     └ port
+#     └ port
+#     └ port
+#   └ device
+#     └ port
+#     └ port
+#     └ port
+#   └ device
+#     └ port
+#     └ port
+#   └ path (device X port Y » device A port B)
+#     └ source: port
+#     └ destination: port
+# └ project
