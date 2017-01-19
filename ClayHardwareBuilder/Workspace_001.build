@@ -1,9 +1,33 @@
 add project
 edit project 0
 add device
-add device
+# add device
+
+# workspace
+# └ project
+#   └ device
+#     └ port (<mode>)
+#     └ port (...)
+#     └ port
+#     └ port
+#     └ port
+#     └ port
+#   └ device
+#     └ port
+#     └ port
+#     └ port
+#   └ device
+#     └ port
+#     └ port
+#   └ path (device X port Y » device A port B)
+#     └ source: port
+#     └ destination: port
+# └ project
 
 edit device 1
+# TODO: add devices (2)
+# TODO: add device (12 ports)
+# TODO: add ports (12)
 add port
 add port
 add port
@@ -60,7 +84,8 @@ add option uart(tx);output;ttl,cmos
 # TODO: configuration is STATE (of construct)
 
 # IR Rangefinder
-edit device 2
+add device
+edit device 14
 add port
 add port
 add port
@@ -78,9 +103,9 @@ edit port 17
 add option analog;output;ttl
 
 # Paths
-add path device 1 port 3 device 2 port 15
-add path device 1 port 4 device 2 port 16
-add path device 1 port 5 device 2 port 17
+add path device 1 port 3 device 14 port 15
+add path device 1 port 4 device 14 port 16
+add path device 1 port 5 device 14 port 17
 
 # OPTION 1:
 # TODO: add devices (2)
@@ -126,6 +151,9 @@ add path device 1 port 5 device 2 port 17
 edit device 1
 edit port 3
 set option digital;output;ttl
+# set configuration digital;output;ttl
+# set attribute mode digital
+# set attributes mode:digital;direction:output;voltage:ttl
 
 # TODO: add path device 1 port 3 device 2 port 15
 # TODO: >>> resolve the configuration of ^ port 3 and ^ port 15 (i.e., in this case, configure port 3 based on port 15 since port 15 has just one configuration; when there's multiple configurations available, as with connecting Clay to Arduino, show the interaction/common configurations and interactively assign it)
