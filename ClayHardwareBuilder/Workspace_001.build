@@ -2,19 +2,20 @@ add project
 edit project 0
 
 add device
-edit device 1
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
-add port
+edit device
+#edit device 1
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
+#add port
 
 # TODO: Support "statement compression" for some constructs. The goal is to minimize the number of expressions required to fully add and configure constructs to the workspace and retain "operational transformability" or "undoability" and "uncompressed expression order". Add:
 # TODO: add devices (2)
@@ -28,7 +29,7 @@ add port
 # TODO: - Also, consider renaming "option" to "constraint" or "rule" or "relation".
 
 # open configuration "clay-port-configuration"
-edit port 3
+# edit port 3
 # add configuration <attribute_title>:<attribute_value>;<attribute_title>:<input,output,bidirectional>;<voltage>:<ttl,cmos>
 # add configuration mode:none;direction:null;voltage:null
 # add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
@@ -36,26 +37,11 @@ edit port 3
 # add option mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 
 # NOTE: _configuration_ consists of _attributes_ for which _constraints_ can be applied to restrict the configuration to certain attribute-value combinations
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+# ...
 # close configuration
 
-# add port
-# edit port
-edit port 4
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -72,7 +58,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 5
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -89,7 +76,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 6
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -106,7 +94,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 7
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -123,7 +112,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 8
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -140,7 +130,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 9
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -157,7 +148,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 10
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -174,7 +166,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 11
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -191,7 +184,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 12
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -208,7 +202,8 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 13
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
@@ -225,7 +220,26 @@ add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
 add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
 add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
 
-edit port 14
+add port
+edit port
+add constraint mode:none;direction:null;voltage:null
+add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add constraint mode:analog;direction:input,output;voltage:ttl,cmos
+add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
+add constraint mode:resistive_touch;direction:input;voltage:null
+add constraint mode:power;direction:output;voltage:ttl,cmos
+add constraint mode:power;direction:input;voltage:common
+add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
+add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
+add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
+add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
+add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
+add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
+add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
+add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+
+add port
+edit port
 add constraint mode:none;direction:null;voltage:null
 add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add constraint mode:analog;direction:input,output;voltage:ttl,cmos
