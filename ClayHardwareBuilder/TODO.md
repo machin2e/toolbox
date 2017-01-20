@@ -1,4 +1,4 @@
-# TODO
+# TODO: Remove everything following # to allow end-of-line comments.
 
 # TODO: Support "statement compression" for some constructs. The goal is to minimize the number of expressions required to fully add and configure constructs to the workspace and retain "operational transformability" or "undoability" and "uncompressed expression order". Add:
 # TODO: add devices (2)

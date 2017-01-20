@@ -67,7 +67,7 @@ public class PortConfiguration {
      */
     public ValueSet<Voltage> voltages = null;
 
-    public List<AttributeValueSet> attributes = new ArrayList<>();
+//    public List<AttributeValueSet> attributes = new ArrayList<>();
 
     // TODO: Bus dependencies (device-device interface level)
 

@@ -1,7 +1,6 @@
 package camp.computer.construct;
 
 import camp.computer.data.format.configuration.PortConfiguration;
-import sun.net.PortConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,49 +25,12 @@ public class PortConstruct extends Construct {
     public List<PortConfiguration> portConfigurations = new ArrayList<>();
 
     // <REPLACE>
-//    public PortConfiguration portConfiguration = new PortConfiguration();
     public PortConfiguration.Mode mode = null;
     public PortConfiguration.Direction direction = null;
     public PortConfiguration.Voltage voltage = null;
     // </REPLACE>
 
     public PortConstruct() {
-
-        /* Clay 7 */
-
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.NONE, null, null));
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.DIGITAL, new ValueSet(PortConfiguration.Direction.INPUT, PortConfiguration.Direction.OUTPUT, PortConfiguration.Direction.BIDIRECTIONAL), new ValueSet(PortConfiguration.Voltage.CMOS, PortConfiguration.Voltage.TTL)));
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.ANALOG, new ValueSet(PortConfiguration.Direction.INPUT, PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.PWM, new ValueSet(PortConfiguration.Direction.INPUT, PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.RESISTIVE_TOUCH, new ValueSet(PortConfiguration.Direction.INPUT), null));
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.POWER, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.POWER, new ValueSet(PortConfiguration.Direction.INPUT), new ValueSet(PortConfiguration.Voltage.COMMON)));
-//
-//        // I2C Master-Slave Role
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.I2C_SCL, new ValueSet(PortConfiguration.Direction.BIDIRECTIONAL), new ValueSet(PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.I2C_SDA, new ValueSet(PortConfiguration.Direction.BIDIRECTIONAL), new ValueSet(PortConfiguration.Voltage.CMOS)));
-//
-//        // SPI Master Role
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.SPI_SCLK, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.SPI_MOSI, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.SPI_MISO, new ValueSet(PortConfiguration.Direction.INPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.SPI_SS, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//
-//        // UART
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.UART_RX, new ValueSet(PortConfiguration.Direction.INPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.UART_TX, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-
-//        /* IR Rangefinder */
-//
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.POWER, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.POWER, new ValueSet(PortConfiguration.Direction.INPUT), new ValueSet(PortConfiguration.Voltage.COMMON)));
-//        portConfigurations.add(new PortConfiguration(PortConfiguration.Mode.ANALOG, new ValueSet(PortConfiguration.Direction.OUTPUT), new ValueSet(PortConfiguration.Voltage.TTL, PortConfiguration.Voltage.CMOS)));
-
     }
 
 }
