@@ -1,5 +1,5 @@
 add project
-edit project 0
+edit project
 
 add device
 edit device
@@ -228,9 +228,11 @@ add port
 edit port
 add constraint mode:power;direction:input;voltage:ttl
 
+add port
 edit port
 add constraint mode:power;direction:output;voltage:common
 
+add port
 edit port
 add constraint mode:analog;direction:output;voltage:ttl
 
@@ -239,7 +241,23 @@ add path device 1 port 3 device 14 port 15
 add path device 1 port 4 device 14 port 16
 add path device 1 port 5 device 14 port 17
 
+# add path
+# ALT: add path (port <uid>, port <uid>)
+# edit path
+# set path source device 1 port 3
+# set path target device 14 port 15
+# TODO: resolve path --> solves CSP and updates configuration if only one available; otherwise, lists available and prompts for selection; doesn't actually commit configuration until CSP is resolved to 1 configuration or one is specified from those available for given constraints
+# INFER: set path state mode:power[;direction:input;voltage:ttl]
+
 # TODO: Replace this with compressed "add path" statement that decompresses into an equivalent sequence of statements to update port configurations.
 edit device 1
 edit port 3
-set attributes digital;output;ttl # TODO: set attributes mode:digital;direction:output;voltage:ttl
+set attributes mode:digital;direction:output;voltage:ttl # TODO: set attributes mode:digital;direction:output;voltage:ttl
+#set state mode:digital;direction:output;voltage:ttl
+
+# Tasks/Revisions, Scripts/Revisions, Code/Revisions
+# after "edit device <uid>":
+# add schedule # complement to "add configuration"
+# edit schedule
+# add task
+# edit task # opens script editor (JS or C)

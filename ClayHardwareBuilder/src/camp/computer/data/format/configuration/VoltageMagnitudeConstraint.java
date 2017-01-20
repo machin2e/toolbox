@@ -5,9 +5,9 @@ import java.util.List;
 
 public class VoltageMagnitudeConstraint {
 
-    public List<PortConfiguration.Voltage> voltages = new ArrayList<>();
+    public List<PortConfigurationConstraint.Voltage> voltages = new ArrayList<>();
 
-    public VoltageMagnitudeConstraint(PortConfiguration.Voltage... voltages) {
+    public VoltageMagnitudeConstraint(PortConfigurationConstraint.Voltage... voltages) {
 
         for (int voltageIndex = 0; voltageIndex < voltages.length; voltageIndex++) {
             if (!this.voltages.contains(voltages[voltageIndex])) {

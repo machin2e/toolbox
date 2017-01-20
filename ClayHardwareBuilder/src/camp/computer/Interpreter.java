@@ -4,7 +4,7 @@ import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
-import camp.computer.data.format.configuration.PortConfiguration;
+import camp.computer.data.format.configuration.PortConfigurationConstraint;
 import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 
@@ -42,7 +42,7 @@ public class Interpreter {
 
             // SATURDAY GOAL:
             // TODO: ✓ add User object
-            // TODO: set port supported portConfigurations
+            // TODO: set port supported portConfigurationConstraints
             // TODO: remove project, device, port
             // TODO: export/save project (for user account)
             // TODO: import/load project (for user account)
@@ -172,7 +172,7 @@ public class Interpreter {
 
     public void addProjectTask() {
         ProjectConstruct projectConstruct = new ProjectConstruct();
-        System.out.println("added project " + projectConstruct.uid);
+        System.out.println("✔ add project " + projectConstruct.uid);
 
         workspace.projectConstructs.add(projectConstruct);
 
@@ -224,7 +224,7 @@ public class Interpreter {
 
         }
 
-        System.out.println("editing project " + workspace.projectConstruct.uid);
+        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
 
     }
 
@@ -249,7 +249,7 @@ public class Interpreter {
     public void addDeviceTask() {
 
         DeviceConstruct deviceConstruct = new DeviceConstruct();
-        System.out.println("added device " + deviceConstruct.uid);
+        System.out.println("✔ add device " + deviceConstruct.uid);
 
         workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 
@@ -298,7 +298,7 @@ public class Interpreter {
             }
         }
 
-        System.out.println("editing device " + workspace.deviceConstruct.uid);
+        System.out.println("✔ edit device " + workspace.deviceConstruct.uid);
 
     }
 
@@ -307,7 +307,7 @@ public class Interpreter {
         if (workspace.deviceConstruct != null) {
 
             PortConstruct portConstruct = new PortConstruct();
-            System.out.println("added port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+            System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
 
             workspace.deviceConstruct.portConstructs.add(portConstruct);
 
@@ -333,9 +333,9 @@ public class Interpreter {
 
         // Default Configuration
         // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
-        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
-        ValueSet<PortConfiguration.Direction> directions = null;
-        ValueSet<PortConfiguration.Voltage> voltages = null;
+        PortConfigurationConstraint.Mode mode = PortConfigurationConstraint.Mode.NONE;
+        ValueSet<PortConfigurationConstraint.Direction> directions = null;
+        ValueSet<PortConfigurationConstraint.Voltage> voltages = null;
 
         // TODO: Parse "bus(line)" value string pattern to create bus and lines.
 
@@ -351,33 +351,33 @@ public class Interpreter {
 
                 // Configuration Option Mode
                 if (configurationOptionMode.equals("none")) {
-                    mode = PortConfiguration.Mode.NONE;
+                    mode = PortConfigurationConstraint.Mode.NONE;
                 } else if (configurationOptionMode.equals("digital")) {
-                    mode = PortConfiguration.Mode.DIGITAL;
+                    mode = PortConfigurationConstraint.Mode.DIGITAL;
                 } else if (configurationOptionMode.equals("analog")) {
-                    mode = PortConfiguration.Mode.ANALOG;
+                    mode = PortConfigurationConstraint.Mode.ANALOG;
                 } else if (configurationOptionMode.equals("pwm")) {
-                    mode = PortConfiguration.Mode.PWM;
+                    mode = PortConfigurationConstraint.Mode.PWM;
                 } else if (configurationOptionMode.equals("resistive_touch")) {
-                    mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
+                    mode = PortConfigurationConstraint.Mode.RESISTIVE_TOUCH;
                 } else if (configurationOptionMode.equals("power")) {
-                    mode = PortConfiguration.Mode.POWER;
+                    mode = PortConfigurationConstraint.Mode.POWER;
                 } else if (configurationOptionMode.equals("i2c(scl)")) {
-                    mode = PortConfiguration.Mode.I2C_SCL;
+                    mode = PortConfigurationConstraint.Mode.I2C_SCL;
                 } else if (configurationOptionMode.equals("i2c(sda)")) {
-                    mode = PortConfiguration.Mode.I2C_SDA;
+                    mode = PortConfigurationConstraint.Mode.I2C_SDA;
                 } else if (configurationOptionMode.equals("spi(sclk)")) {
-                    mode = PortConfiguration.Mode.SPI_SCLK;
+                    mode = PortConfigurationConstraint.Mode.SPI_SCLK;
                 } else if (configurationOptionMode.equals("spi(mosi)")) {
-                    mode = PortConfiguration.Mode.SPI_MOSI;
+                    mode = PortConfigurationConstraint.Mode.SPI_MOSI;
                 } else if (configurationOptionMode.equals("spi(miso)")) {
-                    mode = PortConfiguration.Mode.SPI_MISO;
+                    mode = PortConfigurationConstraint.Mode.SPI_MISO;
                 } else if (configurationOptionMode.equals("spi(ss)")) {
-                    mode = PortConfiguration.Mode.SPI_SS;
+                    mode = PortConfigurationConstraint.Mode.SPI_SS;
                 } else if (configurationOptionMode.equals("uart(rx)")) {
-                    mode = PortConfiguration.Mode.UART_RX;
+                    mode = PortConfigurationConstraint.Mode.UART_RX;
                 } else if (configurationOptionMode.equals("uart(tx)")) {
-                    mode = PortConfiguration.Mode.UART_TX;
+                    mode = PortConfigurationConstraint.Mode.UART_TX;
                 }
 
             } else if (attributeTitle.equals("direction")) {
@@ -396,13 +396,13 @@ public class Interpreter {
                     for (int j = 0; j < configurationOptionDirectionList.length; j++) {
 
                         if (configurationOptionDirectionList[j].equals("none")) {
-                            directions.values.add(PortConfiguration.Direction.NONE);
+                            directions.values.add(PortConfigurationConstraint.Direction.NONE);
                         } else if (configurationOptionDirectionList[j].equals("input")) {
-                            directions.values.add(PortConfiguration.Direction.INPUT);
+                            directions.values.add(PortConfigurationConstraint.Direction.INPUT);
                         } else if (configurationOptionDirectionList[j].equals("output")) {
-                            directions.values.add(PortConfiguration.Direction.OUTPUT);
+                            directions.values.add(PortConfigurationConstraint.Direction.OUTPUT);
                         } else if (configurationOptionDirectionList[j].equals("bidirectional")) {
-                            directions.values.add(PortConfiguration.Direction.BIDIRECTIONAL);
+                            directions.values.add(PortConfigurationConstraint.Direction.BIDIRECTIONAL);
                         }
 
                     }
@@ -424,13 +424,13 @@ public class Interpreter {
                     for (int j = 0; j < configurationOptionVoltageList.length; j++) {
 
                         if (configurationOptionVoltageList[j].equals("none")) {
-                            voltages.values.add(PortConfiguration.Voltage.NONE);
+                            voltages.values.add(PortConfigurationConstraint.Voltage.NONE);
                         } else if (configurationOptionVoltageList[j].equals("ttl")) {
-                            voltages.values.add(PortConfiguration.Voltage.TTL);
+                            voltages.values.add(PortConfigurationConstraint.Voltage.TTL);
                         } else if (configurationOptionVoltageList[j].equals("cmos")) {
-                            voltages.values.add(PortConfiguration.Voltage.CMOS);
+                            voltages.values.add(PortConfigurationConstraint.Voltage.CMOS);
                         } else if (configurationOptionVoltageList[j].equals("common")) {
-                            voltages.values.add(PortConfiguration.Voltage.COMMON);
+                            voltages.values.add(PortConfigurationConstraint.Voltage.COMMON);
                         }
 
                     }
@@ -441,11 +441,11 @@ public class Interpreter {
         }
 
         // Add Configuration Option/Constraint
-        workspace.portConstruct.portConfigurations.add(new PortConfiguration(mode, directions, voltages));
+        workspace.portConstruct.portConfigurationConstraints.add(new PortConfigurationConstraint(mode, directions, voltages));
 
     }
 
-    // set attribute digital;output;ttl
+    // set attribute mode:digital;direction:output;voltage:ttl
     public void setConfigurationAttributesTask(String context) {
 
         // TODO: Change argument to "Context context" (temporary cache/manager)
@@ -456,77 +456,91 @@ public class Interpreter {
 
         String configurationOptionString = inputLineWords[2];
 
-        String[] configurationOptionList = configurationOptionString.split(";");
+        PortConfigurationConstraint.Mode mode = PortConfigurationConstraint.Mode.NONE;
+        PortConfigurationConstraint.Direction direction = null;
+        PortConfigurationConstraint.Voltage voltage = null;
 
-        String configurationOptionMode = configurationOptionList[0];
-        String configurationOptionDirection = configurationOptionList[1];
-        String configurationOptionVoltage = configurationOptionList[2];
+        // Separate configuration string into tokens separated by ";" substring, each an expression representing an
+        // attribute state assignment. Separate each attribute assignment by ":", into the attribute title and
+        // by ":" substring value.
+        String[] configurationOptionList = configurationOptionString.split(";");
+        for (int i = 0; i < configurationOptionList.length; i++) {
+
+            String[] configurationAttributeList = configurationOptionList[i].split(":");
+            String attributeTitle = configurationAttributeList[0];
+            String attributeValues = configurationAttributeList[1];
+
+            if (attributeTitle.equals("mode")) {
+
+                // Parses and caches the mode assignment.
+                if (attributeValues.equals("none")) {
+                    mode = PortConfigurationConstraint.Mode.NONE;
+                } else if (attributeValues.equals("digital")) {
+                    mode = PortConfigurationConstraint.Mode.DIGITAL;
+                } else if (attributeValues.equals("analog")) {
+                    mode = PortConfigurationConstraint.Mode.ANALOG;
+                } else if (attributeValues.equals("pwm")) {
+                    mode = PortConfigurationConstraint.Mode.PWM;
+                } else if (attributeValues.equals("resistive_touch")) {
+                    mode = PortConfigurationConstraint.Mode.RESISTIVE_TOUCH;
+                } else if (attributeValues.equals("power")) {
+                    mode = PortConfigurationConstraint.Mode.POWER;
+                } else if (attributeValues.equals("i2c(scl)")) {
+                    mode = PortConfigurationConstraint.Mode.I2C_SCL;
+                } else if (attributeValues.equals("i2c(sda)")) {
+                    mode = PortConfigurationConstraint.Mode.I2C_SDA;
+                } else if (attributeValues.equals("spi(sclk)")) {
+                    mode = PortConfigurationConstraint.Mode.SPI_SCLK;
+                } else if (attributeValues.equals("spi(mosi)")) {
+                    mode = PortConfigurationConstraint.Mode.SPI_MOSI;
+                } else if (attributeValues.equals("spi(miso)")) {
+                    mode = PortConfigurationConstraint.Mode.SPI_MISO;
+                } else if (attributeValues.equals("spi(ss)")) {
+                    mode = PortConfigurationConstraint.Mode.SPI_SS;
+                } else if (attributeValues.equals("uart(rx)")) {
+                    mode = PortConfigurationConstraint.Mode.UART_RX;
+                } else if (attributeValues.equals("uart(tx)")) {
+                    mode = PortConfigurationConstraint.Mode.UART_TX;
+                }
+
+            } else if (attributeTitle.equals("direction")) {
+
+                // Parses and caches the direction assignment.
+                if (attributeValues.equals("none")) {
+                    direction = PortConfigurationConstraint.Direction.NONE;
+                } else if (attributeValues.equals("input")) {
+                    direction = PortConfigurationConstraint.Direction.INPUT;
+                } else if (attributeValues.equals("output")) {
+                    direction = PortConfigurationConstraint.Direction.OUTPUT;
+                } else if (attributeValues.equals("bidirectional")) {
+                    direction = PortConfigurationConstraint.Direction.BIDIRECTIONAL;
+                }
+
+            } else if (attributeTitle.equals("voltage")) {
+
+                // Parses and caches the voltage assignment.
+                if (attributeValues.equals("none")) {
+                    voltage = PortConfigurationConstraint.Voltage.NONE;
+                } else if (attributeValues.equals("ttl")) {
+                    voltage = PortConfigurationConstraint.Voltage.TTL;
+                } else if (attributeValues.equals("cmos")) {
+                    voltage = PortConfigurationConstraint.Voltage.CMOS;
+                } else if (attributeValues.equals("common")) {
+                    voltage = PortConfigurationConstraint.Voltage.COMMON;
+                }
+
+            }
+
+        }
 
         // TODO: check if specified configuration is valid
 
-        PortConfiguration.Mode mode = PortConfiguration.Mode.NONE;
-        PortConfiguration.Direction direction = null;
-        PortConfiguration.Voltage voltage = null;
-
-        // Configuration Option Mode
-        if (configurationOptionMode.equals("none")) {
-            mode = PortConfiguration.Mode.NONE;
-        } else if (configurationOptionMode.equals("digital")) {
-            mode = PortConfiguration.Mode.DIGITAL;
-        } else if (configurationOptionMode.equals("analog")) {
-            mode = PortConfiguration.Mode.ANALOG;
-        } else if (configurationOptionMode.equals("pwm")) {
-            mode = PortConfiguration.Mode.PWM;
-        } else if (configurationOptionMode.equals("resistive_touch")) {
-            mode = PortConfiguration.Mode.RESISTIVE_TOUCH;
-        } else if (configurationOptionMode.equals("power")) {
-            mode = PortConfiguration.Mode.POWER;
-        } else if (configurationOptionMode.equals("i2c(scl)")) {
-            mode = PortConfiguration.Mode.I2C_SCL;
-        } else if (configurationOptionMode.equals("i2c(sda)")) {
-            mode = PortConfiguration.Mode.I2C_SDA;
-        } else if (configurationOptionMode.equals("spi(sclk)")) {
-            mode = PortConfiguration.Mode.SPI_SCLK;
-        } else if (configurationOptionMode.equals("spi(mosi)")) {
-            mode = PortConfiguration.Mode.SPI_MOSI;
-        } else if (configurationOptionMode.equals("spi(miso)")) {
-            mode = PortConfiguration.Mode.SPI_MISO;
-        } else if (configurationOptionMode.equals("spi(ss)")) {
-            mode = PortConfiguration.Mode.SPI_SS;
-        } else if (configurationOptionMode.equals("uart(rx)")) {
-            mode = PortConfiguration.Mode.UART_RX;
-        } else if (configurationOptionMode.equals("uart(tx)")) {
-            mode = PortConfiguration.Mode.UART_TX;
-        }
-
-        // Direction
-        if (configurationOptionDirection.equals("none")) {
-            direction = PortConfiguration.Direction.NONE;
-        } else if (configurationOptionDirection.equals("input")) {
-            direction = PortConfiguration.Direction.INPUT;
-        } else if (configurationOptionDirection.equals("output")) {
-            direction = PortConfiguration.Direction.OUTPUT;
-        } else if (configurationOptionDirection.equals("bidirectional")) {
-            direction = PortConfiguration.Direction.BIDIRECTIONAL;
-        }
-
-        // Voltage
-        if (configurationOptionVoltage.equals("none")) {
-            voltage = PortConfiguration.Voltage.NONE;
-        } else if (configurationOptionVoltage.equals("ttl")) {
-            voltage = PortConfiguration.Voltage.TTL;
-        } else if (configurationOptionVoltage.equals("cmos")) {
-            voltage = PortConfiguration.Voltage.CMOS;
-        } else if (configurationOptionVoltage.equals("common")) {
-            voltage = PortConfiguration.Voltage.COMMON;
-        }
-
-//        workspace.portConstruct.configuration.mode = mode;
+        // Updates the port state.
         workspace.portConstruct.mode = mode;
         workspace.portConstruct.direction = direction;
         workspace.portConstruct.voltage = voltage;
 
-        System.out.println("set configuration to " + mode + " " + direction + " " + voltage);
+        System.out.println("✔ set configuration to " + workspace.portConstruct.mode + " " + workspace.portConstruct.direction + " " + workspace.portConstruct.voltage);
 
     }
 
@@ -566,17 +580,17 @@ public class Interpreter {
                     // Port UID
                     System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
 
-                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.size(); j++) {
+                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.size(); j++) {
 
                         // Mode/Family
-                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).mode + "; ");
+                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).mode + "; ");
 
                         // Directions
-                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions != null) {
-                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size(); k++) {
-                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.get(k));
+                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.get(k));
 
-                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).directions.values.size()) {
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size()) {
                                     System.out.print(", ");
                                 }
                             }
@@ -584,11 +598,11 @@ public class Interpreter {
                         System.out.print("; ");
 
                         // Voltages
-                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages != null) {
-                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size(); k++) {
-                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.get(k));
+                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.get(k));
 
-                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurations.get(j).voltages.values.size()) {
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size()) {
                                     System.out.print(", ");
                                 }
                             }
@@ -632,7 +646,7 @@ public class Interpreter {
 
         }
 
-        System.out.println("editing port " + workspace.portConstruct.uid);
+        System.out.println("✔ edit port " + workspace.portConstruct.uid);
 
     }
 
@@ -689,7 +703,7 @@ public class Interpreter {
 
             workspace.projectConstruct.pathConstructs.add(pathConstruct);
 
-            System.out.println("added path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
+            System.out.println("✔ add path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
         }
 
     }
@@ -715,7 +729,7 @@ public class Interpreter {
 
         String inputPathConfiguration = inputLineWords[3];
 
-        System.out.println("set path configuration to \"" + inputPathConfiguration + "\"");
+        System.out.println("✔ set path configuration to \"" + inputPathConfiguration + "\"");
 
         // protocols:
         // - electronic, rf, none

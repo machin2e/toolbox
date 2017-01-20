@@ -1,9 +1,7 @@
 package camp.computer.data.format.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PortConfiguration {
+public class PortConfigurationConstraint {
+    // TODO: Consider renaming to ConfigurationConstraint for general use in constructs?
 
     // TODO: Replace with Class + searchable manager
     // Per-Port Modes
@@ -55,7 +53,7 @@ public class PortConfiguration {
     public Mode mode = null;
 
     /**
-     * {@code directions} is set to {@code null} when it is not applicable to the {@code PortConfiguration}. This is
+     * {@code directions} is set to {@code null} when it is not applicable to the {@code PortConfigurationConstraint}. This is
      * distinct from creating a {@code ValueSet} with no elements (i.e., an empty set).
      */
     public ValueSet<Direction> directions = null;
@@ -71,7 +69,7 @@ public class PortConfiguration {
 
     // TODO: Bus dependencies (device-device interface level)
 
-    public PortConfiguration(Mode mode, ValueSet<Direction> directions, ValueSet<Voltage> voltages) {
+    public PortConfigurationConstraint(Mode mode, ValueSet<Direction> directions, ValueSet<Voltage> voltages) {
 
         this.mode = mode;
 
