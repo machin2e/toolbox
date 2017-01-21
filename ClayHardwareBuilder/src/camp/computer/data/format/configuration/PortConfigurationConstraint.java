@@ -79,4 +79,52 @@ public class PortConfigurationConstraint {
 
     }
 
+    public static boolean isCompatible(PortConfigurationConstraint configuration, PortConfigurationConstraint otherConfiguration) {
+
+        if (configuration.mode == otherConfiguration.mode) {
+
+            // Check direction compatibility
+            if (configuration.directions.values.contains(Direction.INPUT) && !otherConfiguration.directions.values.contains(Direction.OUTPUT)) {
+                System.out.println("  > BREAK 1");
+                return false;
+            //} else if (!((configuration.directions.values.contains(Direction.OUTPUT) && (otherConfiguration.directions.values.contains(Direction.INPUT) || otherConfiguration.directions.values.contains(Direction.BIDIRECTIONAL))))) {
+            }
+
+            if (configuration.directions.values.contains(Direction.OUTPUT) && !otherConfiguration.directions.values.contains(Direction.INPUT)) {
+                System.out.println("  > BREAK 2");
+                return false;
+            }
+
+            if (configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.INPUT)
+                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.OUTPUT)
+                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
+                System.out.println("  > BREAK 3");
+                return false;
+            }
+            // TODO: null, NONE
+
+            // Check voltage compatibility
+            if (configuration.voltages.values.contains(Voltage.TTL) && !otherConfiguration.voltages.values.contains(Voltage.TTL)) {
+                System.out.println("  > BREAK 4");
+                return false;
+            }
+
+            if (configuration.voltages.values.contains(Voltage.CMOS) && !otherConfiguration.voltages.values.contains(Voltage.CMOS)) {
+                System.out.println("  > BREAK 5");
+                return false;
+            }
+            // TODO: null, NONE
+
+            System.out.println(">>> COMPATIBLE: (" + configuration.mode + ", ...) --- (" + otherConfiguration.mode + ", ...)");
+
+            return true;
+
+        }
+        // TODO: null, NONE
+
+        // TODO: I2C, SPI, UART
+
+        return false;
+    }
+
 }

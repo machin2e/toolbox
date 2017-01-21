@@ -19,3 +19,23 @@ edit port
 list attributes
 
 list attribute <title>
+
+## Compatible Configurations
+
+### Mode
+XXX null ⟷ null
+XXX None ⟷ null
+Power ⟷ Power
+...
+uart(rx) ⟷ uart(tx)
+uart(tx) ⟷ uart(rx)
+
+### Direction
+Input ⟵ Output
+Input ⟵ Bidirectional
+Output ⟶ Bidrectional
+Bidrectional ⟷ Bidirectional
+
+### Voltage
+TTL – TTL
+CMOS – CMOS

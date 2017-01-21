@@ -540,7 +540,8 @@ public class Interpreter {
         workspace.portConstruct.direction = direction;
         workspace.portConstruct.voltage = voltage;
 
-        System.out.println("✔ set configuration to " + workspace.portConstruct.mode + " " + workspace.portConstruct.direction + " " + workspace.portConstruct.voltage);
+        // TODO: Generalize so can set state of any construct/container. Don't assume port construct is only one with state.
+        System.out.println("✔ set port attributes to " + workspace.portConstruct.mode + " " + workspace.portConstruct.direction + " " + workspace.portConstruct.voltage);
 
     }
 
@@ -704,6 +705,30 @@ public class Interpreter {
             workspace.projectConstruct.pathConstructs.add(pathConstruct);
 
             System.out.println("✔ add path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
+
+            // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
+
+            // Iterate through configurations for of source port in path. For each source port configuration, check
+            // the other ports' configurations for compatibility; then add each compatible configuration to a list of
+            // compatible configurations.
+            for (int i = 0; i < pathConstruct.sourcePortConstruct.portConfigurationConstraints.size(); i++) {
+                PortConfigurationConstraint portConstraint = pathConstruct.sourcePortConstruct.portConfigurationConstraints.get(i);
+
+                for (int j = 0; j < pathConstruct.targetPortConstruct.portConfigurationConstraints.size(); j++) {
+                    PortConfigurationConstraint otherPortConstraint = pathConstruct.targetPortConstruct.portConfigurationConstraints.get(j);
+
+                    PortConfigurationConstraint.isCompatible(portConstraint, otherPortConstraint);
+
+                    // TODO: Pick up here. Constraint resolution isn't working, probably because of a logic bug in isCompatible(...)
+                }
+            }
+
+            // If there is only one path configuration in the compatible configurations list, automatically configure
+            // the path with it, thereby updating the ports' configurations in the path.
+            // TODO: ^
+
+            // Otherwise, list the available path configurations and prompt the user to set one of them manually.
+            // TODO: ^
         }
 
     }
