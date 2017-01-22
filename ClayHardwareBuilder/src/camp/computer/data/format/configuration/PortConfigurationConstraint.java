@@ -81,50 +81,136 @@ public class PortConfigurationConstraint {
 
     public static boolean isCompatible(PortConfigurationConstraint configuration, PortConfigurationConstraint otherConfiguration) {
 
+        // Source Port
+        boolean ENABLE_VERBOSE_OUTPUT = false;
+        if (ENABLE_VERBOSE_OUTPUT) {
+            System.out.print("? (source) " + configuration.mode + ";");
+
+            if (configuration.directions == null) {
+                System.out.print("null");
+            } else {
+                for (int i = 0; i < configuration.directions.values.size(); i++) {
+                    System.out.print("" + configuration.directions.values.get(i));
+                    if ((i + 1) < configuration.directions.values.size()) {
+                        System.out.print(",");
+                    }
+                }
+            }
+            System.out.print(";");
+
+            if (configuration.voltages == null) {
+                System.out.print("null");
+            } else {
+                for (int i = 0; i < configuration.voltages.values.size(); i++) {
+                    System.out.print("" + configuration.voltages.values.get(i));
+                    if ((i + 1) < configuration.voltages.values.size()) {
+                        System.out.print(",");
+                    }
+                }
+            }
+            System.out.println();
+
+            // Target Port(s)
+            System.out.print("  (target) " + configuration.mode + ";");
+
+            if (otherConfiguration.directions == null) {
+                System.out.print("null");
+            } else {
+                for (int i = 0; i < otherConfiguration.directions.values.size(); i++) {
+                    System.out.print("" + otherConfiguration.directions.values.get(i));
+                    if ((i + 1) < otherConfiguration.directions.values.size()) {
+                        System.out.print(",");
+                    }
+                }
+            }
+            System.out.print(";");
+
+            if (otherConfiguration.voltages == null) {
+                System.out.print("null");
+            } else {
+                for (int i = 0; i < otherConfiguration.voltages.values.size(); i++) {
+                    System.out.print("" + otherConfiguration.voltages.values.get(i));
+                    if ((i + 1) < otherConfiguration.voltages.values.size()) {
+                        System.out.print(",");
+                    }
+                }
+            }
+        }
+
+        boolean hasCompatibleMode = false;
+        boolean hasCompabibleDirection = false;
+        boolean hasCompabibleVoltage = false;
+
         if (configuration.mode == otherConfiguration.mode) {
+            hasCompatibleMode = true;
+        }
+
+        if (hasCompatibleMode) {
 
             // Check direction compatibility
-            if (configuration.directions.values.contains(Direction.INPUT) && !otherConfiguration.directions.values.contains(Direction.OUTPUT)) {
-                System.out.println("  > BREAK 1");
-                return false;
-            //} else if (!((configuration.directions.values.contains(Direction.OUTPUT) && (otherConfiguration.directions.values.contains(Direction.INPUT) || otherConfiguration.directions.values.contains(Direction.BIDIRECTIONAL))))) {
+            if (configuration.directions.values.contains(Direction.INPUT) && otherConfiguration.directions.values.contains(Direction.OUTPUT)) {
+                hasCompabibleDirection = true;
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (1)");
+                }
             }
 
-            if (configuration.directions.values.contains(Direction.OUTPUT) && !otherConfiguration.directions.values.contains(Direction.INPUT)) {
-                System.out.println("  > BREAK 2");
-                return false;
+            if (configuration.directions.values.contains(Direction.OUTPUT) && otherConfiguration.directions.values.contains(Direction.INPUT)) {
+                hasCompabibleDirection = true;
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (2)");
+                }
             }
 
-            if (configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.INPUT)
-                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.OUTPUT)
-                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && !otherConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
-                System.out.println("  > BREAK 3");
-                return false;
-            }
-            // TODO: null, NONE
-
-            // Check voltage compatibility
-            if (configuration.voltages.values.contains(Voltage.TTL) && !otherConfiguration.voltages.values.contains(Voltage.TTL)) {
-                System.out.println("  > BREAK 4");
-                return false;
-            }
-
-            if (configuration.voltages.values.contains(Voltage.CMOS) && !otherConfiguration.voltages.values.contains(Voltage.CMOS)) {
-                System.out.println("  > BREAK 5");
-                return false;
+            if (configuration.directions.values.contains(Direction.BIDIRECTIONAL) && otherConfiguration.directions.values.contains(Direction.INPUT)
+                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && otherConfiguration.directions.values.contains(Direction.OUTPUT)
+                    || configuration.directions.values.contains(Direction.BIDIRECTIONAL) && otherConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
+                hasCompabibleDirection = true;
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (3)");
+                }
             }
             // TODO: null, NONE
 
-            System.out.println(">>> COMPATIBLE: (" + configuration.mode + ", ...) --- (" + otherConfiguration.mode + ", ...)");
-
-            return true;
+//            System.out.println(">>> COMPATIBLE: (" + configuration.mode + ", ...) --- (" + otherConfiguration.mode + ", ...)");
 
         }
         // TODO: null, NONE
 
+        if (hasCompabibleDirection) {
+
+            // Check voltage compatibility
+            if (configuration.voltages.values.contains(Voltage.TTL) && otherConfiguration.voltages.values.contains(Voltage.TTL)) {
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (4)");
+                }
+                hasCompabibleVoltage = true;
+            }
+
+            if (configuration.voltages.values.contains(Voltage.CMOS) && otherConfiguration.voltages.values.contains(Voltage.CMOS)) {
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (5)");
+                }
+                hasCompabibleVoltage = true;
+            }
+
+            if (configuration.voltages.values.contains(Voltage.COMMON) && otherConfiguration.voltages.values.contains(Voltage.COMMON)) {
+                if (ENABLE_VERBOSE_OUTPUT) {
+                    System.out.println("  > Match (6)");
+                }
+                hasCompabibleVoltage = true;
+            }
+            // TODO: null, NONE
+
+        }
+
         // TODO: I2C, SPI, UART
 
-        return false;
+        if (ENABLE_VERBOSE_OUTPUT) {
+            System.out.println("\n");
+        }
+
+        return (hasCompatibleMode && hasCompabibleDirection && hasCompabibleVoltage);
     }
 
 }

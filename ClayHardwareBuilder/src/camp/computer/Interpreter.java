@@ -711,13 +711,19 @@ public class Interpreter {
             // Iterate through configurations for of source port in path. For each source port configuration, check
             // the other ports' configurations for compatibility; then add each compatible configuration to a list of
             // compatible configurations.
+            // TODO: List<PortConfigurationConstraint> compatibleConfigurations = new ArrayList<>();
             for (int i = 0; i < pathConstruct.sourcePortConstruct.portConfigurationConstraints.size(); i++) {
                 PortConfigurationConstraint portConstraint = pathConstruct.sourcePortConstruct.portConfigurationConstraints.get(i);
 
                 for (int j = 0; j < pathConstruct.targetPortConstruct.portConfigurationConstraints.size(); j++) {
                     PortConfigurationConstraint otherPortConstraint = pathConstruct.targetPortConstruct.portConfigurationConstraints.get(j);
 
-                    PortConfigurationConstraint.isCompatible(portConstraint, otherPortConstraint);
+                    boolean isCompatible = PortConfigurationConstraint.isCompatible(portConstraint, otherPortConstraint);
+                    if (isCompatible) {
+                        // TODO: compatibleConfigurations.add(/* result from isCompatible */);
+                        System.out.println("✔ found compatible configurations (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + portConstraint.mode + ", ...) --- (" + otherPortConstraint.mode + ", ...)");
+                        break;
+                    }
 
                     // TODO: Pick up here. Constraint resolution isn't working, probably because of a logic bug in isCompatible(...)
                 }
@@ -726,6 +732,9 @@ public class Interpreter {
             // If there is only one path configuration in the compatible configurations list, automatically configure
             // the path with it, thereby updating the ports' configurations in the path.
             // TODO: ^
+            // if (compatibleConfigurations.size() == 1) {
+            //    // TODO: Apply the corresponding configuration to ports.
+            // }
 
             // Otherwise, list the available path configurations and prompt the user to set one of them manually.
             // TODO: ^
