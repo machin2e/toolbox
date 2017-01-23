@@ -746,45 +746,51 @@ public class Interpreter {
 //                        break;
                     }
 
-                    ValueSet<PortConfigurationConstraint> compatibleConfigs = PortConfigurationConstraint.getCompatibleConfiguration(portConstraint, otherPortConstraint);
+                    ValueSet<PortConfigurationConstraint> compatibleConfiguration = PortConfigurationConstraint.getCompatibleConfiguration(portConstraint, otherPortConstraint);
 
-                    if (compatibleConfigs != null) {
-                        // Source
-                        System.out.print("" + compatibleConfigs.values.get(0).mode);
-                        System.out.print(";");
-                        for (int k = 0; k < compatibleConfigs.values.get(0).directions.values.size(); k++) {
-                            System.out.print("" + compatibleConfigs.values.get(0).directions.values.get(k));
-                            if ((k + 1) < compatibleConfigs.values.get(0).directions.values.size()) {
-                                System.out.print(", ");
-                            }
-                        }
-                        System.out.print(";");
-                        for (int k = 0; k < compatibleConfigs.values.get(0).voltages.values.size(); k++) {
-                            System.out.print("" + compatibleConfigs.values.get(0).voltages.values.get(k));
-                            if ((k + 1) < compatibleConfigs.values.get(0).voltages.values.size()) {
-                                System.out.print(", ");
-                            }
-                        }
-                        System.out.print(" | ");
+                    if (compatibleConfiguration != null) {
+//                        // Source
+//                        System.out.print("" + compatibleConfiguration.values.get(0).mode);
+//                        System.out.print(";");
+//                        for (int k = 0; k < compatibleConfiguration.values.get(0).directions.values.size(); k++) {
+//                            System.out.print("" + compatibleConfiguration.values.get(0).directions.values.get(k));
+//                            if ((k + 1) < compatibleConfiguration.values.get(0).directions.values.size()) {
+//                                System.out.print(", ");
+//                            }
+//                        }
+//                        System.out.print(";");
+//                        for (int k = 0; k < compatibleConfiguration.values.get(0).voltages.values.size(); k++) {
+//                            System.out.print("" + compatibleConfiguration.values.get(0).voltages.values.get(k));
+//                            if ((k + 1) < compatibleConfiguration.values.get(0).voltages.values.size()) {
+//                                System.out.print(", ");
+//                            }
+//                        }
+//                        System.out.print(" | ");
+//
+//                        // Target
+//                        System.out.print("" + compatibleConfiguration.values.get(1).mode);
+//                        System.out.print(";");
+//                        for (int k = 0; k < compatibleConfiguration.values.get(1).directions.values.size(); k++) {
+//                            System.out.print("" + compatibleConfiguration.values.get(1).directions.values.get(k));
+//                            if ((k + 1) < compatibleConfiguration.values.get(1).directions.values.size()) {
+//                                System.out.print(", ");
+//                            }
+//                        }
+//                        System.out.print(";");
+//                        for (int k = 0; k < compatibleConfiguration.values.get(1).voltages.values.size(); k++) {
+//                            System.out.print("" + compatibleConfiguration.values.get(1).voltages.values.get(k));
+//                            if ((k + 1) < compatibleConfiguration.values.get(1).voltages.values.size()) {
+//                                System.out.print(", ");
+//                            }
+//                        }
+//
+//                        System.out.println();
 
-                        // Target
-                        System.out.print("" + compatibleConfigs.values.get(1).mode);
-                        System.out.print(";");
-                        for (int k = 0; k < compatibleConfigs.values.get(1).directions.values.size(); k++) {
-                            System.out.print("" + compatibleConfigs.values.get(1).directions.values.get(k));
-                            if ((k + 1) < compatibleConfigs.values.get(1).directions.values.size()) {
-                                System.out.print(", ");
-                            }
-                        }
-                        System.out.print(";");
-                        for (int k = 0; k < compatibleConfigs.values.get(1).voltages.values.size(); k++) {
-                            System.out.print("" + compatibleConfigs.values.get(1).voltages.values.get(k));
-                            if ((k + 1) < compatibleConfigs.values.get(1).voltages.values.size()) {
-                                System.out.print(", ");
-                            }
-                        }
+                        compatibleConfigurations.add(
+                                new PathConfiguration(
+                                        compatibleConfiguration.values.get(0),
+                                        compatibleConfiguration.values.get(1)));
 
-                        System.out.println();
                     }
 
                     // TODO: Pick up here. Constraint resolution isn't working, probably because of a logic bug in isCompatible(...)
@@ -798,7 +804,7 @@ public class Interpreter {
             if (compatibleConfigurations.size() == 1) {
                 // Apply the corresponding configuration to ports.
                 PathConfiguration pathConfiguration = compatibleConfigurations.get(0);
-                System.out.println("✔ found compatible configuration (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.sourceConfiguration.mode + ", ...) --- (" + pathConfiguration.targetConfiguration.mode + ", ...)");
+                System.out.println("✔ found compatible configurations");
 
                 // TODO: (QUESTION) Can I specify a path configuration and infer port configurations (for multi-port) or should it be a list of port configurations?
                 // TODO: Apply states based on per-variable constraints?
@@ -819,6 +825,43 @@ public class Interpreter {
 //                    sourcePortConstruct.voltage = pathConfiguration.sourceConfiguration.voltages.values.get(0);
 //                    System.out.println (">>> setting voltages: " + sourcePortConstruct.voltage);
 //                }
+
+                // Source
+                System.out.print("  1. " + pathConfiguration.sourceConfiguration.mode);
+                System.out.print(";");
+                for (int k = 0; k < pathConfiguration.sourceConfiguration.directions.values.size(); k++) {
+                    System.out.print("" + pathConfiguration.sourceConfiguration.directions.values.get(k));
+                    if ((k + 1) < pathConfiguration.sourceConfiguration.directions.values.size()) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.print(";");
+                for (int k = 0; k < pathConfiguration.sourceConfiguration.voltages.values.size(); k++) {
+                    System.out.print("" + pathConfiguration.sourceConfiguration.voltages.values.get(k));
+                    if ((k + 1) < pathConfiguration.sourceConfiguration.voltages.values.size()) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.print(" | ");
+
+                // Target
+                System.out.print("" + pathConfiguration.targetConfiguration.mode);
+                System.out.print(";");
+                for (int k = 0; k < pathConfiguration.targetConfiguration.directions.values.size(); k++) {
+                    System.out.print("" + pathConfiguration.targetConfiguration.directions.values.get(k));
+                    if ((k + 1) < pathConfiguration.targetConfiguration.directions.values.size()) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.print(";");
+                for (int k = 0; k < pathConfiguration.targetConfiguration.voltages.values.size(); k++) {
+                    System.out.print("" + pathConfiguration.targetConfiguration.voltages.values.get(k));
+                    if ((k + 1) < pathConfiguration.targetConfiguration.voltages.values.size()) {
+                        System.out.print(", ");
+                    }
+                }
+
+                System.out.println();
 
             }
 
