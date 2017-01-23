@@ -4,10 +4,13 @@ import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.data.format.configuration.PathConfiguration;
 import camp.computer.data.format.configuration.PortConfigurationConstraint;
 import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Interpreter {
@@ -706,12 +709,17 @@ public class Interpreter {
 
             System.out.println("✔ add path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
 
+
+            /**
+             * "solve path [uid]"
+             */
+
             // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
 
             // Iterate through configurations for of source port in path. For each source port configuration, check
             // the other ports' configurations for compatibility; then add each compatible configuration to a list of
             // compatible configurations.
-            // TODO: List<PortConfigurationConstraint> compatibleConfigurations = new ArrayList<>();
+            List<PathConfiguration> compatibleConfigurations = new ArrayList<>();
             for (int i = 0; i < pathConstruct.sourcePortConstruct.portConfigurationConstraints.size(); i++) {
                 PortConfigurationConstraint portConstraint = pathConstruct.sourcePortConstruct.portConfigurationConstraints.get(i);
 
@@ -719,25 +727,111 @@ public class Interpreter {
                     PortConfigurationConstraint otherPortConstraint = pathConstruct.targetPortConstruct.portConfigurationConstraints.get(j);
 
                     boolean isCompatible = PortConfigurationConstraint.isCompatible(portConstraint, otherPortConstraint);
+
+                    // PATH SERIAL FORMAT:
+                    // ~ mode;direction;voltage + mode;direction;voltage
+                    //
+                    // ? mode;ports:uid,uid;voltage
+                    // ? source:uid;target:uid;mode;direction;voltage
+                    // > ports:uid,uid;mode;direction;voltage
+                    //
+                    // ? mode;direction;voltage&mode;direction;voltage
+                    // ? mode;direction;voltage+mode;direction;voltage
+                    // ? mode;direction;voltage|mode;direction;voltage
+
                     if (isCompatible) {
                         // TODO: compatibleConfigurations.add(/* result from isCompatible */);
-                        System.out.println("✔ found compatible configurations (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + portConstraint.mode + ", ...) --- (" + otherPortConstraint.mode + ", ...)");
-                        break;
+//                        PathConfiguration pathConfiguration = new PathConfiguration(portConstraint, otherPortConstraint);
+//                        compatibleConfigurations.add(pathConfiguration);
+//                        break;
+                    }
+
+                    ValueSet<PortConfigurationConstraint> compatibleConfigs = PortConfigurationConstraint.getCompatibleConfiguration(portConstraint, otherPortConstraint);
+
+                    if (compatibleConfigs != null) {
+                        // Source
+                        System.out.print("" + compatibleConfigs.values.get(0).mode);
+                        System.out.print(";");
+                        for (int k = 0; k < compatibleConfigs.values.get(0).directions.values.size(); k++) {
+                            System.out.print("" + compatibleConfigs.values.get(0).directions.values.get(k));
+                            if ((k + 1) < compatibleConfigs.values.get(0).directions.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+                        System.out.print(";");
+                        for (int k = 0; k < compatibleConfigs.values.get(0).voltages.values.size(); k++) {
+                            System.out.print("" + compatibleConfigs.values.get(0).voltages.values.get(k));
+                            if ((k + 1) < compatibleConfigs.values.get(0).voltages.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+                        System.out.print(" | ");
+
+                        // Target
+                        System.out.print("" + compatibleConfigs.values.get(1).mode);
+                        System.out.print(";");
+                        for (int k = 0; k < compatibleConfigs.values.get(1).directions.values.size(); k++) {
+                            System.out.print("" + compatibleConfigs.values.get(1).directions.values.get(k));
+                            if ((k + 1) < compatibleConfigs.values.get(1).directions.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+                        System.out.print(";");
+                        for (int k = 0; k < compatibleConfigs.values.get(1).voltages.values.size(); k++) {
+                            System.out.print("" + compatibleConfigs.values.get(1).voltages.values.get(k));
+                            if ((k + 1) < compatibleConfigs.values.get(1).voltages.values.size()) {
+                                System.out.print(", ");
+                            }
+                        }
+
+                        System.out.println();
                     }
 
                     // TODO: Pick up here. Constraint resolution isn't working, probably because of a logic bug in isCompatible(...)
                 }
+//                System.out.println();
             }
 
             // If there is only one path configuration in the compatible configurations list, automatically configure
             // the path with it, thereby updating the ports' configurations in the path.
             // TODO: ^
-            // if (compatibleConfigurations.size() == 1) {
-            //    // TODO: Apply the corresponding configuration to ports.
-            // }
+            if (compatibleConfigurations.size() == 1) {
+                // Apply the corresponding configuration to ports.
+                PathConfiguration pathConfiguration = compatibleConfigurations.get(0);
+                System.out.println("✔ found compatible configuration (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.sourceConfiguration.mode + ", ...) --- (" + pathConfiguration.targetConfiguration.mode + ", ...)");
+
+                // TODO: (QUESTION) Can I specify a path configuration and infer port configurations (for multi-port) or should it be a list of port configurations?
+                // TODO: Apply states based on per-variable constraints?
+                // TODO: Ensure there's only one compatible state for each of the variables.
+
+                // list ports: "3 (12 configurations)" or "3 (null, null, null)"; "3 (SPI_MISO; INPUT; TTL)"
+
+//                // Configure the ports with the single compatible configuration
+//                sourcePortConstruct.mode = pathConfiguration.sourceConfiguration.mode;
+//                System.out.println (">>> setting mode: " + sourcePortConstruct.mode);
+//
+//                if (pathConfiguration.sourceConfiguration.directions.values.size() == 1) {
+//                    sourcePortConstruct.direction = pathConfiguration.sourceConfiguration.directions.values.get(0);
+//                    System.out.println (">>> setting direction: " + sourcePortConstruct.direction);
+//                }
+//
+//                if (pathConfiguration.sourceConfiguration.voltages.values.size() == 1) {
+//                    sourcePortConstruct.voltage = pathConfiguration.sourceConfiguration.voltages.values.get(0);
+//                    System.out.println (">>> setting voltages: " + sourcePortConstruct.voltage);
+//                }
+
+            }
 
             // Otherwise, list the available path configurations and prompt the user to set one of them manually.
-            // TODO: ^
+            else if (compatibleConfigurations.size() > 1) {
+                // Apply the corresponding configuration to ports.
+                System.out.println("✔ found compatible configurations");
+                for (int i = 0; i < compatibleConfigurations.size(); i++) {
+                    PathConfiguration pathConfiguration = compatibleConfigurations.get(i);
+                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.sourceConfiguration.mode + ", ...) --- (" + pathConfiguration.targetConfiguration.mode + ", ...)");
+                }
+                System.out.println ("! set one of these configurations");
+            }
         }
 
     }
