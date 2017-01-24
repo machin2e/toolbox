@@ -1,3 +1,5 @@
+# project <project-uri/uuid> # like "package main" in go, for example
+
 add project
 edit project
 

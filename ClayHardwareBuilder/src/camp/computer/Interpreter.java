@@ -1,17 +1,17 @@
 package camp.computer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.data.format.configuration.ConfigurationConstraint;
 import camp.computer.data.format.configuration.PathConfiguration;
-import camp.computer.data.format.configuration.PortConfigurationConstraint;
-import camp.computer.data.format.configuration.ValueSet;
+import camp.computer.data.format.configuration.StateSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class Interpreter {
 
@@ -38,14 +38,14 @@ public class Interpreter {
         Scanner scanner = new Scanner(System.in);
         String inputLine = null;
 
-        while(true) {
+        while (true) {
 
             // TODO: start file
             // TODO: export file <filename>
 
             // SATURDAY GOAL:
             // TODO: ✓ add User object
-            // TODO: set port supported portConfigurationConstraints
+            // TODO: set port supported configurationConstraints
             // TODO: remove project, device, port
             // TODO: export/save project (for user account)
             // TODO: import/load project (for user account)
@@ -81,75 +81,79 @@ public class Interpreter {
 
     public void interpretLine(String inputLine) {
 
-        if (inputLine.startsWith("#")) {
+        // Store context
+        Context context = new Context();
+        context.inputLine = inputLine;
+
+        if (context.inputLine.startsWith("#")) {
 
             // Nothing!
 
-        } else if (inputLine.startsWith("import file")) {
+        } else if (context.inputLine.startsWith("import file")) {
 
-            importFileTask(inputLine);
+            importFileTask(context);
 
-        } else if (inputLine.equals("add project")) {
+        } else if (context.inputLine.equals("add project")) {
 
             addProjectTask();
 
-        } else if (inputLine.equals("list projects")) {
+        } else if (context.inputLine.equals("list projects")) {
 
             listProjectsTask();
 
-        } else if (inputLine.startsWith("edit project")) {
+        } else if (context.inputLine.startsWith("edit project")) {
 
-            editProjectTask(inputLine);
+            editProjectTask(context);
 
-        } else if (inputLine.startsWith("set project title")) {
+        } else if (context.inputLine.startsWith("set project title")) {
 
-            setProjectTitleTask(inputLine);
+            setProjectTitleTask(context);
 
-        } else if (inputLine.equals("add device")) { // create hardware
+        } else if (context.inputLine.equals("add device")) { // create hardware
 
             addDeviceTask();
 
-        } else if (inputLine.equals("list devices")) { // list hardware
+        } else if (context.inputLine.equals("list devices")) { // list hardware
 
             listDevicesTask();
 
-        } else if (inputLine.startsWith("edit device")) { // select hardware
+        } else if (context.inputLine.startsWith("edit device")) { // select hardware
 
-            editDeviceTask(inputLine);
+            editDeviceTask(context);
 
-        } else if (inputLine.startsWith("add port")) { // create port
+        } else if (context.inputLine.startsWith("add port")) { // create port
 
             addPortTask();
 
-        } else if (inputLine.startsWith("add constraint")) { // add constraint (to set of attributes in configuration)
+        } else if (context.inputLine.startsWith("add constraint")) { // add constraint (to set of attributes in configuration)
 
-            addConfigurationConstraintTask(inputLine);
+            addConfigurationConstraintTask(context);
 
-        } else if (inputLine.startsWith("set attributes")) { // TODO: "set configuration" or "set attributes"
+        } else if (context.inputLine.startsWith("set attributes")) { // TODO: "set configuration" or "set attributes"
 
-            setConfigurationAttributesTask(inputLine);
+            setConfigurationAttributesTask(context);
 
-        } else if (inputLine.startsWith("list ports")) {
+        } else if (context.inputLine.startsWith("list ports")) {
 
-            listPortsTask(inputLine);
+            listPortsTask(context);
 
-        } else if (inputLine.startsWith("edit port")) {
+        } else if (context.inputLine.startsWith("edit port")) {
 
-            editPortTask(inputLine);
+            editPortTask(context);
 
-        } else if (inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
+        } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
 
-            addPathTask(inputLine);
+            addPathTask(context);
 
-        } else if (inputLine.startsWith("list paths")) {
+        } else if (context.inputLine.startsWith("list paths")) {
 
             listPathsTask();
 
-        } else if (inputLine.startsWith("set path configuration")) {
+        } else if (context.inputLine.startsWith("set path configuration")) {
 
-            setPathConfigurationTask(inputLine);
+            setPathConfigurationTask(context);
 
-        } else if (inputLine.startsWith("exit")) {
+        } else if (context.inputLine.startsWith("exit")) {
 
             exitTask();
 
@@ -160,12 +164,11 @@ public class Interpreter {
     // <REFACTOR>
     // TODO: Create "Command" class with command (1) keywords and (2) task to handle command.
 
-    public void importFileTask(String context) {
+    public void importFileTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         String inputFilePath = inputLineWords[2];
 
@@ -201,12 +204,11 @@ public class Interpreter {
 
     }
 
-    public void editProjectTask(String context){
+    public void editProjectTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         if (inputLineWords.length == 2) {
             // edit project
@@ -231,14 +233,13 @@ public class Interpreter {
 
     }
 
-    public void setProjectTitleTask(String context) {
+    public void setProjectTitleTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
         if (workspace.projectConstruct != null) {
 
-            String inputLine = context;
-            String[] inputLineWords = inputLine.split("[ ]+");
+            String[] inputLineWords = context.inputLine.split("[ ]+");
 
             String inputProjectTitle = inputLineWords[3];
 
@@ -257,7 +258,7 @@ public class Interpreter {
         workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 
         // Store reference to last-created device
-        workspace.lastDeviceConstruct= deviceConstruct;
+        workspace.lastDeviceConstruct = deviceConstruct;
 
     }
 
@@ -279,12 +280,11 @@ public class Interpreter {
 
     }
 
-    public void editDeviceTask(String context) {
+    public void editDeviceTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         if (inputLineWords.length == 2) {
 
@@ -323,12 +323,11 @@ public class Interpreter {
 
     // e.g.,
     // add constraint uart(tx);output;ttl,cmos
-    public void addConfigurationConstraintTask(String context) {
+    public void addConfigurationConstraintTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         String configurationOptionString = inputLineWords[2];
 
@@ -336,9 +335,9 @@ public class Interpreter {
 
         // Default Configuration
         // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
-        PortConfigurationConstraint.Mode mode = PortConfigurationConstraint.Mode.NONE;
-        ValueSet<PortConfigurationConstraint.Direction> directions = null;
-        ValueSet<PortConfigurationConstraint.Voltage> voltages = null;
+        ConfigurationConstraint.Mode mode = ConfigurationConstraint.Mode.NONE;
+        StateSet<ConfigurationConstraint.Direction> directions = null;
+        StateSet<ConfigurationConstraint.Voltage> voltages = null;
 
         // TODO: Parse "bus(line)" value string pattern to create bus and lines.
 
@@ -354,33 +353,33 @@ public class Interpreter {
 
                 // Configuration Option Mode
                 if (configurationOptionMode.equals("none")) {
-                    mode = PortConfigurationConstraint.Mode.NONE;
+                    mode = ConfigurationConstraint.Mode.NONE;
                 } else if (configurationOptionMode.equals("digital")) {
-                    mode = PortConfigurationConstraint.Mode.DIGITAL;
+                    mode = ConfigurationConstraint.Mode.DIGITAL;
                 } else if (configurationOptionMode.equals("analog")) {
-                    mode = PortConfigurationConstraint.Mode.ANALOG;
+                    mode = ConfigurationConstraint.Mode.ANALOG;
                 } else if (configurationOptionMode.equals("pwm")) {
-                    mode = PortConfigurationConstraint.Mode.PWM;
+                    mode = ConfigurationConstraint.Mode.PWM;
                 } else if (configurationOptionMode.equals("resistive_touch")) {
-                    mode = PortConfigurationConstraint.Mode.RESISTIVE_TOUCH;
+                    mode = ConfigurationConstraint.Mode.RESISTIVE_TOUCH;
                 } else if (configurationOptionMode.equals("power")) {
-                    mode = PortConfigurationConstraint.Mode.POWER;
+                    mode = ConfigurationConstraint.Mode.POWER;
                 } else if (configurationOptionMode.equals("i2c(scl)")) {
-                    mode = PortConfigurationConstraint.Mode.I2C_SCL;
+                    mode = ConfigurationConstraint.Mode.I2C_SCL;
                 } else if (configurationOptionMode.equals("i2c(sda)")) {
-                    mode = PortConfigurationConstraint.Mode.I2C_SDA;
+                    mode = ConfigurationConstraint.Mode.I2C_SDA;
                 } else if (configurationOptionMode.equals("spi(sclk)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_SCLK;
+                    mode = ConfigurationConstraint.Mode.SPI_SCLK;
                 } else if (configurationOptionMode.equals("spi(mosi)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_MOSI;
+                    mode = ConfigurationConstraint.Mode.SPI_MOSI;
                 } else if (configurationOptionMode.equals("spi(miso)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_MISO;
+                    mode = ConfigurationConstraint.Mode.SPI_MISO;
                 } else if (configurationOptionMode.equals("spi(ss)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_SS;
+                    mode = ConfigurationConstraint.Mode.SPI_SS;
                 } else if (configurationOptionMode.equals("uart(rx)")) {
-                    mode = PortConfigurationConstraint.Mode.UART_RX;
+                    mode = ConfigurationConstraint.Mode.UART_RX;
                 } else if (configurationOptionMode.equals("uart(tx)")) {
-                    mode = PortConfigurationConstraint.Mode.UART_TX;
+                    mode = ConfigurationConstraint.Mode.UART_TX;
                 }
 
             } else if (attributeTitle.equals("direction")) {
@@ -394,18 +393,18 @@ public class Interpreter {
 
                 } else {
 
-                    directions = new ValueSet<>();
+                    directions = new StateSet<>();
 
                     for (int j = 0; j < configurationOptionDirectionList.length; j++) {
 
                         if (configurationOptionDirectionList[j].equals("none")) {
-                            directions.values.add(PortConfigurationConstraint.Direction.NONE);
+                            directions.states.add(ConfigurationConstraint.Direction.NONE);
                         } else if (configurationOptionDirectionList[j].equals("input")) {
-                            directions.values.add(PortConfigurationConstraint.Direction.INPUT);
+                            directions.states.add(ConfigurationConstraint.Direction.INPUT);
                         } else if (configurationOptionDirectionList[j].equals("output")) {
-                            directions.values.add(PortConfigurationConstraint.Direction.OUTPUT);
+                            directions.states.add(ConfigurationConstraint.Direction.OUTPUT);
                         } else if (configurationOptionDirectionList[j].equals("bidirectional")) {
-                            directions.values.add(PortConfigurationConstraint.Direction.BIDIRECTIONAL);
+                            directions.states.add(ConfigurationConstraint.Direction.BIDIRECTIONAL);
                         }
 
                     }
@@ -422,18 +421,18 @@ public class Interpreter {
 
                 } else {
 
-                    voltages = new ValueSet<>();
+                    voltages = new StateSet<>();
 
                     for (int j = 0; j < configurationOptionVoltageList.length; j++) {
 
                         if (configurationOptionVoltageList[j].equals("none")) {
-                            voltages.values.add(PortConfigurationConstraint.Voltage.NONE);
+                            voltages.states.add(ConfigurationConstraint.Voltage.NONE);
                         } else if (configurationOptionVoltageList[j].equals("ttl")) {
-                            voltages.values.add(PortConfigurationConstraint.Voltage.TTL);
+                            voltages.states.add(ConfigurationConstraint.Voltage.TTL);
                         } else if (configurationOptionVoltageList[j].equals("cmos")) {
-                            voltages.values.add(PortConfigurationConstraint.Voltage.CMOS);
+                            voltages.states.add(ConfigurationConstraint.Voltage.CMOS);
                         } else if (configurationOptionVoltageList[j].equals("common")) {
-                            voltages.values.add(PortConfigurationConstraint.Voltage.COMMON);
+                            voltages.states.add(ConfigurationConstraint.Voltage.COMMON);
                         }
 
                     }
@@ -444,24 +443,23 @@ public class Interpreter {
         }
 
         // Add Configuration Option/Constraint
-        workspace.portConstruct.portConfigurationConstraints.add(new PortConfigurationConstraint(mode, directions, voltages));
+        workspace.portConstruct.configurationConstraints.add(new ConfigurationConstraint(mode, directions, voltages));
 
     }
 
     // set attribute mode:digital;direction:output;voltage:ttl
-    public void setConfigurationAttributesTask(String context) {
+    public void setConfigurationAttributesTask(Context context) {
 
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         String configurationOptionString = inputLineWords[2];
 
-        PortConfigurationConstraint.Mode mode = PortConfigurationConstraint.Mode.NONE;
-        PortConfigurationConstraint.Direction direction = null;
-        PortConfigurationConstraint.Voltage voltage = null;
+        ConfigurationConstraint.Mode mode = ConfigurationConstraint.Mode.NONE;
+        ConfigurationConstraint.Direction direction = null;
+        ConfigurationConstraint.Voltage voltage = null;
 
         // Separate configuration string into tokens separated by ";" substring, each an expression representing an
         // attribute state assignment. Separate each attribute assignment by ":", into the attribute title and
@@ -477,59 +475,59 @@ public class Interpreter {
 
                 // Parses and caches the mode assignment.
                 if (attributeValues.equals("none")) {
-                    mode = PortConfigurationConstraint.Mode.NONE;
+                    mode = ConfigurationConstraint.Mode.NONE;
                 } else if (attributeValues.equals("digital")) {
-                    mode = PortConfigurationConstraint.Mode.DIGITAL;
+                    mode = ConfigurationConstraint.Mode.DIGITAL;
                 } else if (attributeValues.equals("analog")) {
-                    mode = PortConfigurationConstraint.Mode.ANALOG;
+                    mode = ConfigurationConstraint.Mode.ANALOG;
                 } else if (attributeValues.equals("pwm")) {
-                    mode = PortConfigurationConstraint.Mode.PWM;
+                    mode = ConfigurationConstraint.Mode.PWM;
                 } else if (attributeValues.equals("resistive_touch")) {
-                    mode = PortConfigurationConstraint.Mode.RESISTIVE_TOUCH;
+                    mode = ConfigurationConstraint.Mode.RESISTIVE_TOUCH;
                 } else if (attributeValues.equals("power")) {
-                    mode = PortConfigurationConstraint.Mode.POWER;
+                    mode = ConfigurationConstraint.Mode.POWER;
                 } else if (attributeValues.equals("i2c(scl)")) {
-                    mode = PortConfigurationConstraint.Mode.I2C_SCL;
+                    mode = ConfigurationConstraint.Mode.I2C_SCL;
                 } else if (attributeValues.equals("i2c(sda)")) {
-                    mode = PortConfigurationConstraint.Mode.I2C_SDA;
+                    mode = ConfigurationConstraint.Mode.I2C_SDA;
                 } else if (attributeValues.equals("spi(sclk)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_SCLK;
+                    mode = ConfigurationConstraint.Mode.SPI_SCLK;
                 } else if (attributeValues.equals("spi(mosi)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_MOSI;
+                    mode = ConfigurationConstraint.Mode.SPI_MOSI;
                 } else if (attributeValues.equals("spi(miso)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_MISO;
+                    mode = ConfigurationConstraint.Mode.SPI_MISO;
                 } else if (attributeValues.equals("spi(ss)")) {
-                    mode = PortConfigurationConstraint.Mode.SPI_SS;
+                    mode = ConfigurationConstraint.Mode.SPI_SS;
                 } else if (attributeValues.equals("uart(rx)")) {
-                    mode = PortConfigurationConstraint.Mode.UART_RX;
+                    mode = ConfigurationConstraint.Mode.UART_RX;
                 } else if (attributeValues.equals("uart(tx)")) {
-                    mode = PortConfigurationConstraint.Mode.UART_TX;
+                    mode = ConfigurationConstraint.Mode.UART_TX;
                 }
 
             } else if (attributeTitle.equals("direction")) {
 
                 // Parses and caches the direction assignment.
                 if (attributeValues.equals("none")) {
-                    direction = PortConfigurationConstraint.Direction.NONE;
+                    direction = ConfigurationConstraint.Direction.NONE;
                 } else if (attributeValues.equals("input")) {
-                    direction = PortConfigurationConstraint.Direction.INPUT;
+                    direction = ConfigurationConstraint.Direction.INPUT;
                 } else if (attributeValues.equals("output")) {
-                    direction = PortConfigurationConstraint.Direction.OUTPUT;
+                    direction = ConfigurationConstraint.Direction.OUTPUT;
                 } else if (attributeValues.equals("bidirectional")) {
-                    direction = PortConfigurationConstraint.Direction.BIDIRECTIONAL;
+                    direction = ConfigurationConstraint.Direction.BIDIRECTIONAL;
                 }
 
             } else if (attributeTitle.equals("voltage")) {
 
                 // Parses and caches the voltage assignment.
                 if (attributeValues.equals("none")) {
-                    voltage = PortConfigurationConstraint.Voltage.NONE;
+                    voltage = ConfigurationConstraint.Voltage.NONE;
                 } else if (attributeValues.equals("ttl")) {
-                    voltage = PortConfigurationConstraint.Voltage.TTL;
+                    voltage = ConfigurationConstraint.Voltage.TTL;
                 } else if (attributeValues.equals("cmos")) {
-                    voltage = PortConfigurationConstraint.Voltage.CMOS;
+                    voltage = ConfigurationConstraint.Voltage.CMOS;
                 } else if (attributeValues.equals("common")) {
-                    voltage = PortConfigurationConstraint.Voltage.COMMON;
+                    voltage = ConfigurationConstraint.Voltage.COMMON;
                 }
 
             }
@@ -549,12 +547,11 @@ public class Interpreter {
     }
 
     // list ports -configuration
-    public void listPortsTask(String context) {
+    public void listPortsTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         if (inputLineWords.length == 2) {
 
@@ -584,17 +581,17 @@ public class Interpreter {
                     // Port UID
                     System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
 
-                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.size(); j++) {
+                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.size(); j++) {
 
                         // Mode/Family
-                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).mode + "; ");
+                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).mode + "; ");
 
                         // Directions
-                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions != null) {
-                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size(); k++) {
-                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.get(k));
+                        if (workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).directions != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).directions.states.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).directions.states.get(k));
 
-                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size()) {
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).directions.states.size()) {
                                     System.out.print(", ");
                                 }
                             }
@@ -602,11 +599,11 @@ public class Interpreter {
                         System.out.print("; ");
 
                         // Voltages
-                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages != null) {
-                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size(); k++) {
-                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.get(k));
+                        if (workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).voltages != null) {
+                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).voltages.states.size(); k++) {
+                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).voltages.states.get(k));
 
-                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size()) {
+                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).configurationConstraints.get(j).voltages.states.size()) {
                                     System.out.print(", ");
                                 }
                             }
@@ -624,12 +621,11 @@ public class Interpreter {
 
     }
 
-    public void editPortTask(String context) {
+    public void editPortTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         if (inputLineWords.length == 2) {
 
@@ -655,12 +651,11 @@ public class Interpreter {
     }
 
     // e.g., add path device 1 port 3 device 4 port 1
-    public void addPathTask(String context) {
+    public void addPathTask(Context context) {
 
         if (workspace.deviceConstruct != null) {
 
-            String inputLine = context;
-            String[] inputLineWords = inputLine.split("[ ]+");
+            String[] inputLineWords = context.inputLine.split("[ ]+");
 
             long inputSourceDeviceUid = Long.valueOf(inputLineWords[3]);
             long sourcePortUid = Long.valueOf(inputLineWords[5]);
@@ -719,14 +714,12 @@ public class Interpreter {
             // Iterate through configurations for of source port in path. For each source port configuration, check
             // the other ports' configurations for compatibility; then add each compatible configuration to a list of
             // compatible configurations.
-            List<PathConfiguration> compatibleConfigurations = new ArrayList<>();
-            for (int i = 0; i < pathConstruct.sourcePortConstruct.portConfigurationConstraints.size(); i++) {
-                PortConfigurationConstraint portConstraint = pathConstruct.sourcePortConstruct.portConfigurationConstraints.get(i);
+            List<PathConfiguration> consistentPathConfigurations = new ArrayList<>();
+            for (int i = 0; i < pathConstruct.sourcePortConstruct.configurationConstraints.size(); i++) {
+                ConfigurationConstraint configurationConstraint = pathConstruct.sourcePortConstruct.configurationConstraints.get(i);
 
-                for (int j = 0; j < pathConstruct.targetPortConstruct.portConfigurationConstraints.size(); j++) {
-                    PortConfigurationConstraint otherPortConstraint = pathConstruct.targetPortConstruct.portConfigurationConstraints.get(j);
-
-                    boolean isCompatible = PortConfigurationConstraint.isCompatible(portConstraint, otherPortConstraint);
+                for (int j = 0; j < pathConstruct.targetPortConstruct.configurationConstraints.size(); j++) {
+                    ConfigurationConstraint otherConfigurationConstraint = pathConstruct.targetPortConstruct.configurationConstraints.get(j);
 
                     // PATH SERIAL FORMAT:
                     // ~ mode;direction;voltage + mode;direction;voltage
@@ -739,57 +732,13 @@ public class Interpreter {
                     // ? mode;direction;voltage+mode;direction;voltage
                     // ? mode;direction;voltage|mode;direction;voltage
 
-                    if (isCompatible) {
-                        // TODO: compatibleConfigurations.add(/* result from isCompatible */);
-//                        PathConfiguration pathConfiguration = new PathConfiguration(portConstraint, otherPortConstraint);
-//                        compatibleConfigurations.add(pathConfiguration);
-//                        break;
-                    }
+                    StateSet<ConfigurationConstraint> consistentPortConfigurations = ConfigurationConstraint.computeCompatibleConfigurationSet(configurationConstraint, otherConfigurationConstraint);
 
-                    ValueSet<PortConfigurationConstraint> compatibleConfiguration = PortConfigurationConstraint.getCompatibleConfiguration(portConstraint, otherPortConstraint);
-
-                    if (compatibleConfiguration != null) {
-//                        // Source
-//                        System.out.print("" + compatibleConfiguration.values.get(0).mode);
-//                        System.out.print(";");
-//                        for (int k = 0; k < compatibleConfiguration.values.get(0).directions.values.size(); k++) {
-//                            System.out.print("" + compatibleConfiguration.values.get(0).directions.values.get(k));
-//                            if ((k + 1) < compatibleConfiguration.values.get(0).directions.values.size()) {
-//                                System.out.print(", ");
-//                            }
-//                        }
-//                        System.out.print(";");
-//                        for (int k = 0; k < compatibleConfiguration.values.get(0).voltages.values.size(); k++) {
-//                            System.out.print("" + compatibleConfiguration.values.get(0).voltages.values.get(k));
-//                            if ((k + 1) < compatibleConfiguration.values.get(0).voltages.values.size()) {
-//                                System.out.print(", ");
-//                            }
-//                        }
-//                        System.out.print(" | ");
-//
-//                        // Target
-//                        System.out.print("" + compatibleConfiguration.values.get(1).mode);
-//                        System.out.print(";");
-//                        for (int k = 0; k < compatibleConfiguration.values.get(1).directions.values.size(); k++) {
-//                            System.out.print("" + compatibleConfiguration.values.get(1).directions.values.get(k));
-//                            if ((k + 1) < compatibleConfiguration.values.get(1).directions.values.size()) {
-//                                System.out.print(", ");
-//                            }
-//                        }
-//                        System.out.print(";");
-//                        for (int k = 0; k < compatibleConfiguration.values.get(1).voltages.values.size(); k++) {
-//                            System.out.print("" + compatibleConfiguration.values.get(1).voltages.values.get(k));
-//                            if ((k + 1) < compatibleConfiguration.values.get(1).voltages.values.size()) {
-//                                System.out.print(", ");
-//                            }
-//                        }
-//
-//                        System.out.println();
-
-                        compatibleConfigurations.add(
+                    if (consistentPortConfigurations != null) {
+                        consistentPathConfigurations.add(
                                 new PathConfiguration(
-                                        compatibleConfiguration.values.get(0),
-                                        compatibleConfiguration.values.get(1)));
+                                        consistentPortConfigurations.states.get(0),
+                                        consistentPortConfigurations.states.get(1)));
 
                     }
 
@@ -801,9 +750,9 @@ public class Interpreter {
             // If there is only one path configuration in the compatible configurations list, automatically configure
             // the path with it, thereby updating the ports' configurations in the path.
             // TODO: ^
-            if (compatibleConfigurations.size() == 1) {
+            if (consistentPathConfigurations.size() == 1) {
                 // Apply the corresponding configuration to ports.
-                PathConfiguration pathConfiguration = compatibleConfigurations.get(0);
+                PathConfiguration pathConfiguration = consistentPathConfigurations.get(0);
                 System.out.println("✔ found compatible configurations");
 
                 // TODO: (QUESTION) Can I specify a path configuration and infer port configurations (for multi-port) or should it be a list of port configurations?
@@ -812,51 +761,52 @@ public class Interpreter {
 
                 // list ports: "3 (12 configurations)" or "3 (null, null, null)"; "3 (SPI_MISO; INPUT; TTL)"
 
-//                // Configure the ports with the single compatible configuration
-//                sourcePortConstruct.mode = pathConfiguration.sourceConfiguration.mode;
+                // Configure the ports with the single compatible configuration
+                sourcePortConstruct.mode = pathConfiguration.variables.get("source").mode;
 //                System.out.println (">>> setting mode: " + sourcePortConstruct.mode);
-//
-//                if (pathConfiguration.sourceConfiguration.directions.values.size() == 1) {
-//                    sourcePortConstruct.direction = pathConfiguration.sourceConfiguration.directions.values.get(0);
+
+                if (pathConfiguration.variables.get("source").directions.states.size() == 1) {
+                    sourcePortConstruct.direction = pathConfiguration.variables.get("source").directions.states.get(0);
 //                    System.out.println (">>> setting direction: " + sourcePortConstruct.direction);
-//                }
-//
-//                if (pathConfiguration.sourceConfiguration.voltages.values.size() == 1) {
-//                    sourcePortConstruct.voltage = pathConfiguration.sourceConfiguration.voltages.values.get(0);
+                }
+
+                if (pathConfiguration.variables.get("source").voltages.states.size() == 1) {
+                    sourcePortConstruct.voltage = pathConfiguration.variables.get("source").voltages.states.get(0);
 //                    System.out.println (">>> setting voltages: " + sourcePortConstruct.voltage);
-//                }
+                }
+
 
                 // Source
-                System.out.print("  1. " + pathConfiguration.sourceConfiguration.mode);
+                System.out.print("  1. " + pathConfiguration.variables.get("source").mode);
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.sourceConfiguration.directions.values.size(); k++) {
-                    System.out.print("" + pathConfiguration.sourceConfiguration.directions.values.get(k));
-                    if ((k + 1) < pathConfiguration.sourceConfiguration.directions.values.size()) {
+                for (int k = 0; k < pathConfiguration.variables.get("source").directions.states.size(); k++) {
+                    System.out.print("" + pathConfiguration.variables.get("source").directions.states.get(k));
+                    if ((k + 1) < pathConfiguration.variables.get("source").directions.states.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.sourceConfiguration.voltages.values.size(); k++) {
-                    System.out.print("" + pathConfiguration.sourceConfiguration.voltages.values.get(k));
-                    if ((k + 1) < pathConfiguration.sourceConfiguration.voltages.values.size()) {
+                for (int k = 0; k < pathConfiguration.variables.get("source").voltages.states.size(); k++) {
+                    System.out.print("" + pathConfiguration.variables.get("source").voltages.states.get(k));
+                    if ((k + 1) < pathConfiguration.variables.get("source").voltages.states.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(" | ");
 
                 // Target
-                System.out.print("" + pathConfiguration.targetConfiguration.mode);
+                System.out.print("" + pathConfiguration.variables.get("target").mode);
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.targetConfiguration.directions.values.size(); k++) {
-                    System.out.print("" + pathConfiguration.targetConfiguration.directions.values.get(k));
-                    if ((k + 1) < pathConfiguration.targetConfiguration.directions.values.size()) {
+                for (int k = 0; k < pathConfiguration.variables.get("target").directions.states.size(); k++) {
+                    System.out.print("" + pathConfiguration.variables.get("target").directions.states.get(k));
+                    if ((k + 1) < pathConfiguration.variables.get("target").directions.states.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.targetConfiguration.voltages.values.size(); k++) {
-                    System.out.print("" + pathConfiguration.targetConfiguration.voltages.values.get(k));
-                    if ((k + 1) < pathConfiguration.targetConfiguration.voltages.values.size()) {
+                for (int k = 0; k < pathConfiguration.variables.get("target").voltages.states.size(); k++) {
+                    System.out.print("" + pathConfiguration.variables.get("target").voltages.states.get(k));
+                    if ((k + 1) < pathConfiguration.variables.get("target").voltages.states.size()) {
                         System.out.print(", ");
                     }
                 }
@@ -866,14 +816,14 @@ public class Interpreter {
             }
 
             // Otherwise, list the available path configurations and prompt the user to set one of them manually.
-            else if (compatibleConfigurations.size() > 1) {
+            else if (consistentPathConfigurations.size() > 1) {
                 // Apply the corresponding configuration to ports.
                 System.out.println("✔ found compatible configurations");
-                for (int i = 0; i < compatibleConfigurations.size(); i++) {
-                    PathConfiguration pathConfiguration = compatibleConfigurations.get(i);
-                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.sourceConfiguration.mode + ", ...) --- (" + pathConfiguration.targetConfiguration.mode + ", ...)");
+                for (int i = 0; i < consistentPathConfigurations.size(); i++) {
+                    PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
+                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.variables.get("source").mode + ", ...) --- (" + pathConfiguration.variables.get("target").mode + ", ...)");
                 }
-                System.out.println ("! set one of these configurations");
+                System.out.println("! set one of these configurations");
             }
         }
 
@@ -891,12 +841,11 @@ public class Interpreter {
 
     }
 
-    public void setPathConfigurationTask(String context) {
+    public void setPathConfigurationTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
-        String inputLine = context;
-        String[] inputLineWords = inputLine.split("[ ]+");
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
         String inputPathConfiguration = inputLineWords[3];
 

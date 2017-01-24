@@ -7,4 +7,6 @@ public class DeviceConstruct extends Construct {
 
     public List<PortConstruct> portConstructs = new ArrayList<>();
 
+    public ScheduleConstruct scheduleConstruct = null;
+
 }
