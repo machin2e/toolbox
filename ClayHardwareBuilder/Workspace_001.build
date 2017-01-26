@@ -248,7 +248,7 @@ add path device 1 port 5 device 14 port 17
 # edit path
 # set path source device 1 port 3
 # set path target device 14 port 15
-# solve path configuration / get path configurations / get path states
+# solve path configuration / get path configurations / get path values
 # TODO: resolve path --> solves CSP and updates configuration if only one available; otherwise, lists available and prompts for selection; doesn't actually commit configuration until CSP is resolved to 1 configuration or one is specified from those available for given constraints
 # INFER: set path state mode:power[;direction:input;voltage:ttl]
 
