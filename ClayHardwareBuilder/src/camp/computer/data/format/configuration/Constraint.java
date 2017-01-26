@@ -40,6 +40,27 @@ public class Constraint {
 
     }
 
+    public static ValueSet getValues(Constraint constraint, String variableTitle) {
+
+        for (int i = 0; i < constraint.variableValueSets.size(); i++) {
+            if (constraint.variableValueSets.get(i).title.equals(variableTitle)) {
+                return constraint.variableValueSets.get(i).values;
+            }
+        }
+
+        return null;
+    }
+
+    public ValueSet getValues(String variableTitle) {
+        for (int i = 0; i < variableValueSets.size(); i++) {
+            if (variableValueSets.get(i).title.equals(variableTitle)) {
+                return variableValueSets.get(i).values;
+            }
+        }
+
+        return null;
+    }
+
     // TODO: discoverCompatiblePortSet(<device-a>, <device-b>)
 
     // TODO: computeCompatibleConfigurations/computeCompatibleConfigurationSets(<device-a>, <device-b>)

@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public class PathConfiguration {
 
-    public HashMap<String, PortConfigurationConstraint> variables = new HashMap<>();
+    public HashMap<String, Constraint> variables = new HashMap<>();
 
-    public PathConfiguration(PortConfigurationConstraint sourceConfiguration, PortConfigurationConstraint targetConfiguration) {
+    public PathConfiguration(Constraint sourceConfiguration, Constraint targetConfiguration) {
 
         this.variables.put("source", sourceConfiguration);
         this.variables.put("target", targetConfiguration);

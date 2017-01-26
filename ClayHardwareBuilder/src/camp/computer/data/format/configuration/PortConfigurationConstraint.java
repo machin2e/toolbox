@@ -1,5 +1,8 @@
 package camp.computer.data.format.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PortConfigurationConstraint {
     // TODO: Consider renaming to PortConfigurationConstraint for general use in constructs?
 
@@ -96,15 +99,15 @@ public class PortConfigurationConstraint {
      * given a pair of two {@code PortConfigurationConstraint}s. The resulting {@code PortConfigurationConstraint}s
      * will remove values that cannot be assigned to variables in the {@code PortConfigurationConstraint}.
      *
-     * @param sourceConfiguration
-     * @param targetConfiguration
+     * @param sourceConstraint
+     * @param targetConstraint
      * @return
      */
-//    public static ValueSet<PortConfigurationConstraint> computeCompatibleConfigurationSet(PortConfigurationConstraint sourceConfiguration, PortConfigurationConstraint targetConfiguration) {
-//
-//        // <VERBOSE_LOG>
-//        // Source Port
-//        boolean ENABLE_VERBOSE_OUTPUT = false;
+    public static List<Constraint> computeCompatibleConfigurationSet(Constraint sourceConstraint, Constraint targetConstraint) {
+
+        // <VERBOSE_LOG>
+        // Source Port
+        boolean ENABLE_VERBOSE_OUTPUT = false;
 //        if (ENABLE_VERBOSE_OUTPUT) {
 //
 //            System.out.print("? (source) " + sourceConfiguration.mode + ";");
@@ -159,115 +162,188 @@ public class PortConfigurationConstraint {
 //                }
 //            }
 //        }
-//        // </VERBOSE_LOG>
-//
-////        PortConfigurationConstraint compatibleSourcePortConfigurationConstraint = new PortConfigurationConstraint(null, null, null); // populate with valid subset given variables constraints
-////        PortConfigurationConstraint compatibleTargetPortConfigurationConstraint = new PortConfigurationConstraint(null, null, null); // populate with valid subset given variables constraints
-//        PortConfigurationConstraint compatibleSourcePortConfigurationConstraint = new PortConfigurationConstraint(null, new ValueSet<>(), new ValueSet<>()); // populate with valid subset given variables constraints
-//        PortConfigurationConstraint compatibleTargetPortConfigurationConstraint = new PortConfigurationConstraint(null, new ValueSet<>(), new ValueSet<>()); // populate with valid subset given variables constraints
-//
-//        // <MODE_CONSTRAINT_CHECKS>
-//        if (sourceConfiguration.mode == targetConfiguration.mode) {
-//            compatibleSourcePortConfigurationConstraint.mode = sourceConfiguration.mode;
-//            compatibleTargetPortConfigurationConstraint.mode = targetConfiguration.mode;
+        // </VERBOSE_LOG>
+
+        // <INITIALIZE_CONSTRAINTS>
+//        PortConfigurationConstraint compatibleSourcePortConfigurationConstraint = new PortConfigurationConstraint(null, null, null); // populate with valid subset given variables constraints
+//        PortConfigurationConstraint compatibleTargetPortConfigurationConstraint = new PortConfigurationConstraint(null, null, null); // populate with valid subset given variables constraints
+        Constraint compatibleSourceConstraint = new Constraint(); // populate with valid subset given variables constraints
+        Constraint compatibleTargetConstraint = new Constraint(); // populate with valid subset given variables constraints
+
+        // Add source port Constraint with empty variable state sets
+        for (int i = 0; i < sourceConstraint.variableValueSets.size(); i++) {
+            String variableTitle = sourceConstraint.variableValueSets.get(i).title;
+            compatibleSourceConstraint.variableValueSets.add(new VariableValueSet(variableTitle));
+        }
+
+        // Add target port Constraint with empty variable state sets
+        for (int i = 0; i < targetConstraint.variableValueSets.size(); i++) {
+            String variableTitle = targetConstraint.variableValueSets.get(i).title;
+            compatibleTargetConstraint.variableValueSets.add(new VariableValueSet(variableTitle));
+        }
+        // </INITIALIZE_CONSTRAINTS>
+
+        // <MODE_CONSTRAINT_CHECKS>
+//        if (sourceConstraint.mode == targetConstraint.mode) {
+//            compatibleSourceConstraints.mode = sourceConstraint.mode;
+//            compatibleTargetConstraints.mode = targetConstraint.mode;
 //        }
-//
-//        // TODO: I2C, SPI, UART, etc.
-//
-//        // </MODE_CONSTRAINT_CHECKS>
-//
-//        // TODO: compute the "compatible intersection" configurations of the mode constraints of the two configurations
-//        // TODO: compute the "compatible intersection" configurations of the directions constraints of the two configurations
-//        // TODO: compute the "compatible intersection" configurations of the voltages constraints of the two configurations
-//
-//        //---
-//
-//        // CHECK FOR THESE:
-//        // x TODO: AddSourceDirection(INPUT); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
-//        // x TODO: AddSourceDirection(OUTPUT); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
-//        // CHECK FOR THESE:
-//        // TODO: AddSourceDirection(OUTPUT); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(INPUT); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
-//        // CHECK FOR THESE:
-//        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(INPUT); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(OUTPUT); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
-//        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
-//
-//        // <DIRECTION_CONSTRAINT_CHECKS>
-//        // Check direction compatibility
-//        if (sourceConfiguration.directions == null || targetConfiguration.directions == null) {
+
+        ValueSet sourceConstraintValues = Constraint.getValues(sourceConstraint, "mode");
+        ValueSet targetConstraintValues = Constraint.getValues(targetConstraint, "mode");
+
+        if (sourceConstraintValues.values.get(0).equals(targetConstraintValues.values.get(0))) {
+            Constraint.getValues(compatibleSourceConstraint, "mode").values.add(sourceConstraintValues.values.get(0));
+            Constraint.getValues(compatibleTargetConstraint, "mode").values.add(targetConstraintValues.values.get(0));
+        }
+
+        // TODO: I2C, SPI, UART, etc.
+
+        // </MODE_CONSTRAINT_CHECKS>
+
+        // TODO: compute the "compatible intersection" configurations of the mode constraints of the two configurations
+        // TODO: compute the "compatible intersection" configurations of the directions constraints of the two configurations
+        // TODO: compute the "compatible intersection" configurations of the voltages constraints of the two configurations
+
+        //---
+
+        // CHECK FOR THESE:
+        // x TODO: AddSourceDirection(INPUT); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
+        // x TODO: AddSourceDirection(OUTPUT); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
+        // CHECK FOR THESE:
+        // TODO: AddSourceDirection(OUTPUT); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(INPUT); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
+        // CHECK FOR THESE:
+        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(INPUT) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(OUTPUT) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(INPUT); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(OUTPUT); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
+        // TODO: AddSourceDirection(BIDIRECTIONAL); AddTargetDirection(BIDIRECTIONAL) // add to the "compatible intersection" variables
+
+        // <DIRECTION_CONSTRAINT_CHECKS>
+        sourceConstraintValues = Constraint.getValues(sourceConstraint, "direction");
+        targetConstraintValues = Constraint.getValues(targetConstraint, "direction");
+
+        if (sourceConstraintValues.values.contains("input") && targetConstraintValues.values.contains("output")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("input");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("output");
+
+        }
+
+        if (sourceConstraintValues.values.contains("output") && targetConstraintValues.values.contains("input")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("output");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("input");
+
+        }
+
+        if (sourceConstraintValues.values.contains("bidirectional") && targetConstraintValues.values.contains("input")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("input");
+
+        }
+
+        if (sourceConstraintValues.values.contains("input") && targetConstraintValues.values.contains("bidirectional")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("input");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+
+        }
+
+        if (sourceConstraintValues.values.contains("bidirectional") && targetConstraintValues.values.contains("output")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("output");
+
+        }
+
+        if (sourceConstraintValues.values.contains("output") && targetConstraintValues.values.contains("bidirectional")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("output");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+
+        }
+
+        if (sourceConstraintValues.values.contains("bidirectional") && targetConstraintValues.values.contains("bidirectional")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
+            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+
+        }
+
+//        if (sourceConstraint.directions == null || targetConstraint.directions == null) {
 //
 //            // TODO:
 //
 //        } else {
 //
-//            if (sourceConfiguration.directions.values.contains(Direction.INPUT) && targetConfiguration.directions.values.contains(Direction.OUTPUT)) {
+//            if (sourceConstraint.directions.values.contains(Direction.INPUT) && targetConstraint.directions.values.contains(Direction.OUTPUT)) {
 //
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.INPUT);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.OUTPUT);
+//                compatibleSourceConstraints.directions.values.add(Direction.INPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.OUTPUT);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (1)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.directions.values.contains(Direction.OUTPUT) && targetConfiguration.directions.values.contains(Direction.INPUT)) {
+//            if (sourceConstraint.directions.values.contains(Direction.OUTPUT) && targetConstraint.directions.values.contains(Direction.INPUT)) {
 //
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.OUTPUT);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.INPUT);
+//                compatibleSourceConstraints.directions.values.add(Direction.OUTPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.INPUT);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (2)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.directions.values.contains(Direction.BIDIRECTIONAL) && targetConfiguration.directions.values.contains(Direction.INPUT)) {
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.INPUT)) {
 //
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.INPUT);
-//
-//                if (ENABLE_VERBOSE_OUTPUT) {
-//                    System.out.println("  > Match (3)");
-//                }
-//            }
-//
-//            if (sourceConfiguration.directions.values.contains(Direction.INPUT) && targetConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
-//
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.INPUT);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.INPUT);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (3)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.directions.values.contains(Direction.BIDIRECTIONAL) && targetConfiguration.directions.values.contains(Direction.OUTPUT)) {
+//            if (sourceConstraint.directions.values.contains(Direction.INPUT) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
 //
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.OUTPUT);
-//
-//                if (ENABLE_VERBOSE_OUTPUT) {
-//                    System.out.println("  > Match (3)");
-//                }
-//            }
-//
-//            if (sourceConfiguration.directions.values.contains(Direction.OUTPUT) && targetConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
-//
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.OUTPUT);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleSourceConstraints.directions.values.add(Direction.INPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (3)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.directions.values.contains(Direction.BIDIRECTIONAL) && targetConfiguration.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.OUTPUT)) {
 //
-//                compatibleSourcePortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
-//                compatibleTargetPortConfigurationConstraint.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.OUTPUT);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.OUTPUT) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.OUTPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (3)");
@@ -275,42 +351,148 @@ public class PortConfigurationConstraint {
 //            }
 //
 //        }
-//        // </DIRECTION_CONSTRAINT_CHECKS>
+
+
+        // Check direction compatibility
+//        if (sourceConstraint.directions == null || targetConstraint.directions == null) {
 //
-//        // TODO: null, NONE
+//            // TODO:
 //
-//        // <VOLTAGE_CONSTRAINT_CHECKS>
-//        if (sourceConfiguration.voltages == null || targetConfiguration.voltages == null) {
+//        } else {
+//
+//            if (sourceConstraint.directions.values.contains(Direction.INPUT) && targetConstraint.directions.values.contains(Direction.OUTPUT)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.INPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.OUTPUT);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (1)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.OUTPUT) && targetConstraint.directions.values.contains(Direction.INPUT)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.OUTPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.INPUT);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (2)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.INPUT)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.INPUT);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.INPUT) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.INPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.OUTPUT)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.OUTPUT);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.OUTPUT) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.OUTPUT);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//            if (sourceConstraint.directions.values.contains(Direction.BIDIRECTIONAL) && targetConstraint.directions.values.contains(Direction.BIDIRECTIONAL)) {
+//
+//                compatibleSourceConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//                compatibleTargetConstraints.directions.values.add(Direction.BIDIRECTIONAL);
+//
+//                if (ENABLE_VERBOSE_OUTPUT) {
+//                    System.out.println("  > Match (3)");
+//                }
+//            }
+//
+//        }
+        // </DIRECTION_CONSTRAINT_CHECKS>
+
+        // TODO: null, NONE
+
+        // <VOLTAGE_CONSTRAINT_CHECKS>
+        sourceConstraintValues = Constraint.getValues(sourceConstraint, "voltage");
+        targetConstraintValues = Constraint.getValues(targetConstraint, "voltage");
+
+        if (sourceConstraintValues.values.contains("ttl") && targetConstraintValues.values.contains("ttl")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("ttl");
+            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("ttl");
+
+        }
+
+        if (sourceConstraintValues.values.contains("cmos") && targetConstraintValues.values.contains("cmos")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("cmos");
+            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("cmos");
+
+        }
+
+        if (sourceConstraintValues.values.contains("common") && targetConstraintValues.values.contains("common")) {
+
+            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("common");
+            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("common");
+
+        }
+
+        //---
+
+//        if (sourceConstraint.voltages == null || targetConstraint.voltages == null) {
 //
 //            // TODO:
 //
 //        } else {
 //
 //            // Check voltage compatibility
-//            if (sourceConfiguration.voltages.values.contains(Voltage.TTL) && targetConfiguration.voltages.values.contains(Voltage.TTL)) {
+//            if (sourceConstraint.voltages.values.contains(Voltage.TTL) && targetConstraint.voltages.values.contains(Voltage.TTL)) {
 //
-//                compatibleSourcePortConfigurationConstraint.voltages.values.add(Voltage.TTL);
-//                compatibleTargetPortConfigurationConstraint.voltages.values.add(Voltage.TTL);
+//                compatibleSourceConstraints.voltages.values.add(Voltage.TTL);
+//                compatibleTargetConstraints.voltages.values.add(Voltage.TTL);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (4)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.voltages.values.contains(Voltage.CMOS) && targetConfiguration.voltages.values.contains(Voltage.CMOS)) {
+//            if (sourceConstraint.voltages.values.contains(Voltage.CMOS) && targetConstraint.voltages.values.contains(Voltage.CMOS)) {
 //
-//                compatibleSourcePortConfigurationConstraint.voltages.values.add(Voltage.CMOS);
-//                compatibleTargetPortConfigurationConstraint.voltages.values.add(Voltage.CMOS);
+//                compatibleSourceConstraints.voltages.values.add(Voltage.CMOS);
+//                compatibleTargetConstraints.voltages.values.add(Voltage.CMOS);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (5)");
 //                }
 //            }
 //
-//            if (sourceConfiguration.voltages.values.contains(Voltage.COMMON) && targetConfiguration.voltages.values.contains(Voltage.COMMON)) {
+//            if (sourceConstraint.voltages.values.contains(Voltage.COMMON) && targetConstraint.voltages.values.contains(Voltage.COMMON)) {
 //
-//                compatibleSourcePortConfigurationConstraint.voltages.values.add(Voltage.COMMON);
-//                compatibleTargetPortConfigurationConstraint.voltages.values.add(Voltage.COMMON);
+//                compatibleSourceConstraints.voltages.values.add(Voltage.COMMON);
+//                compatibleTargetConstraints.voltages.values.add(Voltage.COMMON);
 //
 //                if (ENABLE_VERBOSE_OUTPUT) {
 //                    System.out.println("  > Match (6)");
@@ -318,26 +500,38 @@ public class PortConfigurationConstraint {
 //            }
 //
 //        }
-//
-//        // TODO: COMMON - TTL
-//        // TODO: COMMON - CMOS
-//
-//        // TODO: null, NONE
-//        // </VOLTAGE_CONSTRAINT_CHECKS>
-//
-//        if (ENABLE_VERBOSE_OUTPUT) {
-//            System.out.println("\n");
-//        }
-//
-//        // TODO: Verify this logic for returning "null"
-//        if ((compatibleSourcePortConfigurationConstraint.mode == null || compatibleTargetPortConfigurationConstraint.mode == null)
-//                || (compatibleSourcePortConfigurationConstraint.directions.values.size() == 0 || compatibleTargetPortConfigurationConstraint.directions.values.size() == 0)
-//                || (compatibleSourcePortConfigurationConstraint.voltages.values.size() == 0 || compatibleTargetPortConfigurationConstraint.voltages.values.size() == 0)) {
+
+        // TODO: COMMON - TTL
+        // TODO: COMMON - CMOS
+
+        // TODO: null, NONE
+        // </VOLTAGE_CONSTRAINT_CHECKS>
+
+        if (ENABLE_VERBOSE_OUTPUT) {
+            System.out.println("\n");
+        }
+
+        // TODO: Verify this logic for returning "null"
+//        if ((compatibleSourceConstraints.mode == null || compatibleTargetConstraints.mode == null)
+//                || (compatibleSourceConstraints.directions.values.size() == 0 || compatibleTargetConstraints.directions.values.size() == 0)
+//                || (compatibleSourceConstraints.voltages.values.size() == 0 || compatibleTargetConstraints.voltages.values.size() == 0)) {
 //            return null;
 //        } else {
-//            return new ValueSet<>(compatibleSourcePortConfigurationConstraint, compatibleTargetPortConfigurationConstraint);
+//            return new ValueSet<>(compatibleSourceConstraints, compatibleTargetConstraints);
 //        }
-//    }
+
+        if ((Constraint.getValues(compatibleSourceConstraint, "mode").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "mode").values.size() == 0)
+                || (Constraint.getValues(compatibleSourceConstraint, "direction").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "direction").values.size() == 0)
+                || (Constraint.getValues(compatibleSourceConstraint, "voltage").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "voltage").values.size() == 0)) {
+            return null;
+        } else {
+            List<Constraint> compatibleConstraints = new ArrayList<>();
+            compatibleConstraints.add(compatibleSourceConstraint);
+            compatibleConstraints.add(compatibleTargetConstraint);
+            return compatibleConstraints;
+//            return new ValueSet<>(compatibleSourceConstraint, compatibleTargetConstraint);
+        }
+    }
 
     // TODO: rankCompatibleConfigurations(<compatible-variables-list>)
 

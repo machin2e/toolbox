@@ -23,10 +23,19 @@ public class VariableValueSet {
      */
     public ValueSet values = new ValueSet(); // TODO: null
 
+    public VariableValueSet(String variableTitle) {
+
+        this.title = variableTitle;
+
+    }
+
     public VariableValueSet(String variableTitle, ValueSet values) {
 
         this.title = variableTitle;
-        this.values = values;
+
+        for (int valueIndex = 0; valueIndex < values.values.size(); valueIndex++) {
+            this.values.values.add(values.values.get(valueIndex));
+        }
 
     }
 
