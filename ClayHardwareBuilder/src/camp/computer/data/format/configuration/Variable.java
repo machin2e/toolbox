@@ -7,7 +7,7 @@ public class Variable {
 
     /**
      * {@code title} is a {@code String} that uniquely identifies the {@code Variable} in the
-     * containing {@code VariableSet}. <em>in the
+     * containing {@code VariableMap}. <em>in the
      * namespace</em>.
      */
     public String title = null; // e.g., mode; direction; voltage

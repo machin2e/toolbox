@@ -16,7 +16,7 @@ public class PortConstruct extends Construct {
     // public ValueSet modeStates = new ValueSet(State("state-1"), State("state-2"), State("state-3"), ...); // NOTE: Stored in Manager so they can be shared? Or in container as static, so per-container-class scope/namespace?
     // To assign state to variable:
     // public State modeState = new State(modeStates.values.get("state-1"));
-    // public VariableSet myFirstConfiguration = new VariableSet(modeStates.get("state-1", "state-3"), directionVariable.values.get("state-2"), voltageVaraible.values.get("state-1", "state-2", "state-4")); // NOTE:
+    // public VariableMap myFirstConfiguration = new VariableMap(modeStates.get("state-1", "state-3"), directionVariable.values.get("state-2"), voltageVaraible.values.get("state-1", "state-2", "state-4")); // NOTE:
 
     // ---
 
@@ -27,19 +27,19 @@ public class PortConstruct extends Construct {
     // Variable modeVariable = new Variable("mode", modeValueSet);
     // Variable directionVariable = new Variable("direction", directionValueSet);
     // Variable voltageVariable = new Variable("voltage", voltageValueSet);
-    // VariableSet configurationA = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet configurationB = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet configurationC = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableSet> configurationList;
+    // VariableMap configurationA = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // VariableMap configurationB = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // VariableMap configurationC = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableMap> configurationList;
 
     // Revision 3:
     // Variable modeVariable = new Variable("mode", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
     // Variable directionVariable = new Variable("direction", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
     // Variable voltageVariable = new Variable("voltage", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
-    // VariableSet configurationA = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet configurationB = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet configurationC = new VariableSet(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableSet> configurationList;
+    // VariableMap configurationA = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // VariableMap configurationB = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // VariableMap configurationC = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableMap> configurationList;
 
     // Revision 4:
     // Variable modeVariable = new Variable("mode", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
@@ -48,8 +48,8 @@ public class PortConstruct extends Construct {
     // Constraint constraintA = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // Constraint constraintB = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // Constraint constraintC = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet constraints = new VariableSet(constraintA, constraintB, constraintC); // List<VariableSet> configurationList;
-    // TODO: ConfigurationSet/List consistentConfigurations = VariableSet.computeConfiguration(sourceConfiguration, targetConfiguration [, ...]); // Consistent configurations for the given ports, which can be used to initialize a PathConstruct.
+    // VariableMap constraints = new VariableMap(constraintA, constraintB, constraintC); // List<VariableMap> configurationList;
+    // TODO: ConfigurationSet/List consistentConfigurations = VariableMap.computeConfiguration(sourceConfiguration, targetConfiguration [, ...]); // Consistent configurations for the given ports, which can be used to initialize a PathConstruct.
 
     // <CONFIGURATION_SPACE>
     // TODO: Add Variables and set their States
@@ -100,8 +100,8 @@ public class PortConstruct extends Construct {
 //    Variable directionVariable = new Variable("direction", directionValueSet);
 //    Variable voltageVariable = new Variable("voltage", voltageValueSet); // 0V
 
-    // TODO: Consider renaming VariableSet to State. VariableSet would be a set of constraints AND value assignments to the constraints.
-//    public VariableSet constraints = null; // Formerly Configuration
+    // TODO: Consider renaming VariableMap to State. VariableMap would be a set of constraints AND value assignments to the constraints.
+//    public VariableMap constraints = null; // Formerly Configuration
     private HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
     public List<Constraint> constraints = new ArrayList<>();
 
@@ -113,8 +113,8 @@ public class PortConstruct extends Construct {
 //        Variable directionVariable = new Variable("direction");
 //        Variable voltageVariable = new Variable("voltage"); // 0V
 //
-//        // TODO: Consider renaming VariableSet to State. VariableSet would be a set of constraints AND value assignments to the constraints.
-////        constraints = new VariableSet(modeVariable, directionVariable, voltageVariable);
+//        // TODO: Consider renaming VariableMap to State. VariableMap would be a set of constraints AND value assignments to the constraints.
+////        constraints = new VariableMap(modeVariable, directionVariable, voltageVariable);
 //        constraints.put("mode", modeVariable);
 //        constraints.put("direction", directionVariable);
 //        constraints.put("voltage", voltageVariable);

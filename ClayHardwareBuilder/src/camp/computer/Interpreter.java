@@ -41,35 +41,6 @@ public class Interpreter {
 
         while (true) {
 
-            // TODO: start file
-            // TODO: export file <filename>
-
-            // SATURDAY GOAL:
-            // TODO: ✓ add User object
-            // TODO: set port supported portConfigurationConstraints
-            // TODO: remove project, device, port
-            // TODO: export/save project (for user account)
-            // TODO: import/load project (for user account)
-
-            // TODO: add path <sourcePortUid>, <targetPortUid>
-            // TODO: show workspace, project, device, port
-            // TODO: clone (add from description by UUID, or at uri/path) project, device
-            // TODO: Explore/Search devices
-
-            // TODO: simulate vertical integration of virtual host shared by (or distributed across) connected devices
-            // TODO: list hosts
-
-            // TODO: TaskConstruct that is composable, sequencable (in live-editing loop), live-loadable (simulated/placeholder for C?).
-
-            // TODO: Select saved project, auto-select from hosts/verify, propagate viral installation/verify, IASM for vertical integration of hosts/device(s), IASM per-host for extensions.
-
-            // TODO: Redis
-            // TODO: Timeline (of commands, so can reconstruct)
-            // TODO: IASM: Generate instructions, track completion status/state of each step (for host/device(s), across hosts)!
-            // TODO: Users: Workspace, Projects, Portfolio (not separate object, just filter shared projects)
-
-            // TODO: Create "host/device server" that announces its presence and allows retrieval of its HDL, specs.
-
             System.out.print("~ ");
 
             inputLine = scanner.nextLine().trim();
@@ -334,7 +305,7 @@ public class Interpreter {
 
         String[] configurationVariableList = configurationOptionString.split(";");
 
-        // Default VariableSet
+        // Default VariableMap
         // TODO: Replace this LUT to determine associated enums with flexible system using manager for Mode(String), Direction(String), Voltage(String).
 //        PortConfigurationConstraint.Mode mode = PortConfigurationConstraint.Mode.NONE;
 //        ValueSet<PortConfigurationConstraint.Direction> directions = null;
@@ -363,7 +334,7 @@ public class Interpreter {
 
         // TODO TODO
 
-        // Add VariableSet Option/Constraint
+        // Add VariableMap Option/Constraint
         workspace.portConstruct.constraints.add(new Constraint(variableValueSets));
 
 
@@ -376,7 +347,7 @@ public class Interpreter {
 //
 //                String[] configurationOptionModeList = variableValues.split(",");
 //
-//                // VariableSet Option Directions
+//                // VariableMap Option Directions
 //                if (configurationOptionModeList.length == 1 && configurationOptionModeList[0].equals("null")) {
 //
 //                    mode = null;
@@ -387,7 +358,7 @@ public class Interpreter {
 //
 //                    for (int j = 0; j < configurationOptionModeList.length; j++) {
 //
-//                        // VariableSet Option Mode
+//                        // VariableMap Option Mode
 //                        if (configurationOptionModeList[j].equals("none")) {
 //                            mode = PortConfigurationConstraint.Mode.NONE;
 //                        } else if (configurationOptionModeList[j].equals("digital")) {
@@ -426,7 +397,7 @@ public class Interpreter {
 //
 //                String[] configurationOptionDirectionList = variableValues.split(",");
 //
-//                // VariableSet Option Directions
+//                // VariableMap Option Directions
 //                if (configurationOptionDirectionList.length == 1 && configurationOptionDirectionList[0].equals("null")) {
 //
 //                    directions = null;
@@ -454,7 +425,7 @@ public class Interpreter {
 //
 //                String[] configurationOptionVoltageList = variableValues.split(",");
 //
-//                // VariableSet Option Voltages
+//                // VariableMap Option Voltages
 //                if (configurationOptionVoltageList.length == 1 && configurationOptionVoltageList[0].equals("null")) {
 //
 //                    voltages = null;
@@ -482,7 +453,7 @@ public class Interpreter {
 
 //    }
 
-        // Add VariableSet Option/Constraint
+        // Add VariableMap Option/Constraint
 //        workspace.portConstruct.portConfigurationConstraints.add(new
 
 //    PortConfigurationConstraint(mode, directions, voltages));
@@ -826,11 +797,6 @@ public class Interpreter {
                         consistentPathConfiguration.put("source", consistentPortConfigurations.get(0));
                         consistentPathConfiguration.put("target", consistentPortConfigurations.get(1));
                         consistentPathConfigurations.add(consistentPathConfiguration);
-//                        consistentPathConfigurations.add(
-//                                new PathConfiguration(
-//                                        consistentPortConfigurations.get(0),
-//                                        consistentPortConfigurations.get(1)));
-
                     }
 
                     // TODO: Pick up here. Constraint resolution isn't working, probably because of a logic bug in isCompatible(...)

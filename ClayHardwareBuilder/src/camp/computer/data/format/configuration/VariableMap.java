@@ -3,19 +3,19 @@ package camp.computer.data.format.configuration;
 import java.util.HashMap;
 
 /**
- * A {code VariableSet} consists of a set of a set of {@code Variable}s and a set of
+ * A {code VariableMap} consists of a set of a set of {@code Variable}s and a set of
  * {@code Constraints} that define the possible {@code State} combinations that can be assigned
  * to the corresponding set of {@code Variables}.
  */
-public class VariableSet {
+public class VariableMap {
 
     // TODO: state set title namespace (unique among state sets)
     // TODO: variable title namespace (unique among constraints; constraints are associated with a state set, which may be a subset derived from another set)
 
     private HashMap<String, Variable> variables = new HashMap<>();
 
-    // TODO?: public VariableSet(ValueSet<?>... stateSubsets) {
-    public VariableSet(Variable... variables) {
+    // TODO?: public VariableMap(ValueSet<?>... stateSubsets) {
+    public VariableMap(Variable... variables) {
 
         for (int variableIndex = 0; variableIndex < variables.length; variableIndex++) {
 
@@ -33,7 +33,7 @@ public class VariableSet {
         return this.variables.put(title, variable);
     }
 
-//    public static List<String> getVariableTitles(VariableSet constraints) {
+//    public static List<String> getVariableTitles(VariableMap constraints) {
 //        return new ArrayList<>(constraints.constraints.keySet());
 //    }
 
