@@ -1,6 +1,7 @@
 package camp.computer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,7 +10,6 @@ import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.data.format.configuration.Constraint;
-import camp.computer.data.format.configuration.PathConfiguration;
 import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 import camp.computer.util.Pair;
@@ -799,7 +799,8 @@ public class Interpreter {
             // Iterate through configurations for of source port in path. For each source port constraints, check
             // the other ports' configurations for compatibility; then add each compatible constraints to a list of
             // compatible configurations.
-            List<PathConfiguration> consistentPathConfigurations = new ArrayList<>();
+//            List<PathConfiguration> consistentPathConfigurations = new ArrayList<>();
+            List<HashMap<String, Constraint>> consistentPathConfigurations = new ArrayList<>();
             for (int i = 0; i < pathConstruct.sourcePortConstruct.constraints.size(); i++) {
                 Constraint portConfigurationConstraint = pathConstruct.sourcePortConstruct.constraints.get(i);
 
@@ -821,10 +822,14 @@ public class Interpreter {
                     List<Constraint> consistentPortConfigurations = Constraint.computeCompatibleConfigurationSet(portConfigurationConstraint, otherPortConfigurationConstraint);
 
                     if (consistentPortConfigurations != null) {
-                        consistentPathConfigurations.add(
-                                new PathConfiguration(
-                                        consistentPortConfigurations.get(0),
-                                        consistentPortConfigurations.get(1)));
+                        HashMap<String, Constraint> consistentPathConfiguration = new HashMap<>();
+                        consistentPathConfiguration.put("source", consistentPortConfigurations.get(0));
+                        consistentPathConfiguration.put("target", consistentPortConfigurations.get(1));
+                        consistentPathConfigurations.add(consistentPathConfiguration);
+//                        consistentPathConfigurations.add(
+//                                new PathConfiguration(
+//                                        consistentPortConfigurations.get(0),
+//                                        consistentPortConfigurations.get(1)));
 
                     }
 
@@ -838,7 +843,9 @@ public class Interpreter {
             // TODO: ^
             if (consistentPathConfigurations.size() == 1) {
                 // Apply the corresponding constraints to ports.
-                PathConfiguration pathConfiguration = consistentPathConfigurations.get(0);
+//                PathConfiguration pathConfiguration = consistentPathConfigurations.get(0);
+//                List<Constraint> pathConfiguration = consistentPathConfigurations.get("source");
+                HashMap<String, Constraint> pathConstraints = consistentPathConfigurations.get(0);
                 System.out.println("✔ found compatible configurations");
 
                 // TODO: (QUESTION) Can I specify a path constraints and infer port configurations (for multi-port) or should it be a list of port configurations?
@@ -866,36 +873,36 @@ public class Interpreter {
 
 
                 // Source
-                System.out.print("  1. " + pathConfiguration.constraints.get("source").variables.get("mode").values.get(0));
+                System.out.print("  1. " + pathConstraints.get("source").variables.get("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("source").variables.get("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("source").variables.get("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("source").variables.get("direction").values.size()) {
+                for (int k = 0; k < pathConstraints.get("source").variables.get("direction").values.size(); k++) {
+                    System.out.print("" + pathConstraints.get("source").variables.get("direction").values.get(k));
+                    if ((k + 1) < pathConstraints.get("source").variables.get("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("source").variables.get("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("source").variables.get("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("source").variables.get("voltage").values.size()) {
+                for (int k = 0; k < pathConstraints.get("source").variables.get("voltage").values.size(); k++) {
+                    System.out.print("" + pathConstraints.get("source").variables.get("voltage").values.get(k));
+                    if ((k + 1) < pathConstraints.get("source").variables.get("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(" | ");
 
                 // Target
-                System.out.print("" + pathConfiguration.constraints.get("target").variables.get("mode").values.get(0));
+                System.out.print("" + pathConstraints.get("target").variables.get("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("target").variables.get("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("target").variables.get("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("target").variables.get("direction").values.size()) {
+                for (int k = 0; k < pathConstraints.get("target").variables.get("direction").values.size(); k++) {
+                    System.out.print("" + pathConstraints.get("target").variables.get("direction").values.get(k));
+                    if ((k + 1) < pathConstraints.get("target").variables.get("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("target").variables.get("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("target").variables.get("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("target").variables.get("voltage").values.size()) {
+                for (int k = 0; k < pathConstraints.get("target").variables.get("voltage").values.size(); k++) {
+                    System.out.print("" + pathConstraints.get("target").variables.get("voltage").values.get(k));
+                    if ((k + 1) < pathConstraints.get("target").variables.get("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }
@@ -909,7 +916,7 @@ public class Interpreter {
                 // Apply the corresponding constraints to ports.
                 System.out.println("✔ found compatible configurations");
                 for (int i = 0; i < consistentPathConfigurations.size(); i++) {
-                    PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
+//                    PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
 //                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.constraints.get("source").mode + ", ...) --- (" + pathConfiguration.constraints.get("target").mode + ", ...)");
                 }
                 System.out.println("! set one of these configurations");
