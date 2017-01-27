@@ -11,8 +11,8 @@ import camp.computer.construct.ProjectConstruct;
 import camp.computer.data.format.configuration.Constraint;
 import camp.computer.data.format.configuration.PathConfiguration;
 import camp.computer.data.format.configuration.ValueSet;
-import camp.computer.data.format.configuration.VariableValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
+import camp.computer.util.Pair;
 
 public class Interpreter {
 
@@ -342,7 +342,7 @@ public class Interpreter {
 
         // TODO: Parse "bus(line)" value string pattern to create bus and lines.
 
-        List<VariableValueSet> variableValueSets = new ArrayList<>();
+        List<Pair<String, ValueSet>> variableValueSets = new ArrayList<>();
 
         for (int i = 0; i < configurationVariableList.length; i++) {
 
@@ -357,7 +357,7 @@ public class Interpreter {
             for (int j = 0; j < variableValueList.length; j++) {
                 variableValueSet.values.add(variableValueList[j]);
             }
-            variableValueSets.add(new VariableValueSet(variableTitle, variableValueSet));
+            variableValueSets.add(new Pair<>(variableTitle, variableValueSet));
 
         }
 
@@ -662,7 +662,7 @@ public class Interpreter {
                             if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variables.size()) {
                                 System.out.print("; ");
                             }
-                            
+
                             k++;
 
                         }
@@ -866,36 +866,36 @@ public class Interpreter {
 
 
                 // Source
-                System.out.print("  1. " + pathConfiguration.constraints.get("source").getValues("mode").values.get(0));
+                System.out.print("  1. " + pathConfiguration.constraints.get("source").variables.get("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("source").getValues("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("source").getValues("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("source").getValues("direction").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("source").variables.get("direction").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("source").variables.get("direction").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("source").variables.get("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("source").getValues("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("source").getValues("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("source").getValues("voltage").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("source").variables.get("voltage").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("source").variables.get("voltage").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("source").variables.get("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(" | ");
 
                 // Target
-                System.out.print("" + pathConfiguration.constraints.get("target").getValues("mode").values.get(0));
+                System.out.print("" + pathConfiguration.constraints.get("target").variables.get("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("target").getValues("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("target").getValues("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("target").getValues("direction").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("target").variables.get("direction").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("target").variables.get("direction").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("target").variables.get("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.constraints.get("target").getValues("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.constraints.get("target").getValues("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.constraints.get("target").getValues("voltage").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("target").variables.get("voltage").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("target").variables.get("voltage").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("target").variables.get("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }

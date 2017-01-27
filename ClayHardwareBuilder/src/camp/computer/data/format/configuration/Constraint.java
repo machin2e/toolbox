@@ -29,52 +29,17 @@ public class Constraint {
     public Constraint(Pair<String, ValueSet>... variableValueSets) {
 
         for (int variableIndex = 0; variableIndex < variableValueSets.length; variableIndex++) {
-//            this.variableValueSets.add(variableValueSets[variableIndex]);
             this.variables.put(variableValueSets[variableIndex].key, variableValueSets[variableIndex].value);
         }
 
     }
 
-    public Constraint(List<VariableValueSet> variableValueSets) {
+    public Constraint(List<Pair<String, ValueSet>> variableValueSets) {
 
         for (int variableIndex = 0; variableIndex < variableValueSets.size(); variableIndex++) {
-//            this.variableValueSets.add(variableValueSets.get(variableIndex));
-            this.variables.put(variableValueSets.get(variableIndex).title, variableValueSets.get(variableIndex).values);
+            this.variables.put(variableValueSets.get(variableIndex).key, variableValueSets.get(variableIndex).value);
         }
 
-    }
-
-    public static ValueSet getValues(Constraint constraint, String variableTitle) {
-
-//        for (int i = 0; i < constraint.variableValueSets.size(); i++) {
-//            if (constraint.variableValueSets.get(i).title.equals(variableTitle)) {
-//                return constraint.variableValueSets.get(i).values;
-//            }
-//        }
-
-        for (String currentVariableTitle : constraint.variables.keySet()) {
-            if (currentVariableTitle.equals(variableTitle)) {
-                return constraint.variables.get(currentVariableTitle);
-            }
-        }
-
-        return null;
-    }
-
-    public ValueSet getValues(String variableTitle) {
-//        for (int i = 0; i < variableValueSets.size(); i++) {
-//            if (variableValueSets.get(i).title.equals(variableTitle)) {
-//                return variableValueSets.get(i).values;
-//            }
-//        }
-
-        for (String currentVariableTitle : this.variables.keySet()) {
-            if (currentVariableTitle.equals(variableTitle)) {
-                return this.variables.get(currentVariableTitle);
-            }
-        }
-
-        return null;
     }
 
     // TODO: discoverCompatiblePortSet(<device-a>, <device-b>)
@@ -224,51 +189,50 @@ public class Constraint {
 
         if (sourceConstraintValues.contains("input") && targetConstraintValues.contains("output")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("input");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("output");
+            compatibleSourceConstraint.variables.get("direction").values.add("input");
+            compatibleTargetConstraint.variables.get("direction").values.add("output");
 
         }
 
         if (sourceConstraintValues.contains("output") && targetConstraintValues.contains("input")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("output");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("input");
+            compatibleSourceConstraint.variables.get("direction").values.add("output");
+            compatibleTargetConstraint.variables.get("direction").values.add("input");
 
         }
 
         if (sourceConstraintValues.contains("bidirectional") && targetConstraintValues.contains("input")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("input");
+            compatibleSourceConstraint.variables.get("direction").values.add("bidirectional");
+            compatibleTargetConstraint.variables.get("direction").values.add("input");
 
         }
 
         if (sourceConstraintValues.contains("input") && targetConstraintValues.contains("bidirectional")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("input");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+            compatibleSourceConstraint.variables.get("direction").values.add("input");
+            compatibleTargetConstraint.variables.get("direction").values.add("bidirectional");
 
         }
 
         if (sourceConstraintValues.contains("bidirectional") && targetConstraintValues.contains("output")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("output");
+            compatibleSourceConstraint.variables.get("direction").values.add("bidirectional");
+            compatibleTargetConstraint.variables.get("direction").values.add("output");
 
         }
 
         if (sourceConstraintValues.contains("output") && targetConstraintValues.contains("bidirectional")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "direction").values.add("output");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+            compatibleSourceConstraint.variables.get("direction").values.add("output");
+            compatibleTargetConstraint.variables.get("direction").values.add("bidirectional");
 
         }
 
         if (sourceConstraintValues.contains("bidirectional") && targetConstraintValues.contains("bidirectional")) {
 
-            compatibleSourceConstraint.getValues("direction").values.add("bidirectional");
-            // Constraint.getValues(compatibleSourceConstraint, "direction").values.add("bidirectional");
-            Constraint.getValues(compatibleTargetConstraint, "direction").values.add("bidirectional");
+            compatibleSourceConstraint.variables.get("direction").values.add("bidirectional");
+            compatibleTargetConstraint.variables.get("direction").values.add("bidirectional");
 
         }
         // </DIRECTION_CONSTRAINT_CHECKS>
@@ -281,22 +245,22 @@ public class Constraint {
 
         if (sourceConstraintValues.contains("ttl") && targetConstraintValues.contains("ttl")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("ttl");
-            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("ttl");
+            compatibleSourceConstraint.variables.get("voltage").values.add("ttl");
+            compatibleTargetConstraint.variables.get("voltage").values.add("ttl");
 
         }
 
         if (sourceConstraintValues.contains("cmos") && targetConstraintValues.contains("cmos")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("cmos");
-            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("cmos");
+            compatibleSourceConstraint.variables.get("voltage").values.add("cmos");
+            compatibleTargetConstraint.variables.get("voltage").values.add("cmos");
 
         }
 
         if (sourceConstraintValues.contains("common") && targetConstraintValues.contains("common")) {
 
-            Constraint.getValues(compatibleSourceConstraint, "voltage").values.add("common");
-            Constraint.getValues(compatibleTargetConstraint, "voltage").values.add("common");
+            compatibleSourceConstraint.variables.get("voltage").values.add("common");
+            compatibleTargetConstraint.variables.get("voltage").values.add("common");
 
         }
 
@@ -312,16 +276,15 @@ public class Constraint {
 
         // TODO: Verify this logic for returning "null"
 
-        if ((Constraint.getValues(compatibleSourceConstraint, "mode").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "mode").values.size() == 0)
-                || (Constraint.getValues(compatibleSourceConstraint, "direction").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "direction").values.size() == 0)
-                || (Constraint.getValues(compatibleSourceConstraint, "voltage").values.size() == 0 || Constraint.getValues(compatibleTargetConstraint, "voltage").values.size() == 0)) {
+        if ((compatibleSourceConstraint.variables.get("mode").values.size() == 0 || compatibleTargetConstraint.variables.get("mode").values.size() == 0)
+                || (compatibleSourceConstraint.variables.get("direction").values.size() == 0 || compatibleTargetConstraint.variables.get("direction").values.size() == 0)
+                || (compatibleSourceConstraint.variables.get("voltage").values.size() == 0 || compatibleTargetConstraint.variables.get("voltage").values.size() == 0)) {
             return null;
         } else {
             List<Constraint> compatibleConstraints = new ArrayList<>();
             compatibleConstraints.add(compatibleSourceConstraint);
             compatibleConstraints.add(compatibleTargetConstraint);
             return compatibleConstraints;
-//            return new ValueSet<>(compatibleSourceConstraint, compatibleTargetConstraint);
         }
     }
 
