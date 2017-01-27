@@ -10,7 +10,6 @@ import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.data.format.configuration.Constraint;
 import camp.computer.data.format.configuration.PathConfiguration;
-import camp.computer.data.format.configuration.PortConfigurationConstraint;
 import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.data.format.configuration.VariableValueSet;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
@@ -127,11 +126,11 @@ public class Interpreter {
 
             addPortTask();
 
-        } else if (context.inputLine.startsWith("add constraint")) { // add constraint (to set of attributes in variables)
+        } else if (context.inputLine.startsWith("add constraint")) { // add constraint (to set of attributes in constraints)
 
             addConfigurationConstraintTask(context);
 
-        } else if (context.inputLine.startsWith("set attributes")) { // TODO: "set variables" or "set attributes"
+        } else if (context.inputLine.startsWith("set attributes")) { // TODO: "set constraints" or "set attributes"
 
             setConfigurationAttributesTask(context);
 
@@ -151,7 +150,7 @@ public class Interpreter {
 
             listPathsTask();
 
-        } else if (context.inputLine.startsWith("set path variables")) {
+        } else if (context.inputLine.startsWith("set path constraints")) {
 
             setPathConfigurationTask(context);
 
@@ -504,7 +503,7 @@ public class Interpreter {
 //        PortConfigurationConstraint.Direction direction = null;
 //        PortConfigurationConstraint.Voltage voltage = null;
 //
-//        // Separate variables string into tokens separated by ";" substring, each an expression representing an
+//        // Separate constraints string into tokens separated by ";" substring, each an expression representing an
 //        // attribute state assignment. Separate each attribute assignment by ":", into the attribute title and
 //        // by ":" substring value.
 //        String[] configurationOptionList = configurationOptionString.split(";");
@@ -577,7 +576,7 @@ public class Interpreter {
 //
 //        }
 //
-//        // TODO: check if specified variables is valid
+//        // TODO: check if specified constraints is valid
 //
 //        // Updates the port state.
 //        workspace.portConstruct.mode = mode;
@@ -589,7 +588,7 @@ public class Interpreter {
 
     }
 
-    // list ports -variables
+    // list ports -constraints
     public void listPortsTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
@@ -613,7 +612,7 @@ public class Interpreter {
 
             String modifiers = inputLineWords[2];
 
-            if (!modifiers.equals("-variables")) {
+            if (!modifiers.equals("-constraints")) {
                 return;
             }
 
@@ -627,23 +626,44 @@ public class Interpreter {
 //                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.size(); j++) {
                     for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).constraints.size(); j++) {
 
-                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variableValueSets.size(); k++) {
+//                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variables.size(); k++) {
+//
+//                            VariableValueSet variableValueSet = workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variableValueSets.get(k);
+//
+////                            System.out.print("\t" + variableValueSet.title + "; ");
+//
+//                            for (int l = 0; l < variableValueSet.values.values.size(); l++) {
+//                                System.out.print("" + variableValueSet.values.values.get(l));
+//
+//                                if ((l + 1) < variableValueSet.values.values.size()) {
+//                                    System.out.print(", ");
+//                                }
+//                            }
+//
+//                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variableValueSets.size()) {
+//                                System.out.print("; ");
+//                            }
+//
+//                        }
 
-                            VariableValueSet variableValueSet = workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variableValueSets.get(k);
+                        int k = 0;
+                        for (String variableTitle : workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variables.keySet()) {
 
-//                            System.out.print("\t" + variableValueSet.title + "; ");
+                            List<String> variableValueSet = workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variables.get(variableTitle).values;
 
-                            for (int l = 0; l < variableValueSet.values.values.size(); l++) {
-                                System.out.print("" + variableValueSet.values.values.get(l));
+                            for (int l = 0; l < variableValueSet.size(); l++) {
+                                System.out.print("" + variableValueSet.get(l));
 
-                                if ((l + 1) < variableValueSet.values.values.size()) {
+                                if ((l + 1) < variableValueSet.size()) {
                                     System.out.print(", ");
                                 }
                             }
 
-                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variableValueSets.size()) {
+                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).constraints.get(j).variables.size()) {
                                 System.out.print("; ");
                             }
+                            
+                            k++;
 
                         }
 
@@ -776,8 +796,8 @@ public class Interpreter {
             // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
 
             // TODO TODO
-            // Iterate through configurations for of source port in path. For each source port variables, check
-            // the other ports' configurations for compatibility; then add each compatible variables to a list of
+            // Iterate through configurations for of source port in path. For each source port constraints, check
+            // the other ports' configurations for compatibility; then add each compatible constraints to a list of
             // compatible configurations.
             List<PathConfiguration> consistentPathConfigurations = new ArrayList<>();
             for (int i = 0; i < pathConstruct.sourcePortConstruct.constraints.size(); i++) {
@@ -798,7 +818,7 @@ public class Interpreter {
                     // ? mode;direction;voltage|mode;direction;voltage
 
                     // TODO TODO
-                    List<Constraint> consistentPortConfigurations = PortConfigurationConstraint.computeCompatibleConfigurationSet(portConfigurationConstraint, otherPortConfigurationConstraint);
+                    List<Constraint> consistentPortConfigurations = Constraint.computeCompatibleConfigurationSet(portConfigurationConstraint, otherPortConfigurationConstraint);
 
                     if (consistentPortConfigurations != null) {
                         consistentPathConfigurations.add(
@@ -813,69 +833,69 @@ public class Interpreter {
 //                System.out.println();
             }
 
-            // If there is only one path variables in the compatible configurations list, automatically configure
+            // If there is only one path constraints in the compatible configurations list, automatically configure
             // the path with it, thereby updating the ports' configurations in the path.
             // TODO: ^
             if (consistentPathConfigurations.size() == 1) {
-                // Apply the corresponding variables to ports.
+                // Apply the corresponding constraints to ports.
                 PathConfiguration pathConfiguration = consistentPathConfigurations.get(0);
                 System.out.println("✔ found compatible configurations");
 
-                // TODO: (QUESTION) Can I specify a path variables and infer port configurations (for multi-port) or should it be a list of port configurations?
+                // TODO: (QUESTION) Can I specify a path constraints and infer port configurations (for multi-port) or should it be a list of port configurations?
                 // TODO: Apply values based on per-variable constraints?
-                // TODO: Ensure there's only one compatible state for each of the variables.
+                // TODO: Ensure there's only one compatible state for each of the constraints.
 
                 // list ports: "3 (12 configurations)" or "3 (null, null, null)"; "3 (SPI_MISO; INPUT; TTL)"
 
                 /*
                 // TODO TODO
-                // Configure the ports with the single compatible variables
-                sourcePortConstruct.mode = pathConfiguration.variables.get("source").mode;
+                // Configure the ports with the single compatible constraints
+                sourcePortConstruct.mode = pathConfiguration.constraints.get("source").mode;
 //                System.out.println (">>> setting mode: " + sourcePortConstruct.mode);
 
-                if (pathConfiguration.variables.get("source").directions.values.size() == 1) {
-                    sourcePortConstruct.direction = pathConfiguration.variables.get("source").directions.values.get(0);
+                if (pathConfiguration.constraints.get("source").directions.values.size() == 1) {
+                    sourcePortConstruct.direction = pathConfiguration.constraints.get("source").directions.values.get(0);
 //                    System.out.println (">>> setting direction: " + sourcePortConstruct.direction);
                 }
 
-                if (pathConfiguration.variables.get("source").voltages.values.size() == 1) {
-                    sourcePortConstruct.voltage = pathConfiguration.variables.get("source").voltages.values.get(0);
+                if (pathConfiguration.constraints.get("source").voltages.values.size() == 1) {
+                    sourcePortConstruct.voltage = pathConfiguration.constraints.get("source").voltages.values.get(0);
 //                    System.out.println (">>> setting voltages: " + sourcePortConstruct.voltage);
                 }
                 */
 
 
                 // Source
-                System.out.print("  1. " + pathConfiguration.variables.get("source").getValues("mode").values.get(0));
+                System.out.print("  1. " + pathConfiguration.constraints.get("source").getValues("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.variables.get("source").getValues("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.variables.get("source").getValues("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.variables.get("source").getValues("direction").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("source").getValues("direction").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("source").getValues("direction").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("source").getValues("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.variables.get("source").getValues("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.variables.get("source").getValues("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.variables.get("source").getValues("voltage").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("source").getValues("voltage").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("source").getValues("voltage").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("source").getValues("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(" | ");
 
                 // Target
-                System.out.print("" + pathConfiguration.variables.get("target").getValues("mode").values.get(0));
+                System.out.print("" + pathConfiguration.constraints.get("target").getValues("mode").values.get(0));
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.variables.get("target").getValues("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.variables.get("target").getValues("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.variables.get("target").getValues("direction").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("target").getValues("direction").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("target").getValues("direction").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("target").getValues("direction").values.size()) {
                         System.out.print(", ");
                     }
                 }
                 System.out.print(";");
-                for (int k = 0; k < pathConfiguration.variables.get("target").getValues("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.variables.get("target").getValues("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.variables.get("target").getValues("voltage").values.size()) {
+                for (int k = 0; k < pathConfiguration.constraints.get("target").getValues("voltage").values.size(); k++) {
+                    System.out.print("" + pathConfiguration.constraints.get("target").getValues("voltage").values.get(k));
+                    if ((k + 1) < pathConfiguration.constraints.get("target").getValues("voltage").values.size()) {
                         System.out.print(", ");
                     }
                 }
@@ -886,11 +906,11 @@ public class Interpreter {
 
             // Otherwise, list the available path configurations and prompt the user to set one of them manually.
             else if (consistentPathConfigurations.size() > 1) {
-                // Apply the corresponding variables to ports.
+                // Apply the corresponding constraints to ports.
                 System.out.println("✔ found compatible configurations");
                 for (int i = 0; i < consistentPathConfigurations.size(); i++) {
                     PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
-//                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.variables.get("source").mode + ", ...) --- (" + pathConfiguration.variables.get("target").mode + ", ...)");
+//                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.constraints.get("source").mode + ", ...) --- (" + pathConfiguration.constraints.get("target").mode + ", ...)");
                 }
                 System.out.println("! set one of these configurations");
             }
@@ -918,7 +938,7 @@ public class Interpreter {
 
         String inputPathConfiguration = inputLineWords[3];
 
-        System.out.println("✔ set path variables to \"" + inputPathConfiguration + "\"");
+        System.out.println("✔ set path constraints to \"" + inputPathConfiguration + "\"");
 
         // protocols:
         // - electronic, rf, none

@@ -7,7 +7,6 @@ import java.util.List;
  * An {@code VariableValueSet} stores a list of title values for a specified title identified by its unique label.
  */
 public class ValueSet {
-
     // TODO: ValueSet<T>
 
     public List<String> values = new ArrayList<>();

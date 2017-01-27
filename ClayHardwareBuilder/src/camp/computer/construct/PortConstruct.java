@@ -1,13 +1,11 @@
 package camp.computer.construct;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import camp.computer.data.format.configuration.Constraint;
-import camp.computer.data.format.configuration.ValueSet;
 import camp.computer.data.format.configuration.Variable;
-import camp.computer.data.format.configuration.VariableSet;
-import camp.computer.data.format.configuration.VariableValueSet;
 
 public class PortConstruct extends Construct {
 
@@ -50,12 +48,12 @@ public class PortConstruct extends Construct {
     // Constraint constraintA = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // Constraint constraintB = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // Constraint constraintC = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableSet variables = new VariableSet(constraintA, constraintB, constraintC); // List<VariableSet> configurationList;
+    // VariableSet constraints = new VariableSet(constraintA, constraintB, constraintC); // List<VariableSet> configurationList;
     // TODO: ConfigurationSet/List consistentConfigurations = VariableSet.computeConfiguration(sourceConfiguration, targetConfiguration [, ...]); // Consistent configurations for the given ports, which can be used to initialize a PathConstruct.
 
     // <CONFIGURATION_SPACE>
     // TODO: Add Variables and set their States
-    // variables.variables.get("variable-title").values.get("state-title")
+    // constraints.constraints.get("variable-title").values.get("state-title")
 //    public List<PortConfigurationConstraint> portConfigurationConstraints = new ArrayList<>();
     // </CONFIGURATION_SPACE>
 
@@ -102,49 +100,47 @@ public class PortConstruct extends Construct {
 //    Variable directionVariable = new Variable("direction", directionValueSet);
 //    Variable voltageVariable = new Variable("voltage", voltageValueSet); // 0V
 
-    // TODO: Consider renaming VariableSet to State. VariableSet would be a set of variables AND value assignments to the variables.
-    public VariableSet variables = null; // Formerly Configuration
+    // TODO: Consider renaming VariableSet to State. VariableSet would be a set of constraints AND value assignments to the constraints.
+//    public VariableSet constraints = null; // Formerly Configuration
+    private HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
     public List<Constraint> constraints = new ArrayList<>();
 
     // Constraint constraintA = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
 
-    public void setupConfiguration() {
-
-        Variable modeVariable = new Variable("mode");
-        Variable directionVariable = new Variable("direction");
-        Variable voltageVariable = new Variable("voltage"); // 0V
-
-        // TODO: Consider renaming VariableSet to State. VariableSet would be a set of variables AND value assignments to the variables.
-        variables = new VariableSet(modeVariable, directionVariable, voltageVariable);
-
-        // Constrains the port variables
-        constraints.add(
-                new Constraint(
-                        new VariableValueSet("mode", new ValueSet("none")),
-                        new VariableValueSet("direction", new ValueSet("none")),
-                        new VariableValueSet("voltage", new ValueSet("none"))
-                )
-        );
-
-        constraints.add(
-                new Constraint(
-                        new VariableValueSet("mode", new ValueSet("digital")),
-                        new VariableValueSet("direction", new ValueSet("input", "output", "bidirectional")),
-                        new VariableValueSet("voltage", new ValueSet("ttl", "cmos"))
-                )
-        );
-
-//        variables.get("mode").value;
-
-    }
+//    public void setupConfiguration() {
+//
+//        Variable modeVariable = new Variable("mode");
+//        Variable directionVariable = new Variable("direction");
+//        Variable voltageVariable = new Variable("voltage"); // 0V
+//
+//        // TODO: Consider renaming VariableSet to State. VariableSet would be a set of constraints AND value assignments to the constraints.
+////        constraints = new VariableSet(modeVariable, directionVariable, voltageVariable);
+//        constraints.put("mode", modeVariable);
+//        constraints.put("direction", directionVariable);
+//        constraints.put("voltage", voltageVariable);
+//
+//        // Constrains the port constraints
+//        constraints.add(
+//                new Constraint(
+//                        new VariableValueSet("mode", new ValueSet("none")),
+//                        new VariableValueSet("direction", new ValueSet("none")),
+//                        new VariableValueSet("voltage", new ValueSet("none"))
+//                )
+//        );
+//
+//        constraints.add(
+//                new Constraint(
+//                        new VariableValueSet("mode", new ValueSet("digital")),
+//                        new VariableValueSet("direction", new ValueSet("input", "output", "bidirectional")),
+//                        new VariableValueSet("voltage", new ValueSet("ttl", "cmos"))
+//                )
+//        );
+//
+////        constraints.get("mode").value;
+//
+//    }
 
     // TODO: Support adding the "custom device" for adding and setting ports in real time (with constraints, selection from list of consistent port configurations, assignment of selected one; then start/track IASM).
-
-    // <STATE>
-//    public PortConfigurationConstraint.Mode mode = null;
-//    public PortConfigurationConstraint.Direction direction = null;
-//    public PortConfigurationConstraint.Voltage voltage = null;
-    // </STATE>
 
     public PortConstruct() {
     }

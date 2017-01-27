@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 public class PathConfiguration {
 
-    public HashMap<String, Constraint> variables = new HashMap<>();
+    public HashMap<String, Constraint> constraints = new HashMap<>();
 
     public PathConfiguration(Constraint sourceConfiguration, Constraint targetConfiguration) {
 
-        this.variables.put("source", sourceConfiguration);
-        this.variables.put("target", targetConfiguration);
+        this.constraints.put("source", sourceConfiguration);
+        this.constraints.put("target", targetConfiguration);
 
     }
 

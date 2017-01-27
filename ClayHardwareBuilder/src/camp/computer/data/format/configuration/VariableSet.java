@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class VariableSet {
 
     // TODO: state set title namespace (unique among state sets)
-    // TODO: variable title namespace (unique among variables; variables are associated with a state set, which may be a subset derived from another set)
+    // TODO: variable title namespace (unique among constraints; constraints are associated with a state set, which may be a subset derived from another set)
 
     private HashMap<String, Variable> variables = new HashMap<>();
 
@@ -33,8 +33,8 @@ public class VariableSet {
         return this.variables.put(title, variable);
     }
 
-//    public static List<String> getVariableTitles(VariableSet variables) {
-//        return new ArrayList<>(variables.variables.keySet());
+//    public static List<String> getVariableTitles(VariableSet constraints) {
+//        return new ArrayList<>(constraints.constraints.keySet());
 //    }
 
 }
