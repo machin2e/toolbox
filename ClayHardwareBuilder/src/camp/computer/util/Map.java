@@ -1,8 +1,8 @@
 package camp.computer.util;
 
-public class Set<T> {
+public class Map<T> {
 
-    public Set(T... values) {
+    public Map(T... values) {
         // TODO:
     }
 

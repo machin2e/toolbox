@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import camp.computer.data.format.configuration.Constraint;
+import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
 
 public class PortConstruct extends Construct {
@@ -30,7 +30,7 @@ public class PortConstruct extends Construct {
     // VariableMap configurationA = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // VariableMap configurationB = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // VariableMap configurationC = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableMap> configurationList;
+    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // Tuple<VariableMap> configurationList;
 
     // Revision 3:
     // Variable modeVariable = new Variable("mode", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
@@ -39,22 +39,22 @@ public class PortConstruct extends Construct {
     // VariableMap configurationA = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // VariableMap configurationB = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
     // VariableMap configurationC = new VariableMap(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // List<VariableMap> configurationList;
+    // ConfigurationSet configurations = new ConfigurationSet(configurationA, configurationB, configurationC); // Tuple<VariableMap> configurationList;
 
     // Revision 4:
     // Variable modeVariable = new Variable("mode", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
     // Variable directionVariable = new Variable("direction", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
     // Variable voltageVariable = new Variable("voltage", new ValueSet<String>(new State(null), new State("none"), new State("digital"), new State("analog"), ...));
-    // Constraint constraintA = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // Constraint constraintB = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // Constraint constraintC = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
-    // VariableMap constraints = new VariableMap(constraintA, constraintB, constraintC); // List<VariableMap> configurationList;
-    // TODO: ConfigurationSet/List consistentConfigurations = VariableMap.computeConfiguration(sourceConfiguration, targetConfiguration [, ...]); // Consistent configurations for the given ports, which can be used to initialize a PathConstruct.
+    // Configuration constraintA = new Configuration(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // Configuration constraintB = new Configuration(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // Configuration constraintC = new Configuration(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    // VariableMap configurations = new VariableMap(constraintA, constraintB, constraintC); // Tuple<VariableMap> configurationList;
+    // TODO: ConfigurationSet/Tuple consistentConfigurations = VariableMap.computeConfiguration(sourceConfiguration, targetConfiguration [, ...]); // Consistent configurations for the given ports, which can be used to initialize a PathConstruct.
 
     // <CONFIGURATION_SPACE>
     // TODO: Add Variables and set their States
-    // constraints.constraints.get("variable-title").values.get("state-title")
-//    public List<PortConfigurationConstraint> portConfigurationConstraints = new ArrayList<>();
+    // configurations.configurations.get("variable-title").values.get("state-title")
+//    public Tuple<PortConfigurationConstraint> portConfigurationConstraints = new ArrayList<>();
     // </CONFIGURATION_SPACE>
 
 //    ValueSet<String> modeValueSet = new ValueSet<>(
@@ -100,12 +100,12 @@ public class PortConstruct extends Construct {
 //    Variable directionVariable = new Variable("direction", directionValueSet);
 //    Variable voltageVariable = new Variable("voltage", voltageValueSet); // 0V
 
-    // TODO: Consider renaming VariableMap to State. VariableMap would be a set of constraints AND value assignments to the constraints.
-//    public VariableMap constraints = null; // Formerly Configuration
-    private HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
-    public List<Constraint> constraints = new ArrayList<>();
+    // TODO: Consider renaming VariableMap to State. VariableMap would be a set of configurations AND value assignments to the configurations.
+    public HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
-    // Constraint constraintA = new Constraint(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
+    public List<Configuration> configurations = new ArrayList<>();
+
+    // Configuration constraintA = new Configuration(modeVariable.values.get("", ""), directionVariable.values.get("", "", ""), voltageVariable.values.get("", "", "", ""));
 
 //    public void setupConfiguration() {
 //
@@ -113,34 +113,34 @@ public class PortConstruct extends Construct {
 //        Variable directionVariable = new Variable("direction");
 //        Variable voltageVariable = new Variable("voltage"); // 0V
 //
-//        // TODO: Consider renaming VariableMap to State. VariableMap would be a set of constraints AND value assignments to the constraints.
-////        constraints = new VariableMap(modeVariable, directionVariable, voltageVariable);
-//        constraints.put("mode", modeVariable);
-//        constraints.put("direction", directionVariable);
-//        constraints.put("voltage", voltageVariable);
+//        // TODO: Consider renaming VariableMap to State. VariableMap would be a set of configurations AND value assignments to the configurations.
+////        configurations = new VariableMap(modeVariable, directionVariable, voltageVariable);
+//        configurations.put("mode", modeVariable);
+//        configurations.put("direction", directionVariable);
+//        configurations.put("voltage", voltageVariable);
 //
-//        // Constrains the port constraints
-//        constraints.add(
-//                new Constraint(
+//        // Constrains the port configurations
+//        configurations.add(
+//                new Configuration(
 //                        new VariableValueSet("mode", new ValueSet("none")),
 //                        new VariableValueSet("direction", new ValueSet("none")),
 //                        new VariableValueSet("voltage", new ValueSet("none"))
 //                )
 //        );
 //
-//        constraints.add(
-//                new Constraint(
+//        configurations.add(
+//                new Configuration(
 //                        new VariableValueSet("mode", new ValueSet("digital")),
 //                        new VariableValueSet("direction", new ValueSet("input", "output", "bidirectional")),
 //                        new VariableValueSet("voltage", new ValueSet("ttl", "cmos"))
 //                )
 //        );
 //
-////        constraints.get("mode").value;
+////        configurations.get("mode").value;
 //
 //    }
 
-    // TODO: Support adding the "custom device" for adding and setting ports in real time (with constraints, selection from list of consistent port configurations, assignment of selected one; then start/track IASM).
+    // TODO: Support adding the "custom device" for adding and setting ports in real time (with configurations, selection from list of consistent port configurations, assignment of selected one; then start/track IASM).
 
     public PortConstruct() {
     }

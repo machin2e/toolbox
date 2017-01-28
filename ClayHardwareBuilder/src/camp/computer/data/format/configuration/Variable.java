@@ -14,7 +14,7 @@ public class Variable {
 
 //    /**
 //     * The {@code ValueSet} stores the set of {@code State}s that can be assigned to the
-//     * {@code Variable}. In the parlance of the <em>Constraint Satisfaction Problem</em>, the
+//     * {@code Variable}. In the parlance of the <em>Configuration Satisfaction Problem</em>, the
 //     * {@code ValueSet} defines the domain of the {@code Variable}.
 //     */
 //    public ValueSet<T> values = new ValueSet<>();

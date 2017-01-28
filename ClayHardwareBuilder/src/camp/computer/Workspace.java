@@ -1,17 +1,17 @@
 package camp.computer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@code Workspace} is provided to the user by default and defines a namespace in which the user creates their
  * projects. Conceptually, the {@code Workspace} sits alongside the user's {@code Inventory}, {@code Notebook}
  * (<em>i.e.,</em> the user's thoughts), {@code Shop} (<em>i.e.,</em> the user's online store for purchasing items).
- *
+ * <p>
  * TODO: Consider modeling the Inventory's Items, Notebook's Notes as a list.
  */
 public class Workspace {
@@ -20,7 +20,7 @@ public class Workspace {
 
     // <CACHE>
     public List<ProjectConstruct> projectConstructs = new ArrayList<>();
-//    public List<DeviceConstruct> deviceConstructs = new ArrayList<>();
+//    public Tuple<DeviceConstruct> deviceConstructs = new ArrayList<>();
     // </CACHE>
 
     // <CONTEXT>

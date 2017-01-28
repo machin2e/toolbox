@@ -1,5 +1,7 @@
 # project <project-uri/uuid> # like "package main" in go, for example
 
+# TODO: view project <uid>
+
 add project
 edit project
 
@@ -8,219 +10,219 @@ edit device
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 add port
 edit port
-add constraint mode:none;direction:null;voltage:null
-add constraint mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
-add constraint mode:analog;direction:input,output;voltage:ttl,cmos
-add constraint mode:pwm;direction:input,output;voltage:ttl,cmos
-add constraint mode:resistive_touch;direction:input;voltage:null
-add constraint mode:power;direction:output;voltage:ttl,cmos
-add constraint mode:power;direction:input;voltage:common
-add constraint mode:i2c(scl);direction:bidirectional;voltage:cmos
-add constraint mode:i2c(sda);direction:bidirectional;voltage:cmos
-add constraint mode:spi(sclk);direction:output;voltage:ttl,cmos
-add constraint mode:spi(mosi);direction:output;voltage:ttl,cmos
-add constraint mode:spi(miso);direction:input;voltage:ttl,cmos
-add constraint mode:spi(ss);direction:output;voltage:ttl,cmos
-add constraint mode:uart(rx);direction:input;voltage:ttl,cmos
-add constraint mode:uart(tx);direction:output;voltage:ttl,cmos
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 
 # Device: Infrared Rangefinder
 add device
@@ -228,15 +230,15 @@ edit device
 
 add port
 edit port
-add constraint mode:power;direction:input;voltage:ttl
+add configuration mode:power;direction:input;voltage:ttl
 
 add port
 edit port
-add constraint mode:power;direction:output;voltage:common
+add configuration mode:power;direction:output;voltage:common
 
 add port
 edit port
-add constraint mode:analog;direction:output;voltage:ttl
+add configuration mode:analog;direction:output;voltage:ttl
 
 # Paths
 add path device 1 port 3 device 14 port 15
@@ -255,7 +257,7 @@ add path device 1 port 5 device 14 port 17
 # TODO: Replace this with compressed "add path" statement that decompresses into an equivalent sequence of statements to update port configurations.
 edit device 1
 edit port 3
-set attributes mode:digital;direction:output;voltage:ttl # TODO: set attributes mode:digital;direction:output;voltage:ttl
+set configuration mode:digital;direction:output;voltage:ttl # TODO: set configuration mode:digital;direction:output;voltage:ttl
 #set state mode:digital;direction:output;voltage:ttl
 
 # Tasks/Revisions, Scripts/Revisions, Code/Revisions
