@@ -7,6 +7,13 @@ public class DeviceConstruct extends Construct {
 
     public List<PortConstruct> portConstructs = new ArrayList<>();
 
-    public ScheduleConstruct scheduleConstruct = null;
+    // <REFACTOR>
+    // TODO: Consider replacing with List<TaskConstruct>
+    public ScheduleConstruct scheduleConstruct = new ScheduleConstruct();
+    // <REFACTOR>
+
+    public DeviceConstruct() {
+        super();
+    }
 
 }

@@ -13,4 +13,8 @@ public class ProjectConstruct extends Construct {
 
     public List<PathConstruct> pathConstructs = new ArrayList<>();
 
+    public ProjectConstruct() {
+        super();
+    }
+
 }

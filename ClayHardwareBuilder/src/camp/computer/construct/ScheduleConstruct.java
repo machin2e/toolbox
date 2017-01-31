@@ -7,4 +7,8 @@ public class ScheduleConstruct extends Construct {
 
     public List<TaskConstruct> taskConstructs = new ArrayList<>();
 
+    public ScheduleConstruct() {
+        super();
+    }
+
 }

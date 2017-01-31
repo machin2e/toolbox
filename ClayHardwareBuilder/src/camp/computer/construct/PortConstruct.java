@@ -143,6 +143,7 @@ public class PortConstruct extends Construct {
     // TODO: Support adding the "custom device" for adding and setting ports in real time (with configurations, selection from list of consistent port configurations, assignment of selected one; then start/track IASM).
 
     public PortConstruct() {
+        super();
     }
 
 }

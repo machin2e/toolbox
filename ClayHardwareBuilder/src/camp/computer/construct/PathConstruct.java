@@ -8,4 +8,8 @@ public class PathConstruct extends Construct {
 
     // TODO: public String portConfiguration; // Used to determine configurations of contained ports.
 
+    public PathConstruct() {
+        super();
+    }
+
 }

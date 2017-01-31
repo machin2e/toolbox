@@ -6,6 +6,7 @@ import java.util.List;
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.construct.TaskConstruct;
 
 /**
  * A {@code Workspace} is provided to the user by default and defines a namespace in which the user creates their
@@ -27,11 +28,13 @@ public class Workspace {
     ProjectConstruct projectConstruct = null;
     DeviceConstruct deviceConstruct = null;
     PortConstruct portConstruct = null;
+    TaskConstruct taskConstruct = null;
 
     // Automatically updated each time a construct is created.
     ProjectConstruct lastProjectConstruct = null;
     DeviceConstruct lastDeviceConstruct = null;
     PortConstruct lastPortConstruct = null;
+    TaskConstruct lastTaskConstruct = null;
     // </CONTEXT>
 
 }

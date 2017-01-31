@@ -14,4 +14,8 @@ public class TaskConstruct extends Construct {
 
     // TODO: jump-policy
 
+    public TaskConstruct() {
+        super();
+    }
+
 }

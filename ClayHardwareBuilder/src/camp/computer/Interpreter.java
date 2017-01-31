@@ -4,18 +4,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
+import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
+import camp.computer.construct.Process;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.construct.TaskConstruct;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 import camp.computer.util.Pair;
 import camp.computer.util.Tuple;
+import camp.computer.workspace.Manager;
 
 public class Interpreter {
+
+    private List<String> inputLines = new ArrayList<>();
+
+    //private HashMap<String, List<String>> processes = new HashMap<>();
+    private List<Process> processes = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set type from default "container" to "namespace", then add an interpreter for that type)!
 
     // <SETTINGS>
     public static boolean ENABLE_VERBOSE_OUTPUT = false;
@@ -58,81 +68,66 @@ public class Interpreter {
 
     public void interpretLine(String inputLine) {
 
-        // Store context
-        Context context = new Context();
-        context.inputLine = inputLine;
+        if (isProcess && !inputLine.startsWith("stop")) {
+            process.operations.add(inputLine);
+        } else {
 
-        if (context.inputLine.startsWith("#")) {
+            // Save line in history
+            this.inputLines.add(inputLine);
 
-            // Nothing!
+            // Store context
+            Context context = new Context();
+            context.inputLine = inputLine;
 
-        } else if (context.inputLine.startsWith("import file")) {
+            if (context.inputLine.startsWith("#")) {
 
-            importFileTask(context);
+                // Nothing!
 
-        } else if (context.inputLine.equals("add project")) {
-
-            addProjectTask();
-
-        } else if (context.inputLine.equals("list projects")) {
-
-            listProjectsTask();
-
-        } else if (context.inputLine.startsWith("edit project")) {
-
-            editProjectTask(context);
-
-        } else if (context.inputLine.startsWith("set project title")) {
-
-            setProjectTitleTask(context);
-
-        } else if (context.inputLine.equals("add device")) { // create hardware
-
-            addDeviceTask();
-
-        } else if (context.inputLine.equals("list devices")) { // list hardware
-
-            listDevicesTask();
-
-        } else if (context.inputLine.startsWith("edit device")) { // select hardware
-
-            editDeviceTask(context);
-
-        } else if (context.inputLine.startsWith("add port")) { // create port
-
-            addPortTask();
-
-        } else if (context.inputLine.startsWith("add configuration")) { // add configuration (to set of attributes in configurations)
-
-            addConfigurationTask(context);
-
-        } else if (context.inputLine.startsWith("set configuration")) { // TODO: "set configurations" or "set configuration"
-
-            setConfigurationTask(context);
-
-        } else if (context.inputLine.startsWith("list ports")) {
-
-            listPortsTask(context);
-
-        } else if (context.inputLine.startsWith("edit port")) {
-
-            editPortTask(context);
-
-        } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
-
-            addPathTask(context);
-
-        } else if (context.inputLine.startsWith("list paths")) {
-
-            listPathsTask();
-
-        } else if (context.inputLine.startsWith("set path configurations")) {
-
-            setPathConfigurationTask(context);
-
-        } else if (context.inputLine.startsWith("exit")) {
-
-            exitTask();
+            } else if (context.inputLine.startsWith("import file")) {
+                importFileTask(context);
+            } else if (context.inputLine.startsWith("start")) {
+                startProcessTask(context);
+            } else if (context.inputLine.startsWith("stop")) {
+                stopProcessTask(context);
+            } else if (context.inputLine.startsWith("do")) {
+                doProcessTask(context);
+            } else if (context.inputLine.equals("add project")) {
+                addProjectTask();
+            } else if (context.inputLine.equals("list projects")) {
+                listProjectsTask();
+            } else if (context.inputLine.startsWith("edit project")) {
+                editProjectTask(context);
+            } else if (context.inputLine.startsWith("set project title")) {
+                setProjectTitleTask(context);
+            } else if (context.inputLine.equals("add device")) {
+                addDeviceTask();
+            } else if (context.inputLine.equals("list devices")) {
+                listDevicesTask();
+            } else if (context.inputLine.startsWith("edit device")) {
+                editDeviceTask(context);
+            } else if (context.inputLine.startsWith("add port")) {
+                addPortTask();
+            } else if (context.inputLine.startsWith("add configuration")) {
+                addConfigurationTask(context);
+            } else if (context.inputLine.startsWith("set configuration")) {
+                setConfigurationTask(context);
+            } else if (context.inputLine.startsWith("list ports")) {
+                listPortsTask(context);
+            } else if (context.inputLine.startsWith("edit port")) {
+                editPortTask(context);
+            } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
+                addPathTask(context);
+            } else if (context.inputLine.startsWith("list paths")) {
+                listPathsTask();
+            } else if (context.inputLine.startsWith("set path configuration")) {
+                setPathConfigurationTask(context);
+            } else if (context.inputLine.startsWith("add task")) {
+                addTaskTask(context);
+            } else if (context.inputLine.startsWith("edit task")) {
+                editTaskTask(context);
+            } else if (context.inputLine.startsWith("exit")) {
+                exitTask();
+            }
 
         }
 
@@ -151,6 +146,79 @@ public class Interpreter {
 
         new LoadBuildFileTask().execute(inputFilePath);
 
+    }
+
+    private boolean isProcess = false;
+    private Process process = null;
+    // TODO: process label
+
+    public void startProcessTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 1) {
+            // start
+
+            isProcess = true;
+            process = new Process();
+
+        } else if (inputLineWords.length > 1) {
+            // start <label>
+
+            isProcess = true;
+            process = new Process();
+
+        }
+
+//        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
+        System.out.println("> start " + process.uid);
+    }
+
+    public void stopProcessTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 1) {
+            // stop
+
+            processes.add(process);
+            isProcess = false;
+
+        }
+
+//        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
+        System.out.println("✔ stop " + process.uid + " (" + process.operations.size() + " operations)");
+
+    }
+
+    public void doProcessTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 2) {
+            // stop
+
+            Process processConstruct = (Process) getConstruct(inputLineWords[1]);
+
+            System.out.println("" + processConstruct.uid + ":");
+
+            for (int i = 0; i < processConstruct.operations.size(); i++) {
+                // TODO: Add to "command buffer"
+                interpretLine(processConstruct.operations.get(i));
+            }
+
+        }
+
+        System.out.println("-");
+
+//        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
+//        System.out.println("✔ stop " + process.uid + " (" + process.operations.size() + " operations)");
     }
 
     public void addProjectTask() {
@@ -227,6 +295,8 @@ public class Interpreter {
 
     }
 
+    // (configuration (variables (mode power) (direction output) (voltage common)))
+
     public void addDeviceTask() {
 
         DeviceConstruct deviceConstruct = new DeviceConstruct();
@@ -268,14 +338,47 @@ public class Interpreter {
             workspace.deviceConstruct = workspace.lastDeviceConstruct;
 
         } else if (inputLineWords.length > 2) {
-            long inputDeviceUid = Long.valueOf(inputLineWords[2]);
 
-            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-                    workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                    break;
+            String inputDeviceIdentifier = inputLineWords[2];
+            if (inputDeviceIdentifier.startsWith("uid:")) {
+
+                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                        break;
+                    }
                 }
+
+            } else if (inputDeviceIdentifier.startsWith("uuid:")) {
+
+                UUID inputDeviceUuid = UUID.fromString(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uuid.equals(inputDeviceUuid)) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                        break;
+                    }
+                }
+
+            } else {
+
+                // TODO: Lookup by index.
+
+                /*
+                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                        break;
+                    }
+                }
+                */
+
             }
+
         }
 
         System.out.println("✔ edit device " + workspace.deviceConstruct.uid);
@@ -483,28 +586,7 @@ public class Interpreter {
                     // Port UID
                     System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
 
-//                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.size(); j++) {
                     for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).configurations.size(); j++) {
-
-//                        for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variables.size(); k++) {
-//
-//                            VariableValueSet variableValueSet = workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variableValueSets.get(k);
-//
-////                            System.out.print("\t" + variableValueSet.title + "; ");
-//
-//                            for (int l = 0; l < variableValueSet.values.values.size(); l++) {
-//                                System.out.print("" + variableValueSet.values.values.get(l));
-//
-//                                if ((l + 1) < variableValueSet.values.values.size()) {
-//                                    System.out.print(", ");
-//                                }
-//                            }
-//
-//                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variableValueSets.size()) {
-//                                System.out.print("; ");
-//                            }
-//
-//                        }
 
                         int k = 0;
                         for (String variableTitle : workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variables.keySet()) {
@@ -526,32 +608,6 @@ public class Interpreter {
                             k++;
 
                         }
-
-//                        // Mode/Family
-//                        System.out.print("\t" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).mode + "; ");
-//
-//                        // Directions
-//                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions != null) {
-//                            for (int l = 0; l < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size(); l++) {
-//                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.get(l));
-//
-//                                if ((l + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).directions.values.size()) {
-//                                    System.out.print(", ");
-//                                }
-//                            }
-//                        }
-//                        System.out.print("; ");
-//
-//                        // Voltages
-//                        if (workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages != null) {
-//                            for (int k = 0; k < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size(); k++) {
-//                                System.out.print("" + workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.get(k));
-//
-//                                if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).portConfigurationConstraints.get(j).voltages.values.size()) {
-//                                    System.out.print(", ");
-//                                }
-//                            }
-//                        }
 
                         System.out.println();
 
@@ -577,20 +633,144 @@ public class Interpreter {
 
         } else if (inputLineWords.length > 2) {
 
-            long inputPortUid = Long.valueOf(inputLineWords[2]);
+//            long inputPortUid = Long.valueOf(inputLineWords[2]);
+//
+//            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
+//                        workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+//                        break;
+//                    }
+//                }
+//            }
 
-            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
-                    if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
-                        workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+            String inputPortIdentifier = inputLineWords[2];
+            if (inputPortIdentifier.startsWith("uid:")) {
+
+                long inputPortUid = Long.valueOf(inputPortIdentifier.split(":")[1]);
+
+//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputPortUid) {
+//                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+//                        break;
+//                    }
+//                }
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
+                        if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uid == inputPortUid) {
+                            workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+                            break;
+                        }
+                    }
+                }
+
+            } else if (inputPortIdentifier.startsWith("uuid:")) {
+
+                UUID inputPortUuid = UUID.fromString(inputPortIdentifier.split(":")[1]);
+
+//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).uuid.equals(inputPortUuid)) {
+//                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+//                        break;
+//                    }
+//                }
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size(); j++) {
+                        if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j).uuid.equals(inputPortUuid)) {
+                            workspace.portConstruct = workspace.projectConstruct.deviceConstructs.get(i).portConstructs.get(j);
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+
+                // TODO: Lookup by index.
+
+                /*
+                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
                         break;
                     }
                 }
+                */
+
             }
 
         }
 
         System.out.println("✔ edit port " + workspace.portConstruct.uid);
+
+    }
+
+    public Construct getConstruct(String address) {
+
+        System.out.println("\taddress: " + address);
+
+        // Parse:
+        // 3
+        // uid:44
+        // uuid:a716a27b-8489-4bae-b099-2bc73e963876
+
+        if (address.startsWith("uid:")) {
+
+            long inputTaskUid = Long.valueOf(address.split(":")[1]);
+
+            if (Manager.elements.containsKey(inputTaskUid)) {
+                return Manager.elements.get(inputTaskUid);
+            }
+
+//            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
+//                        workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+//                        break;
+//                    }
+//                }
+//            }
+
+        } else if (address.startsWith("uuid:")) {
+
+            UUID inputTaskUuid = UUID.fromString(address.split(":")[1]);
+
+            for (int i = 0; i < Manager.elements.size(); i++) {
+                if (Manager.elements.get(i).uuid.equals(inputTaskUuid)) {
+                    return Manager.elements.get(i);
+                }
+            }
+
+//            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
+//                        workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+//                        break;
+//                    }
+//                }
+//            }
+
+        } else {
+
+            // TODO: Lookup by index.
+
+                /*
+                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                        break;
+                    }
+                }
+                */
+
+        }
+
+        return null;
 
     }
 
@@ -601,44 +781,20 @@ public class Interpreter {
 
             String[] inputLineWords = context.inputLine.split("[ ]+");
 
-            long inputSourceDeviceUid = Long.valueOf(inputLineWords[3]);
-            long sourcePortUid = Long.valueOf(inputLineWords[5]);
-            long targetDeviceUid = Long.valueOf(inputLineWords[7]);
-            long targetPortUid = Long.valueOf(inputLineWords[9]);
+            // TODO: Parse address token (for index, UID, UUID; title/key/tag)
 
-            DeviceConstruct sourceDeviceConstruct = null;
-            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputSourceDeviceUid) {
-                    sourceDeviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                    break;
-                }
-            }
+            // <TODO>
+            // TODO: Remove messages!
+            DeviceConstruct sourceDeviceConstruct = (DeviceConstruct) getConstruct(inputLineWords[3]);
+            PortConstruct sourcePortConstruct = (PortConstruct) getConstruct(inputLineWords[5]);
+            DeviceConstruct targetDeviceConstruct = (DeviceConstruct) getConstruct(inputLineWords[7]);
+            PortConstruct targetPortConstruct = (PortConstruct) getConstruct(inputLineWords[9]);
 
-
-            PortConstruct sourcePortConstruct = null;
-            for (int i = 0; i < sourceDeviceConstruct.portConstructs.size(); i++) {
-                if (sourceDeviceConstruct.portConstructs.get(i).uid == sourcePortUid) {
-                    sourcePortConstruct = sourceDeviceConstruct.portConstructs.get(i);
-                    break;
-                }
-            }
-
-            DeviceConstruct targetDeviceConstruct = null;
-            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                if (workspace.projectConstruct.deviceConstructs.get(i).uid == targetDeviceUid) {
-                    targetDeviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                    break;
-                }
-            }
-
-
-            PortConstruct targetPortConstruct = null;
-            for (int i = 0; i < targetDeviceConstruct.portConstructs.size(); i++) {
-                if (targetDeviceConstruct.portConstructs.get(i).uid == targetPortUid) {
-                    targetPortConstruct = targetDeviceConstruct.portConstructs.get(i);
-                    break;
-                }
-            }
+            System.out.println("inputSourceDevice: " + sourceDeviceConstruct);
+            System.out.println("sourcePort: " + sourcePortConstruct);
+            System.out.println("targetDevice: " + targetDeviceConstruct);
+            System.out.println("targetPort: " + targetPortConstruct);
+            // </TODO>
 
             PathConstruct pathConstruct = new PathConstruct();
             pathConstruct.sourcePortConstruct = sourcePortConstruct;
@@ -655,11 +811,9 @@ public class Interpreter {
 
             // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
 
-            // TODO TODO
             // Iterate through configurations for of source port in path. For each source port configurations, check
             // the other ports' configurations for compatibility; then add each compatible configurations to a list of
             // compatible configurations.
-//            Tuple<PathConfiguration> consistentPathConfigurations = new ArrayList<>();
             List<HashMap<String, Configuration>> pathConfigurations = new ArrayList<>();
             for (int i = 0; i < pathConstruct.sourcePortConstruct.configurations.size(); i++) {
                 Configuration sourcePortConfiguration = pathConstruct.sourcePortConstruct.configurations.get(i);
@@ -738,7 +892,6 @@ public class Interpreter {
                         System.out.print(", ");
                     }
                 }
-
                 System.out.println();
 
                 // Configure the ports with the single compatible configurations
@@ -793,13 +946,90 @@ public class Interpreter {
 
         String inputPathConfiguration = inputLineWords[3];
 
-        System.out.println("✔ set path configurations to \"" + inputPathConfiguration + "\"");
+        System.out.println("✔ set path configuration to \"" + inputPathConfiguration + "\"");
 
         // protocols:
         // - electronic, rf, none
 
         // electronic:
         // - voltage
+    }
+
+    public void addTaskTask(Context context) {
+
+        if (workspace.deviceConstruct != null) {
+
+            TaskConstruct taskConstruct = new TaskConstruct();
+            workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+
+            // Store reference to last-created device
+            workspace.lastTaskConstruct = taskConstruct;
+
+            System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+
+        }
+
+    }
+
+    public void editTaskTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 2) {
+
+            workspace.taskConstruct = workspace.lastTaskConstruct;
+
+        } else if (inputLineWords.length > 2) {
+
+            String inputTaskIdentifier = inputLineWords[2];
+            if (inputTaskIdentifier.startsWith("uid:")) {
+
+                long inputTaskUid = Long.valueOf(inputTaskIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
+                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+                            break;
+                        }
+                    }
+                }
+
+            } else if (inputTaskIdentifier.startsWith("uuid:")) {
+
+                UUID inputTaskUuid = UUID.fromString(inputTaskIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
+                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+
+                // TODO: Lookup by index.
+
+                /*
+                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+
+                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+                        break;
+                    }
+                }
+                */
+
+            }
+
+        }
+
+        System.out.println("✔ edit task " + workspace.taskConstruct.uid);
     }
 
     public void exitTask() {
