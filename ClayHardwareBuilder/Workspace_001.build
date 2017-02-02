@@ -7,6 +7,7 @@ add device # "clay-device"
 edit device # "clay-device"
 
 start "add-builder-ports"
+edit device
 add port
 edit port
 add configuration mode:none;direction:null;voltage:null
@@ -77,11 +78,14 @@ edit device uid(1)
 edit port uid(4)
 set configuration mode:digital;direction:output;voltage:ttl
 
-start "add-task"
+start "add-task" # (input)
+edit device uid(1) # HACK
+# edit device uid(input) # HACK
 add task
 edit task
 stop
 
+edit project # always jumps to "top-level" project scope, since only one project can be active at a time
 do "add-task"
 
 # TODO: use port uid:33 as "source-port"

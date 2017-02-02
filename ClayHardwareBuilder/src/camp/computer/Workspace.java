@@ -3,6 +3,7 @@ package camp.computer;
 import java.util.ArrayList;
 import java.util.List;
 
+import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
@@ -27,11 +28,13 @@ public class Workspace {
     // </CACHE>
 
     // <CONTEXT>
+    Construct construct = null;
+
     ProjectConstruct projectConstruct = null;
-    DeviceConstruct deviceConstruct = null;
-    PortConstruct portConstruct = null;
-    TaskConstruct taskConstruct = null;
-    PathConstruct pathConstruct = null;
+//    DeviceConstruct deviceConstruct = null;
+//    PortConstruct portConstruct = null;
+//    TaskConstruct taskConstruct = null;
+//    PathConstruct pathConstruct = null;
 
     ProcessConstruct processConstruct = null;
     // TODO: process label
@@ -43,5 +46,23 @@ public class Workspace {
     TaskConstruct lastTaskConstruct = null;
     PathConstruct lastPathConstruct = null;
     // </CONTEXT>
+
+    public static void setConstruct(Workspace workspace, Construct construct) {
+
+        if (workspace.construct.getClass() == ProjectConstruct.class) {
+            workspace.lastProjectConstruct = (ProjectConstruct) workspace.construct;
+        } else if (workspace.construct.getClass() == DeviceConstruct.class) {
+            workspace.lastDeviceConstruct = (DeviceConstruct) workspace.construct;
+        } else if (workspace.construct.getClass() == PortConstruct.class) {
+            workspace.lastPortConstruct = (PortConstruct) workspace.construct;
+        } else if (workspace.construct.getClass() == TaskConstruct.class) {
+            workspace.lastTaskConstruct = (TaskConstruct) workspace.construct;
+        } else if (workspace.construct.getClass() == PathConstruct.class) {
+            workspace.lastPathConstruct = (PathConstruct) workspace.construct;
+        }
+
+        workspace.construct = construct;
+
+    }
 
 }

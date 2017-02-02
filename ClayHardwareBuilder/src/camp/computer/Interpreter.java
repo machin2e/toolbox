@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
@@ -288,13 +287,15 @@ public class Interpreter {
             } else if (constructTypeString.equals("port")) {
 
                 // TODO: Ensure edit construct is a device!
-                if (workspace.deviceConstruct != null) {
+                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
                     PortConstruct portConstruct = new PortConstruct();
-                    workspace.deviceConstruct.portConstructs.add(portConstruct);
+                    deviceConstruct.portConstructs.add(portConstruct);
                     workspace.lastPortConstruct = portConstruct; // Store reference to last-created port
 
-                    System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+                    System.out.println("✔ add port " + portConstruct.uid + " on device " + deviceConstruct.uid);
                 }
 
             } else if (constructTypeString.equals("path")) {
@@ -313,15 +314,17 @@ public class Interpreter {
 
             } else if (constructTypeString.equals("task")) {
 
-                if (workspace.deviceConstruct != null) {
+                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
                     TaskConstruct taskConstruct = new TaskConstruct();
-                    workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+                    deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
 
                     // Store reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
 
-                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
 
                 }
 
@@ -361,14 +364,16 @@ public class Interpreter {
             } else if (constructTypeString.equals("port")) {
 
                 // TODO: Ensure edit construct is a device!
-                if (workspace.deviceConstruct != null) {
+                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
                     PortConstruct portConstruct = new PortConstruct();
                     portConstruct.title = constructTitleString;
-                    workspace.deviceConstruct.portConstructs.add(portConstruct);
+                    deviceConstruct.portConstructs.add(portConstruct);
                     workspace.lastPortConstruct = portConstruct; // Store reference to last-created port
 
-                    System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+                    System.out.println("✔ add port " + portConstruct.uid + " on device " + deviceConstruct.uid);
                 }
 
             } else if (constructTypeString.equals("path")) {
@@ -377,16 +382,18 @@ public class Interpreter {
 
             } else if (constructTypeString.equals("task")) {
 
-                if (workspace.deviceConstruct != null) {
+                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
                     TaskConstruct taskConstruct = new TaskConstruct();
                     taskConstruct.title = constructTitleString;
-                    workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+                    deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
 
                     // Store reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
 
-                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
 
                 }
 
@@ -513,18 +520,18 @@ public class Interpreter {
         // TODO: Lookup context.get("inputLine")
         String[] inputLineWords = context.inputLine.split("[ ]+");
 
-        Construct construct = null;
+        Construct deviceConstruct = null;
 
         if (inputLineWords.length == 2) {
-            construct = workspace.lastDeviceConstruct;
+            deviceConstruct = workspace.lastDeviceConstruct;
         } else if (inputLineWords.length > 2) {
-            construct = Manager.getConstruct(inputLineWords[2]);
+            deviceConstruct = Manager.getConstruct(inputLineWords[2]);
         }
 
-        if (construct != null) {
+        if (deviceConstruct != null) {
 
-            workspace.deviceConstruct = (DeviceConstruct) construct;
-            System.out.println("✔ edit device " + workspace.deviceConstruct.uid);
+            workspace.construct = deviceConstruct;
+            System.out.println("✔ edit device " + deviceConstruct.uid);
 
         } else {
 
@@ -579,6 +586,11 @@ public class Interpreter {
 
         List<Pair<String, Tuple<String>>> variableValueSets = new ArrayList<>();
 
+        PortConstruct portConstruct = null;
+        if (workspace.construct != null && workspace.construct.getClass() == PortConstruct.class) {
+            portConstruct = (PortConstruct) workspace.construct;
+        }
+
         for (int i = 0; i < configurationVariableList.length; i++) {
 
             String[] configurationAssignmentList = configurationVariableList[i].split(":");
@@ -586,8 +598,8 @@ public class Interpreter {
             String variableValues = configurationAssignmentList[1];
 
             // <HACK>
-            if (!workspace.portConstruct.variables.containsKey(variableTitle)) {
-                workspace.portConstruct.variables.put(variableTitle, new Variable(variableTitle));
+            if (!portConstruct.variables.containsKey(variableTitle)) {
+                portConstruct.variables.put(variableTitle, new Variable(variableTitle));
             }
             // </HACK>
 
@@ -603,7 +615,7 @@ public class Interpreter {
         }
 
         // Add VariableMap Option/Configuration
-        workspace.portConstruct.configurations.add(new Configuration(variableValueSets));
+        portConstruct.configurations.add(new Configuration(variableValueSets));
 
     }
 
@@ -715,12 +727,14 @@ public class Interpreter {
 
         if (inputLineWords.length == 2) {
 
-            if (workspace.deviceConstruct != null) {
+            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
 
-                for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+
+                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
 
                     // Port UID
-                    System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
+                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
 
                 }
 
@@ -734,19 +748,21 @@ public class Interpreter {
                 return;
             }
 
-            if (workspace.deviceConstruct != null) {
+            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
 
-                for (int i = 0; i < workspace.deviceConstruct.portConstructs.size(); i++) {
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+
+                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
 
                     // Port UID
-                    System.out.println("" + workspace.deviceConstruct.portConstructs.get(i).uid);
+                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
 
-                    for (int j = 0; j < workspace.deviceConstruct.portConstructs.get(i).configurations.size(); j++) {
+                    for (int j = 0; j < deviceConstruct.portConstructs.get(i).configurations.size(); j++) {
 
                         int k = 0;
-                        for (String variableTitle : workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variables.keySet()) {
+                        for (String variableTitle : deviceConstruct.portConstructs.get(i).configurations.get(j).variables.keySet()) {
 
-                            List<String> variableValueSet = workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variables.get(variableTitle).values;
+                            List<String> variableValueSet = deviceConstruct.portConstructs.get(i).configurations.get(j).variables.get(variableTitle).values;
 
                             for (int l = 0; l < variableValueSet.size(); l++) {
                                 System.out.print("" + variableValueSet.get(l));
@@ -756,7 +772,7 @@ public class Interpreter {
                                 }
                             }
 
-                            if ((k + 1) < workspace.deviceConstruct.portConstructs.get(i).configurations.get(j).variables.size()) {
+                            if ((k + 1) < deviceConstruct.portConstructs.get(i).configurations.get(j).variables.size()) {
                                 System.out.print("; ");
                             }
 
@@ -781,18 +797,18 @@ public class Interpreter {
         // TODO: Lookup context.get("inputLine")
         String[] inputLineWords = context.inputLine.split("[ ]+");
 
-        Construct construct = null;
+        Construct portConstruct = null;
 
         if (inputLineWords.length == 2) {
-            construct = workspace.lastPortConstruct;
+            portConstruct = workspace.lastPortConstruct;
         } else if (inputLineWords.length > 2) {
-            construct = Manager.getConstruct(inputLineWords[2]);
+            portConstruct = Manager.getConstruct(inputLineWords[2]);
         }
 
-        if (construct != null) {
+        if (portConstruct != null) {
 
-            workspace.portConstruct = (PortConstruct) construct;
-            System.out.println("✔ edit port " + workspace.portConstruct.uid);
+            workspace.construct = portConstruct;
+            System.out.println("✔ edit port " + workspace.construct.uid);
 
         } else {
 
@@ -826,7 +842,9 @@ public class Interpreter {
         // set source-port[construct-type] uid:34
         // set target-port[construct-type] uid:34
 
-        if (workspace.deviceConstruct != null) {
+        if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+            DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
             String[] inputLineWords = context.inputLine.split("[ ]+");
 
@@ -1082,57 +1100,57 @@ public class Interpreter {
 
         if (inputLineWords.length == 2) {
 
-            workspace.taskConstruct = workspace.lastTaskConstruct;
+            Workspace.setConstruct(workspace, workspace.lastTaskConstruct);
 
         } else if (inputLineWords.length > 2) {
 
-            String inputTaskIdentifier = inputLineWords[2];
-            if (inputTaskIdentifier.startsWith("uid:")) {
-
-                long inputTaskUid = Long.valueOf(inputTaskIdentifier.split(":")[1]);
-
-                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
-                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-                            break;
-                        }
-                    }
-                }
-
-            } else if (inputTaskIdentifier.startsWith("uuid:")) {
-
-                UUID inputTaskUuid = UUID.fromString(inputTaskIdentifier.split(":")[1]);
-
-                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
-                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-                            break;
-                        }
-                    }
-                }
-
-            } else {
-
-                // TODO: Lookup by index.
-
-                /*
-                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
-
-                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                        break;
-                    }
-                }
-                */
-
-            }
+//            String inputTaskIdentifier = inputLineWords[2];
+//            if (inputTaskIdentifier.startsWith("uid:")) {
+//
+//                long inputTaskUid = Long.valueOf(inputTaskIdentifier.split(":")[1]);
+//
+//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+//                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
+//                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//            } else if (inputTaskIdentifier.startsWith("uuid:")) {
+//
+//                UUID inputTaskUuid = UUID.fromString(inputTaskIdentifier.split(":")[1]);
+//
+//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
+//                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
+//                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//            } else {
+//
+//                // TODO: Lookup by index.
+//
+//                /*
+//                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
+//
+//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+//                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
+//                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
+//                        break;
+//                    }
+//                }
+//                */
+//
+//            }
 
         }
 
-        System.out.println("✔ edit task " + workspace.taskConstruct.uid);
+        System.out.println("✔ edit task " + workspace.construct.uid);
     }
 
     public void removeTaskTask(Context context) {

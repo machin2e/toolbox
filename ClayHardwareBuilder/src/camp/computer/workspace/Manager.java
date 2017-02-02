@@ -36,25 +36,14 @@ public class Manager {
 
             if (address.startsWith("uid")) {
 
-//                long inputTaskUid = Long.valueOf(address.split(":")[1]);
                 long inputTaskUid = Long.valueOf(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
 
                 if (Manager.elements.containsKey(inputTaskUid)) {
                     return Manager.elements.get(inputTaskUid);
                 }
 
-//            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-//                    if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
-//                        workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-//                        break;
-//                    }
-//                }
-//            }
-
             } else if (address.startsWith("uuid")) {
 
-//                UUID inputTaskUuid = UUID.fromString(address.split(":")[1]);
                 UUID inputTaskUuid = UUID.fromString(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
 
                 for (int i = 0; i < Manager.elements.size(); i++) {
@@ -62,15 +51,6 @@ public class Manager {
                         return Manager.elements.get(i);
                     }
                 }
-
-//            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-//                    if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
-//                        workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-//                        break;
-//                    }
-//                }
-//            }
 
             } else {
 
