@@ -10,7 +10,7 @@ public abstract class Construct {
 
     // Identity:
     public UUID uuid = UUID.randomUUID();
-    // TODO: session title/tag(s)
+    public String title = null; // title/tag(s)
     // TODO: type
 
     // Structure/Links:

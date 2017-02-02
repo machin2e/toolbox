@@ -5,6 +5,7 @@ import java.util.List;
 
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.PortConstruct;
+import camp.computer.construct.ProcessConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.construct.TaskConstruct;
 
@@ -29,6 +30,9 @@ public class Workspace {
     DeviceConstruct deviceConstruct = null;
     PortConstruct portConstruct = null;
     TaskConstruct taskConstruct = null;
+
+    ProcessConstruct processConstruct = null;
+    // TODO: process label
 
     // Automatically updated each time a construct is created.
     ProjectConstruct lastProjectConstruct = null;

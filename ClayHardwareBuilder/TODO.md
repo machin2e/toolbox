@@ -1,4 +1,89 @@
-# TODO: Remove everything following # to allow end-of-line comments.
+# project <project-uri/uuid> # like "package main" in go, for example
+
+# TODO: Extend address space/combination space beyond path configuration to include:
+# TODO: * port
+# TODO: * path
+# TODO: - device
+# TODO: - host
+# TODO: - project
+# TODO: - workspace
+# e.g., Update this path configuration format to UID ports, then extend from there:
+# Port: mode:digital;direction:output;voltage:ttl
+#   Path: mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common
+#   Path: path-a-uid|mode:power;direction:input;voltage:common&path-b-uid|mode:power;direction:output;voltage:common
+# Path: path-a-uid < mode:power;direction:input;voltage:common & path-b-uid < mode:power;direction:output;voltage:common
+# Path: path-a-uid.configuration < mode:power;direction:input;voltage:common & path-b-uid.configuration < mode:power;direction:output;voltage:common
+
+# TODO: Save serial format of [ ] port; [ ] device; [ ] path; [ ] project; [ ] workspace
+# edit project 1 device 3 port 4 # sets construct: port 4
+# edit device
+# edit device 3 configuration
+
+# TODO: edit device uid:4
+# TODO: add task [<uuid>]
+# TODO: edit task
+# TODO: set task script
+
+# TODO: remove project
+# TODO: remove device
+# TODO: remove port
+# TODO: remove port configuration
+# TODO: remove path
+# TODO: remove path configuration
+# TODO: remove task
+
+# TODO: view project <uid>
+
+# TODO: store last used construct of type X
+# TODO: 1. when first create it
+# TODO: 2. when switching editor focus from current construct type X to _another_ construct type Y (updates last construct of X and Y)
+
+# TODO: user construct that provides a "home" (workspace) container for the user. Their stuff goes in there.
+
+# add project "MyProjectTitle!"
+# add <construct-title>
+
+# add device "Clay"
+
+#start ["clay-port-configuration"]
+
+
+#do "clay-port-configuration"
+#add port # NOTE: Adds port to the last-selected device
+# NOTE: UIDs are useful mostly for interactive mode. Adding labels can make life easier.
+# NOTE: Defining procedures automates operation entry.
+
+
+# add path
+# ALT: add path (port <uid>, port <uid>)
+# edit path
+# set path source device 1 port 3
+# set path target device 14 port 15
+# solve path configuration / get path configurations / get path values
+# TODO: resolve path --> solves CSP and updates configuration if only one available; otherwise, lists available and prompts for selection; doesn't actually commit configuration until CSP is resolved to 1 configuration or one is specified from those available for given constraints
+# INFER: set path state mode:power[;direction:input;voltage:ttl]
+
+# TODO: Replace this with compressed "add path" statement that decompresses into an equivalent sequence of statements to update port configurations.
+
+
+# Tasks/Revisions, Scripts/Revisions, Code/Revisions
+# after "edit device <uid>":
+# add schedule # complement to "add configuration"
+# edit schedule
+# add task
+# edit task # opens script editor (JS or C)
+
+##########
+
+# new project # Anonymous construct!
+# del project
+# create project
+# delete project
+
+####################################################################################################
+
+
+
 
 # TODO: Support "statement compression" for some constructs. The goal is to minimize the number of expressions required to fully add and configure constructs to the workspace and retain "operational transformability" or "undoability" and "uncompressed expression order". Add:
 # TODO: add devices (2)

@@ -1,0 +1,371 @@
+# Builder Script File Format 0.0.1-alpha
+
+# project <project-uri/uuid> # like "package main" in go, for example
+
+# TODO: Extend address space/combination space beyond path configuration to include:
+# TODO: * port
+# TODO: * path
+# TODO: - device
+# TODO: - host
+# TODO: - project
+# TODO: - workspace
+# e.g., Update this path configuration format to UID ports, then extend from there:
+# Port: mode:digital;direction:output;voltage:ttl
+#   Path: mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common
+#   Path: path-a-uid|mode:power;direction:input;voltage:common&path-b-uid|mode:power;direction:output;voltage:common
+# Path: path-a-uid < mode:power;direction:input;voltage:common & path-b-uid < mode:power;direction:output;voltage:common
+# Path: path-a-uid.configuration < mode:power;direction:input;voltage:common & path-b-uid.configuration < mode:power;direction:output;voltage:common
+
+# TODO: Save serial format of [ ] port; [ ] device; [ ] path; [ ] project; [ ] workspace
+# edit project 1 device 3 port 4 # sets construct: port 4
+# edit device
+# edit device 3 configuration
+
+# TODO: edit device uid:4
+# TODO: add task [<uuid>]
+# TODO: edit task
+# TODO: set task script
+
+# TODO: remove project
+# TODO: remove device
+# TODO: remove port
+# TODO: remove port configuration
+# TODO: remove path
+# TODO: remove path configuration
+# TODO: remove task
+
+# TODO: view project <uid>
+
+# TODO: store last used construct of type X
+# TODO: 1. when first create it
+# TODO: 2. when switching editor focus from current construct type X to _another_ construct type Y (updates last construct of X and Y)
+
+add project
+# add project "MyProjectTitle!"
+edit project
+
+add device
+# add device "Clay"
+edit device
+
+#start ["clay-port-configuration"]
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+#stop
+
+#start ["clay-port-configuration"]
+start
+add port
+edit port
+add configuration mode:none;direction:null;voltage:null
+add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+add configuration mode:resistive_touch;direction:input;voltage:null
+add configuration mode:power;direction:output;voltage:ttl,cmos
+add configuration mode:power;direction:input;voltage:common
+add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+stop
+
+#do "clay-port-configuration"
+
+#add port # NOTE: Adds port to the last-selected device
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+#add port
+#edit port
+#add configuration mode:none;direction:null;voltage:null
+#add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
+#add configuration mode:analog;direction:input,output;voltage:ttl,cmos
+#add configuration mode:pwm;direction:input,output;voltage:ttl,cmos
+#add configuration mode:resistive_touch;direction:input;voltage:null
+#add configuration mode:power;direction:output;voltage:ttl,cmos
+#add configuration mode:power;direction:input;voltage:common
+#add configuration mode:i2c(scl);direction:bidirectional;voltage:cmos
+#add configuration mode:i2c(sda);direction:bidirectional;voltage:cmos
+#add configuration mode:spi(sclk);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(mosi);direction:output;voltage:ttl,cmos
+#add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
+#add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
+#add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
+#add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
+do uid:3
+
+# Device: Infrared Rangefinder
+add device
+# add device # NOTE: "add device" always adds the device to the current workspace.
+edit device
+
+#add port # NOTE: "add port" adds a port to the current device (if editing).
+#edit port # NOTE: "edit port" edits the last-added port
+add port
+edit port
+add configuration mode:power;direction:input;voltage:ttl # NOTE: Adds configuration to the current construct!
+
+add port
+edit port
+add configuration mode:power;direction:output;voltage:common
+
+add port
+edit port
+add configuration mode:analog;direction:output;voltage:ttl
+
+# Paths
+# TODO: Update this format... break into steps?
+#add path device 1 port 3 device 15 port 17
+#add path device 1 port 4 device 15 port 18
+#add path device 1 port 5 device 15 port 19
+add path device uid:1 port uid:4 device uid:16 port uid:18
+add path device uid:1 port uid:5 device uid:16 port uid:19
+add path device uid:1 port uid:6 device uid:16 port uid:20
+
+# add path
+# ALT: add path (port <uid>, port <uid>)
+# edit path
+# set path source device 1 port 3
+# set path target device 14 port 15
+# solve path configuration / get path configurations / get path values
+# TODO: resolve path --> solves CSP and updates configuration if only one available; otherwise, lists available and prompts for selection; doesn't actually commit configuration until CSP is resolved to 1 configuration or one is specified from those available for given constraints
+# INFER: set path state mode:power[;direction:input;voltage:ttl]
+
+# TODO: Replace this with compressed "add path" statement that decompresses into an equivalent sequence of statements to update port configurations.
+edit device uid:1
+edit port uid:3
+set configuration mode:digital;direction:output;voltage:ttl
+
+# Tasks/Revisions, Scripts/Revisions, Code/Revisions
+# after "edit device <uid>":
+# add schedule # complement to "add configuration"
+# edit schedule
+# add task
+# edit task # opens script editor (JS or C)
+
+add task
+edit task
