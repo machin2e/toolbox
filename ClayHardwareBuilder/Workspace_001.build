@@ -42,25 +42,46 @@ do "add-builder-ports"
 
 # Device: Infrared Rangefinder
 add device # NOTE: "add project" always adds the device to the current project.
-edit device
 
+edit device
 add port # NOTE: "add port" adds a port to the current device (if editing).
 edit port # NOTE: "edit port" edits the last-added port
 add configuration mode:power;direction:input;voltage:ttl # NOTE: Adds configuration to the current construct!
 
+edit device
 add port
 edit port
 add configuration mode:power;direction:output;voltage:common
 
+edit device
 add port
 edit port
 add configuration mode:analog;direction:output;voltage:ttl
 
 # Paths
 # TODO: Update this path format... break into steps?
-add path device uid(1) port uid(4) device uid(16) port uid(18)
-add path device uid(1) port uid(5) device uid(16) port uid(19)
-add path device uid(1) port uid(6) device uid(16) port uid(20)
+#add path device uid(1) port uid(4) device uid(16) port uid(18)
+add path
+edit path
+set source-port:uid(4)
+set target-port:uid(18)
+
+#add path device uid(1) port uid(5) device uid(16) port uid(19)
+add path
+edit path
+set source-port:uid(5)
+set target-port:uid(19)
+
+#add path device uid(1) port uid(6) device uid(16) port uid(20)
+add path
+edit path
+set source-port:uid(6)
+set target-port:uid(20)
+
+// TODO: solve <path-uid>
+#solve uid(21)
+#solve uid(22)
+#solve uid(23)
 
 # add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
 # add path { source-port:uid(4); target-port:uid(18) }

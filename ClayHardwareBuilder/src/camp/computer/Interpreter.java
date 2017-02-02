@@ -130,9 +130,12 @@ public class Interpreter {
             } else if (context.inputLine.startsWith("remove port")) {
                 removePortTask(context);
             } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
-                addPathTask(context);
+//                addPathTask(context);
+                addConstructTask(context);
             } else if (context.inputLine.startsWith("set")) {
                 setConstructVariable(context);
+            } else if (context.inputLine.startsWith("edit path")) {
+                editPathTask(context);
             } else if (context.inputLine.startsWith("list paths")) {
                 listPathsTask();
             } else if (context.inputLine.startsWith("remove path")) {
@@ -146,6 +149,8 @@ public class Interpreter {
                 editTaskTask(context);
             } else if (context.inputLine.startsWith("remove task")) {
                 removeTaskTask(context);
+            } else if (context.inputLine.startsWith("solve")) {
+                solvePathConfigurationTask(context);
             } else if (context.inputLine.startsWith("exit")) {
                 exitTask();
             }
@@ -990,6 +995,177 @@ public class Interpreter {
 
     }
 
+    public void solvePathConfigurationTask(Context context) {
+
+        // solve uid(34)
+        // solve path <path-address>
+
+        // add path <title>
+        // edit path
+        // set source-port[construct-type] uid:34
+        // set target-port[construct-type] uid:34
+
+//        if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+//        if (workspace.construct != null && workspace.construct.getClass() == PathConstruct.class) {
+
+//            DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        // TODO: Parse address token (for index, UID, UUID; title/key/tag)
+
+        // <TODO>
+        // TODO: Remove messages!
+//            DeviceConstruct sourceDeviceConstruct = (DeviceConstruct) Manager.getConstruct(inputLineWords[3]);
+//            PortConstruct sourcePortConstruct = (PortConstruct) Manager.getConstruct(inputLineWords[5]);
+//            DeviceConstruct targetDeviceConstruct = (DeviceConstruct) Manager.getConstruct(inputLineWords[7]);
+//            PortConstruct targetPortConstruct = (PortConstruct) Manager.getConstruct(inputLineWords[9]);
+        // </TODO>
+
+//            PathConstruct pathConstruct = new PathConstruct();
+//            pathConstruct.sourcePortConstruct = sourcePortConstruct;
+//            pathConstruct.targetPortConstruct = targetPortConstruct;
+//
+//            workspace.projectConstruct.pathConstructs.add(pathConstruct);
+//
+//            System.out.println("✔ add path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
+
+        PathConstruct pathC = (PathConstruct) Manager.getConstruct(inputLineWords[1]);
+
+
+        /**
+         * "solve path [uid]"
+         */
+
+        // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
+
+        // Iterate through configurations for of source port in path. For each source port configurations, check
+        // the other ports' configurations for compatibility; then add each compatible configurations to a list of
+        // compatible configurations.
+        List<HashMap<String, Configuration>> pathConfigurations = new ArrayList<>();
+//            for (int i = 0; i < pathConstruct.sourcePortConstruct.configurations.size(); i++) {
+        for (int i = 0; i < pathC.sourcePortConstruct.configurations.size(); i++) {
+//                Configuration sourcePortConfiguration = pathConstruct.sourcePortConstruct.configurations.get(i);
+            Configuration sourcePortConfiguration = pathC.sourcePortConstruct.configurations.get(i);
+
+//                for (int j = 0; j < pathConstruct.targetPortConstruct.configurations.size(); j++) {
+            for (int j = 0; j < pathC.targetPortConstruct.configurations.size(); j++) {
+//                    Configuration targetPortConfiguration = pathConstruct.targetPortConstruct.configurations.get(j);
+                Configuration targetPortConfiguration = pathC.targetPortConstruct.configurations.get(j);
+
+                // PATH SERIAL FORMAT:
+                // ~ mode;direction;voltage + mode;direction;voltage
+                //
+                // ? mode;ports:uid,uid;voltage
+                // ? source:uid;target:uid;mode;direction;voltage
+                // > ports:uid,uid;mode;direction;voltage
+                //
+                // ? mode;direction;voltage&mode;direction;voltage
+                // ? mode;direction;voltage+mode;direction;voltage
+                // ? mode;direction;voltage|mode;direction;voltage
+
+                List<Configuration> compatiblePortConfigurations = Configuration.computeCompatibleConfigurations(sourcePortConfiguration, targetPortConfiguration);
+
+                if (compatiblePortConfigurations != null) {
+                    HashMap<String, Configuration> pathConfiguration = new HashMap<>();
+                    pathConfiguration.put("source-port", compatiblePortConfigurations.get(0));
+                    pathConfiguration.put("target-port", compatiblePortConfigurations.get(1));
+                    pathConfigurations.add(pathConfiguration);
+                }
+
+                // TODO: Pick up here. Configuration resolution isn't working, probably because of a logic bug in isCompatible(...)
+            }
+//                System.out.println();
+        }
+
+        // If there is only one path configurations in the compatible configurations list, automatically configure
+        // the path with it, thereby updating the ports' configurations in the path.
+        // TODO: ^
+        if (pathConfigurations.size() == 1) {
+            // Apply the corresponding configurations to ports.
+            HashMap<String, Configuration> pathConfiguration = pathConfigurations.get(0);
+            System.out.println("✔ found compatible configurations");
+
+            // TODO: (QUESTION) Can I specify a path configurations and infer port configurations (for multi-port) or should it be a list of port configurations?
+            // TODO: Apply values based on per-variable configurations?
+            // TODO: Ensure there's only one compatible state for each of the configurations.
+
+            // Source
+            // TODO: print PORT ADDRESS
+            System.out.print("  1. mode:" + pathConfiguration.get("source-port").variables.get("mode").values.get(0));
+            System.out.print(";direction:");
+            for (int k = 0; k < pathConfiguration.get("source-port").variables.get("direction").values.size(); k++) {
+                System.out.print("" + pathConfiguration.get("source-port").variables.get("direction").values.get(k));
+                if ((k + 1) < pathConfiguration.get("source-port").variables.get("direction").values.size()) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.print(";voltage:");
+            for (int k = 0; k < pathConfiguration.get("source-port").variables.get("voltage").values.size(); k++) {
+                System.out.print("" + pathConfiguration.get("source-port").variables.get("voltage").values.get(k));
+                if ((k + 1) < pathConfiguration.get("source-port").variables.get("voltage").values.size()) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.print(" | ");
+
+            // Target
+            // TODO: print PORT ADDRESS
+            System.out.print("mode:" + pathConfiguration.get("target-port").variables.get("mode").values.get(0));
+            System.out.print(";direction:");
+            for (int k = 0; k < pathConfiguration.get("target-port").variables.get("direction").values.size(); k++) {
+                System.out.print("" + pathConfiguration.get("target-port").variables.get("direction").values.get(k));
+                if ((k + 1) < pathConfiguration.get("target-port").variables.get("direction").values.size()) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.print(";voltage:");
+            for (int k = 0; k < pathConfiguration.get("target-port").variables.get("voltage").values.size(); k++) {
+                System.out.print("" + pathConfiguration.get("target-port").variables.get("voltage").values.get(k));
+                if ((k + 1) < pathConfiguration.get("target-port").variables.get("voltage").values.size()) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println();
+
+            // Configure the ports with the single compatible configurations
+            if (pathConfiguration.get("source-port").variables.get("mode").values.size() == 1) {
+//                    sourcePortConstruct.variables.get("mode").value = pathConfiguration.get("source-port").variables.get("mode").values.get(0);
+//                    System.out.println("  ✔ setting mode: " + sourcePortConstruct.variables.get("mode").value);
+                pathC.sourcePortConstruct.variables.get("mode").value = pathConfiguration.get("source-port").variables.get("mode").values.get(0);
+                System.out.println("  ✔ setting mode: " + pathC.sourcePortConstruct.variables.get("mode").value);
+            }
+
+            if (pathConfiguration.get("source-port").variables.get("direction").values.size() == 1) {
+//                    sourcePortConstruct.variables.get("direction").value = pathConfiguration.get("source-port").variables.get("direction").values.get(0);
+//                    System.out.println("  ✔ setting direction: " + sourcePortConstruct.variables.get("direction").value);
+                pathC.sourcePortConstruct.variables.get("direction").value = pathConfiguration.get("source-port").variables.get("direction").values.get(0);
+                System.out.println("  ✔ setting direction: " + pathC.sourcePortConstruct.variables.get("direction").value);
+            }
+
+            if (pathConfiguration.get("source-port").variables.get("voltage").values.size() == 1) {
+//                    sourcePortConstruct.variables.get("voltage").value = pathConfiguration.get("source-port").variables.get("voltage").values.get(0);
+//                    System.out.println("  ✔ setting voltages: " + sourcePortConstruct.variables.get("voltage").value);
+                pathC.sourcePortConstruct.variables.get("voltage").value = pathConfiguration.get("source-port").variables.get("voltage").values.get(0);
+                System.out.println("  ✔ setting voltages: " + pathC.sourcePortConstruct.variables.get("voltage").value);
+            }
+
+        }
+
+        // Otherwise, list the available path configurations and prompt the user to set one of them manually.
+        else if (pathConfigurations.size() > 1) {
+            // Apply the corresponding configurations to ports.
+            System.out.println("✔ found compatible configurations");
+            for (int i = 0; i < pathConfigurations.size(); i++) {
+//                    PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
+//                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.configurations.get("source-port").mode + ", ...) --- (" + pathConfiguration.configurations.get("target-port").mode + ", ...)");
+            }
+            System.out.println("! set one of these configurations");
+        }
+//        }
+
+    }
+
     public void setConstructVariable(Context context) {
 
         // TODO: Lookup context.get("inputLine")
@@ -1001,34 +1177,71 @@ public class Interpreter {
 
         } else if (inputLineWords.length == 2) {
 
-            String constructTypeString = inputLineWords[1];
+            String assignmentString = inputLineWords[1];
 
-            if (constructTypeString.equals("path")) {
+            String[] assignmentTokens = assignmentString.split(":");
+
+            String variableTitle = assignmentTokens[0];
+            String variableValue = assignmentTokens[1];
+
+            if (workspace.construct.getClass() == PathConstruct.class) {
+//            if (constructTypeString.equals("path")) {
 
                 // set path source-port uid:4
 
-                String variableTitleString = inputLineWords[2];
+                PathConstruct pathConstruct = (PathConstruct) workspace.construct;
 
-                if (variableTitleString.equals("source-port")) {
+                if (variableTitle.equals("source-port")) {
 
-                    PortConstruct sourcePort = (PortConstruct) Manager.getConstruct(inputLineWords[3]);
+                    PortConstruct sourcePort = (PortConstruct) Manager.getConstruct(variableValue);
+                    pathConstruct.sourcePortConstruct = sourcePort;
 
-                } else if (variableTitleString.equals("target-port")) {
+                    System.out.println(">>> set source-port " + variableValue);
 
-                    PortConstruct targetPort = (PortConstruct) Manager.getConstruct(inputLineWords[3]);
+                } else if (variableTitle.equals("target-port")) {
+
+                    PortConstruct targetPort = (PortConstruct) Manager.getConstruct(variableValue);
+                    pathConstruct.targetPortConstruct = targetPort;
+
+                    System.out.println(">>> set target-port " + variableValue);
 
                 }
 
-            } else if (constructTypeString.equals("host")) {
-
-                // TODO:
-
-            } else if (constructTypeString.equals("device")) {
-
             }
+//            else if (assignmentString.equals("host")) {
+//
+//                // TODO:
+//
+//            } else if (assignmentString.equals("device")) {
+//
+//            }
 
         }
 
+    }
+
+    public void editPathTask(Context context) {
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        Construct pathConstruct = null;
+
+        if (inputLineWords.length == 2) {
+            pathConstruct = workspace.lastPathConstruct;
+        } else if (inputLineWords.length > 2) {
+            pathConstruct = Manager.getConstruct(inputLineWords[2]);
+        }
+
+        if (pathConstruct != null) {
+
+            workspace.construct = pathConstruct;
+            System.out.println("✔ edit path " + workspace.construct.uid);
+
+        } else {
+
+            // No port was found with the specified identifier (UID, UUID, tag, index)
+
+        }
     }
 
     public void listPathsTask() {
