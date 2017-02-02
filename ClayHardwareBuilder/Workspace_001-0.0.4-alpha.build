@@ -1,12 +1,12 @@
 # Builder Script File Format 0.0.1-alpha
 
-add project # "test-project"
-edit project # "test-project"
+add project
+edit project
 
-add device # "clay-device"
-edit device # "clay-device"
+add device
+edit device
 
-start "add-builder-ports"
+start
 add port
 edit port
 add configuration mode:none;direction:null;voltage:null
@@ -26,18 +26,18 @@ add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
 add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 stop
 
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
+do uid:3
 
 # Device: Infrared Rangefinder
 add device # NOTE: "add project" always adds the device to the current project.
@@ -57,24 +57,12 @@ add configuration mode:analog;direction:output;voltage:ttl
 
 # Paths
 # TODO: Update this path format... break into steps?
-add path device uid(1) port uid(4) device uid(16) port uid(18)
-add path device uid(1) port uid(5) device uid(16) port uid(19)
-add path device uid(1) port uid(6) device uid(16) port uid(20)
+add path device uid:1 port uid:4 device uid:16 port uid:18
+add path device uid:1 port uid:5 device uid:16 port uid:19
+add path device uid:1 port uid:6 device uid:16 port uid:20
 
-# add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
-# add path { source-port:uid(4); target-port:uid(18) }
-
-# add path "foo"
-# edit path
-# set "source-port" uid:4
-# set "target-port" uid:18
-# set target-port:uid(18)
-# set target-port:uuid(18)
-# set configuration source-port:uid(18);target-port:uuid(ec2c3e18-fd64-41dd-a828-18ee2b46aee5)
-# set configuration source-port:"port-name";target-port:uuid(ec2c3e18-fd64-41dd-a828-18ee2b46aee5)
-
-edit device uid(1)
-edit port uid(4)
+edit device uid:1
+edit port uid:4
 set configuration mode:digital;direction:output;voltage:ttl
 
 start "add-task"
@@ -85,17 +73,3 @@ stop
 do "add-task"
 
 # TODO: use port uid:33 as "source-port"
-
-# TODO: add construct "device"
-# TODO: add device <construct-tag>
-# TODO: edit device
-# TODO: add variable "variable-name"
-# TODO: set variable-name 34
-
-# create device "clay"
-# ...
-# save
-
-# update device "clay"
-# ...
-# save

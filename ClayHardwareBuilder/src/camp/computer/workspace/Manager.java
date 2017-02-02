@@ -16,8 +16,8 @@ public class Manager {
         // Parse:
         // 3
         // "foo"
-        // uid:44
-        // uuid:a716a27b-8489-4bae-b099-2bc73e963876
+        // uid(44)
+        // uuid(a716a27b-8489-4bae-b099-2bc73e963876)
 
         if (address.startsWith("\"") && address.endsWith("\"")) {
 
@@ -34,9 +34,10 @@ public class Manager {
 
         } else {
 
-            if (address.startsWith("uid:")) {
+            if (address.startsWith("uid")) {
 
-                long inputTaskUid = Long.valueOf(address.split(":")[1]);
+//                long inputTaskUid = Long.valueOf(address.split(":")[1]);
+                long inputTaskUid = Long.valueOf(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
 
                 if (Manager.elements.containsKey(inputTaskUid)) {
                     return Manager.elements.get(inputTaskUid);
@@ -51,9 +52,10 @@ public class Manager {
 //                }
 //            }
 
-            } else if (address.startsWith("uuid:")) {
+            } else if (address.startsWith("uuid")) {
 
-                UUID inputTaskUuid = UUID.fromString(address.split(":")[1]);
+//                UUID inputTaskUuid = UUID.fromString(address.split(":")[1]);
+                UUID inputTaskUuid = UUID.fromString(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
 
                 for (int i = 0; i < Manager.elements.size(); i++) {
                     if (Manager.elements.get(i).uuid.equals(inputTaskUuid)) {

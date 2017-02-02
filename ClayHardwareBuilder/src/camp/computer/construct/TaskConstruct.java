@@ -2,6 +2,8 @@ package camp.computer.construct;
 
 public class TaskConstruct extends Construct {
 
+    // (task (rev0, rev1, rev2, ..., revN))
+
     // TODO: script
 
     // TODO: execute-condition

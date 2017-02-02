@@ -98,7 +98,8 @@ public class Interpreter {
             } else if (context.inputLine.startsWith("do")) {
                 doProcessTask(context);
             } else if (context.inputLine.equals("add project")) {
-                addProjectTask();
+//                addProjectTask();
+                addConstructTask(context);
             } else if (context.inputLine.equals("list projects")) {
                 listProjectsTask();
             } else if (context.inputLine.startsWith("edit project")) {
@@ -108,7 +109,8 @@ public class Interpreter {
             } else if (context.inputLine.startsWith("remove project")) {
                 removeProjectTask(context);
             } else if (context.inputLine.equals("add device")) {
-                addDeviceTask();
+//                addDeviceTask();
+                addConstructTask(context);
             } else if (context.inputLine.equals("list devices")) {
                 listDevicesTask();
             } else if (context.inputLine.startsWith("edit device")) {
@@ -116,7 +118,8 @@ public class Interpreter {
             } else if (context.inputLine.startsWith("remove device")) {
                 removeDeviceTask(context);
             } else if (context.inputLine.startsWith("add port")) {
-                addPortTask();
+//                addPortTask();
+                addConstructTask(context);
             } else if (context.inputLine.startsWith("add configuration")) {
                 addConfigurationTask(context);
             } else if (context.inputLine.startsWith("set configuration")) {
@@ -129,6 +132,8 @@ public class Interpreter {
                 removePortTask(context);
             } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
                 addPathTask(context);
+            } else if (context.inputLine.startsWith("set")) {
+                setConstructVariable(context);
             } else if (context.inputLine.startsWith("list paths")) {
                 listPathsTask();
             } else if (context.inputLine.startsWith("remove path")) {
@@ -136,7 +141,8 @@ public class Interpreter {
             } else if (context.inputLine.startsWith("set path configuration")) {
                 setPathConfigurationTask(context);
             } else if (context.inputLine.startsWith("add task")) {
-                addTaskTask(context);
+//                addTaskTask(context);
+                addConstructTask(context);
             } else if (context.inputLine.startsWith("edit task")) {
                 editTaskTask(context);
             } else if (context.inputLine.startsWith("remove task")) {
@@ -238,15 +244,169 @@ public class Interpreter {
 //        System.out.println("✔ stop " + processConstruct.uid + " (" + processConstruct.operations.size() + " operations)");
     }
 
-    public void addProjectTask() {
-        ProjectConstruct projectConstruct = new ProjectConstruct();
-        System.out.println("✔ add project " + projectConstruct.uid);
+    // Format:
+    // add <construct-type-tag> <construct-instance-tag>
+    //
+    // Examples:
+    // - add project
+    // - add project "my-project"
+    public void addConstructTask(Context context) {
 
-        workspace.projectConstructs.add(projectConstruct);
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
-        // Store reference to last-created project
-        workspace.lastProjectConstruct = projectConstruct;
+        if (inputLineWords.length == 1) {
+
+            // TODO: Add anonymous construct
+
+        } else if (inputLineWords.length == 2) {
+
+            String constructTypeString = inputLineWords[1];
+
+            if (constructTypeString.equals("project")) {
+
+                ProjectConstruct projectConstruct = new ProjectConstruct();
+                workspace.projectConstructs.add(projectConstruct);
+                workspace.lastProjectConstruct = projectConstruct; // Store reference to last-created project
+
+            } else if (constructTypeString.equals("host")) {
+
+                // TODO:
+
+            } else if (constructTypeString.equals("device")) {
+
+                // TODO: Ensure edit construct is a project!
+                if (workspace.projectConstruct != null) {
+
+                    DeviceConstruct deviceConstruct = new DeviceConstruct();
+                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
+                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created port
+
+                    System.out.println("✔ add device " + deviceConstruct.uid);
+                }
+
+            } else if (constructTypeString.equals("port")) {
+
+                // TODO: Ensure edit construct is a device!
+                if (workspace.deviceConstruct != null) {
+
+                    PortConstruct portConstruct = new PortConstruct();
+                    workspace.deviceConstruct.portConstructs.add(portConstruct);
+                    workspace.lastPortConstruct = portConstruct; // Store reference to last-created port
+
+                    System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+                }
+
+            } else if (constructTypeString.equals("path")) {
+
+                // TODO: Ensure edit construct is a device!
+                if (workspace.projectConstruct != null) {
+
+                    PathConstruct pathConstruct = new PathConstruct();
+//                    pathConstruct.sourcePortConstruct = sourcePortConstruct;
+//                    pathConstruct.targetPortConstruct = targetPortConstruct;
+                    workspace.projectConstruct.pathConstructs.add(pathConstruct);
+                    workspace.lastPathConstruct = pathConstruct; // Store reference to last-created port
+
+                    System.out.println("✔ add path " + pathConstruct.uid + " to project " + workspace.projectConstruct.uid);
+                }
+
+            } else if (constructTypeString.equals("task")) {
+
+                if (workspace.deviceConstruct != null) {
+
+                    TaskConstruct taskConstruct = new TaskConstruct();
+                    workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+
+                    // Store reference to last-created device
+                    workspace.lastTaskConstruct = taskConstruct;
+
+                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+
+                }
+
+            }
+
+//            System.out.println("✔ add " + constructTypeString + " " + projectConstruct.uid);
+
+        } else if (inputLineWords.length > 2) {
+
+            String constructTypeString = inputLineWords[1];
+            String constructTitleString = inputLineWords[2];
+
+            if (constructTypeString.equals("project")) {
+
+                ProjectConstruct projectConstruct = new ProjectConstruct();
+                projectConstruct.title = constructTitleString;
+                workspace.projectConstructs.add(projectConstruct);
+                workspace.lastProjectConstruct = projectConstruct; // Store reference to last-created project
+
+            } else if (constructTypeString.equals("host")) {
+
+                // TODO:
+
+            } else if (constructTypeString.equals("device")) {
+
+                // TODO: Ensure edit construct is a project!
+                if (workspace.projectConstruct != null) {
+
+                    DeviceConstruct deviceConstruct = new DeviceConstruct();
+                    deviceConstruct.title = constructTitleString;
+                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
+                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created port
+
+                    System.out.println("✔ add device " + deviceConstruct.uid);
+                }
+
+            } else if (constructTypeString.equals("port")) {
+
+                // TODO: Ensure edit construct is a device!
+                if (workspace.deviceConstruct != null) {
+
+                    PortConstruct portConstruct = new PortConstruct();
+                    portConstruct.title = constructTitleString;
+                    workspace.deviceConstruct.portConstructs.add(portConstruct);
+                    workspace.lastPortConstruct = portConstruct; // Store reference to last-created port
+
+                    System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+                }
+
+            } else if (constructTypeString.equals("path")) {
+
+                // TODO:
+
+            } else if (constructTypeString.equals("task")) {
+
+                if (workspace.deviceConstruct != null) {
+
+                    TaskConstruct taskConstruct = new TaskConstruct();
+                    taskConstruct.title = constructTitleString;
+                    workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+
+                    // Store reference to last-created device
+                    workspace.lastTaskConstruct = taskConstruct;
+
+                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+
+                }
+
+            }
+
+//            System.out.println("✔ add " + constructTypeString + " " + projectConstruct.uid);
+
+        }
+
     }
+
+//    public void addProjectTask() {
+//        ProjectConstruct projectConstruct = new ProjectConstruct();
+//        System.out.println("✔ add project " + projectConstruct.uid);
+//
+//        workspace.projectConstructs.add(projectConstruct);
+//
+//        // Store reference to last-created project
+//        workspace.lastProjectConstruct = projectConstruct;
+//    }
 
     public void listProjectsTask() {
 
@@ -318,17 +478,17 @@ public class Interpreter {
         }
     }
 
-    public void addDeviceTask() {
-
-        DeviceConstruct deviceConstruct = new DeviceConstruct();
-        System.out.println("✔ add device " + deviceConstruct.uid);
-
-        workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
-
-        // Store reference to last-created device
-        workspace.lastDeviceConstruct = deviceConstruct;
-
-    }
+//    public void addDeviceTask() {
+//
+//        DeviceConstruct deviceConstruct = new DeviceConstruct();
+//        System.out.println("✔ add device " + deviceConstruct.uid);
+//
+//        workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
+//
+//        // Store reference to last-created device
+//        workspace.lastDeviceConstruct = deviceConstruct;
+//
+//    }
 
     public void listDevicesTask() {
 
@@ -390,21 +550,21 @@ public class Interpreter {
         }
     }
 
-    public void addPortTask() {
-
-        if (workspace.deviceConstruct != null) {
-
-            PortConstruct portConstruct = new PortConstruct();
-            System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
-
-            workspace.deviceConstruct.portConstructs.add(portConstruct);
-
-            // Store reference to last-created port
-            workspace.lastPortConstruct = portConstruct;
-
-        }
-
-    }
+//    public void addPortTask() {
+//
+//        if (workspace.deviceConstruct != null) {
+//
+//            PortConstruct portConstruct = new PortConstruct();
+//            System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+//
+//            workspace.deviceConstruct.portConstructs.add(portConstruct);
+//
+//            // Store reference to last-created port
+//            workspace.lastPortConstruct = portConstruct;
+//
+//        }
+//
+//    }
 
     // e.g., add configuration uart(tx);output;ttl,cmos
     public void addConfigurationTask(Context context) {
@@ -617,7 +777,6 @@ public class Interpreter {
     }
 
     public void editPortTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
         String[] inputLineWords = context.inputLine.split("[ ]+");
@@ -661,6 +820,11 @@ public class Interpreter {
 
     // e.g., add path device 1 port 3 device 4 port 1
     public void addPathTask(Context context) {
+
+        // add path <title>
+        // edit path
+        // set source-port[construct-type] uid:34
+        // set target-port[construct-type] uid:34
 
         if (workspace.deviceConstruct != null) {
 
@@ -808,6 +972,47 @@ public class Interpreter {
 
     }
 
+    public void setConstructVariable(Context context) {
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 1) {
+
+            // TODO: Add anonymous construct
+
+        } else if (inputLineWords.length == 2) {
+
+            String constructTypeString = inputLineWords[1];
+
+            if (constructTypeString.equals("path")) {
+
+                // set path source-port uid:4
+
+                String variableTitleString = inputLineWords[2];
+
+                if (variableTitleString.equals("source-port")) {
+
+                    PortConstruct sourcePort = (PortConstruct) Manager.getConstruct(inputLineWords[3]);
+
+                } else if (variableTitleString.equals("target-port")) {
+
+                    PortConstruct targetPort = (PortConstruct) Manager.getConstruct(inputLineWords[3]);
+
+                }
+
+            } else if (constructTypeString.equals("host")) {
+
+                // TODO:
+
+            } else if (constructTypeString.equals("device")) {
+
+            }
+
+        }
+
+    }
+
     public void listPathsTask() {
 
         if (workspace.projectConstruct != null) {
@@ -853,21 +1058,21 @@ public class Interpreter {
         // - voltage
     }
 
-    public void addTaskTask(Context context) {
-
-        if (workspace.deviceConstruct != null) {
-
-            TaskConstruct taskConstruct = new TaskConstruct();
-            workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
-
-            // Store reference to last-created device
-            workspace.lastTaskConstruct = taskConstruct;
-
-            System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
-
-        }
-
-    }
+//    public void addTaskTask(Context context) {
+//
+//        if (workspace.deviceConstruct != null) {
+//
+//            TaskConstruct taskConstruct = new TaskConstruct();
+//            workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+//
+//            // Store reference to last-created device
+//            workspace.lastTaskConstruct = taskConstruct;
+//
+//            System.out.println("✔ add task " + taskConstruct.uid + " to device " + workspace.deviceConstruct.uid);
+//
+//        }
+//
+//    }
 
     public void editTaskTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)

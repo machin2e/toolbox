@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import camp.computer.construct.DeviceConstruct;
+import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProcessConstruct;
 import camp.computer.construct.ProjectConstruct;
@@ -30,6 +31,7 @@ public class Workspace {
     DeviceConstruct deviceConstruct = null;
     PortConstruct portConstruct = null;
     TaskConstruct taskConstruct = null;
+    PathConstruct pathConstruct = null;
 
     ProcessConstruct processConstruct = null;
     // TODO: process label
@@ -39,6 +41,7 @@ public class Workspace {
     DeviceConstruct lastDeviceConstruct = null;
     PortConstruct lastPortConstruct = null;
     TaskConstruct lastTaskConstruct = null;
+    PathConstruct lastPathConstruct = null;
     // </CONTEXT>
 
 }
