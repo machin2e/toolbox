@@ -7,10 +7,12 @@ import java.util.Scanner;
 
 import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
+import camp.computer.construct.HostConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProcessConstruct;
 import camp.computer.construct.ProjectConstruct;
+import camp.computer.construct.ScheduleConstruct;
 import camp.computer.construct.TaskConstruct;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
@@ -96,59 +98,49 @@ public class Interpreter {
                 stopProcessTask(context);
             } else if (context.inputLine.startsWith("do")) {
                 doProcessTask(context);
-            } else if (context.inputLine.equals("add project")) {
-//                addProjectTask();
-                addConstructTask(context);
-            } else if (context.inputLine.equals("list projects")) {
-                listProjectsTask();
-            } else if (context.inputLine.startsWith("edit project")) {
-                editProjectTask(context);
-            } else if (context.inputLine.startsWith("set project title")) {
-                setProjectTitleTask(context);
-            } else if (context.inputLine.startsWith("remove project")) {
-                removeProjectTask(context);
-            } else if (context.inputLine.equals("add device")) {
-//                addDeviceTask();
-                addConstructTask(context);
-            } else if (context.inputLine.equals("list devices")) {
-                listDevicesTask();
-            } else if (context.inputLine.startsWith("edit device")) {
-                editDeviceTask(context);
-            } else if (context.inputLine.startsWith("remove device")) {
-                removeDeviceTask(context);
-            } else if (context.inputLine.startsWith("add port")) {
-//                addPortTask();
-                addConstructTask(context);
-            } else if (context.inputLine.startsWith("add configuration")) {
+            }
+            // <REFACTOR>
+            else if (context.inputLine.startsWith("add configuration")) {
                 addConfigurationTask(context);
-            } else if (context.inputLine.startsWith("set configuration")) {
-                setConfigurationTask(context);
-            } else if (context.inputLine.startsWith("list ports")) {
-                listPortsTask(context);
-            } else if (context.inputLine.startsWith("edit port")) {
-                editPortTask(context);
-            } else if (context.inputLine.startsWith("remove port")) {
-                removePortTask(context);
-            } else if (context.inputLine.startsWith("add path")) { // add path device 1 port 3 device 4 port 1
-//                addPathTask(context);
+            }
+            // </REFACTOR>
+            else if (context.inputLine.startsWith("add")) {
                 addConstructTask(context);
-            } else if (context.inputLine.startsWith("set")) {
-                setConstructVariable(context);
+            } else if (context.inputLine.startsWith("list")) {
+                listConstructsTask(context);
+//                listProjectsTask();
+//                listDevicesTask();
+//                listPortsTask(context);
+//                listPathsTask();
+            } else if (context.inputLine.startsWith("edit project")) {
+//                editProjectTask(context);
+                editConstructTask(context);
+            } else if (context.inputLine.startsWith("edit device")) {
+//                editDeviceTask(context);
+                editConstructTask(context);
+            } else if (context.inputLine.startsWith("edit port")) {
+//                editPortTask(context);
+                editConstructTask(context);
             } else if (context.inputLine.startsWith("edit path")) {
-                editPathTask(context);
-            } else if (context.inputLine.startsWith("list paths")) {
-                listPathsTask();
-            } else if (context.inputLine.startsWith("remove path")) {
-                removePathTask(context);
+//                editPathTask(context);
+                editConstructTask(context);
+            } else if (context.inputLine.startsWith("edit task")) {
+//                editTaskTask(context);
+                editConstructTask(context);
+            } else if (context.inputLine.startsWith("set project title")) {
+//                setProjectTitleTask(context);
+            } else if (context.inputLine.startsWith("remove")) {
+                removeConstructTask(context);
+            }
+            // <REFACTOR>
+            else if (context.inputLine.startsWith("set configuration")) {
+                setConfigurationTask(context);
             } else if (context.inputLine.startsWith("set path configuration")) {
                 setPathConfigurationTask(context);
-            } else if (context.inputLine.startsWith("add task")) {
-//                addTaskTask(context);
-                addConstructTask(context);
-            } else if (context.inputLine.startsWith("edit task")) {
-                editTaskTask(context);
-            } else if (context.inputLine.startsWith("remove task")) {
-                removeTaskTask(context);
+            }
+            // </REFACTOR>
+            else if (context.inputLine.startsWith("set")) {
+                setConstructVariable(context);
             } else if (context.inputLine.startsWith("solve")) {
                 solvePathConfigurationTask(context);
             } else if (context.inputLine.startsWith("exit")) {
@@ -279,14 +271,16 @@ public class Interpreter {
 
             } else if (constructTypeString.equals("device")) {
 
-                // TODO: Ensure edit construct is a project!
-                if (workspace.projectConstruct != null) {
+                // TODO: Ensure edit construct is a device!
+                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+
+                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
 
                     DeviceConstruct deviceConstruct = new DeviceConstruct();
-                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
-                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created port
+                    projectConstruct.deviceConstructs.add(deviceConstruct);
+                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created device
 
-                    System.out.println("✔ add device " + deviceConstruct.uid);
+                    System.out.println("✔ add device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
                 }
 
             } else if (constructTypeString.equals("port")) {
@@ -306,15 +300,15 @@ public class Interpreter {
             } else if (constructTypeString.equals("path")) {
 
                 // TODO: Ensure edit construct is a device!
-                if (workspace.projectConstruct != null) {
+                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+
+                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
 
                     PathConstruct pathConstruct = new PathConstruct();
-//                    pathConstruct.sourcePortConstruct = sourcePortConstruct;
-//                    pathConstruct.targetPortConstruct = targetPortConstruct;
-                    workspace.projectConstruct.pathConstructs.add(pathConstruct);
+                    projectConstruct.pathConstructs.add(pathConstruct);
                     workspace.lastPathConstruct = pathConstruct; // Store reference to last-created port
 
-                    System.out.println("✔ add path " + pathConstruct.uid + " to project " + workspace.projectConstruct.uid);
+                    System.out.println("✔ add path " + pathConstruct.uid + " to project " + projectConstruct.uid);
                 }
 
             } else if (constructTypeString.equals("task")) {
@@ -355,15 +349,29 @@ public class Interpreter {
 
             } else if (constructTypeString.equals("device")) {
 
-                // TODO: Ensure edit construct is a project!
-                if (workspace.projectConstruct != null) {
+//                // TODO: Ensure edit construct is a project!
+//                if (workspace.projectConstruct != null) {
+//
+//                    DeviceConstruct deviceConstruct = new DeviceConstruct();
+//                    deviceConstruct.title = constructTitleString;
+//                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
+//                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created port
+//
+//                    System.out.println("✔ add device " + deviceConstruct.uid);
+//                }
+
+                // TODO: Ensure edit construct is a device!
+                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+
+                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
 
                     DeviceConstruct deviceConstruct = new DeviceConstruct();
-                    deviceConstruct.title = constructTitleString;
-                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
-                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created port
+                    projectConstruct.deviceConstructs.add(deviceConstruct);
+                    workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created device
 
-                    System.out.println("✔ add device " + deviceConstruct.uid);
+                    deviceConstruct.title = constructTitleString;
+
+                    System.out.println("✔ add device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
                 }
 
             } else if (constructTypeString.equals("port")) {
@@ -410,115 +418,135 @@ public class Interpreter {
 
     }
 
-//    public void addProjectTask() {
-//        ProjectConstruct projectConstruct = new ProjectConstruct();
-//        System.out.println("✔ add project " + projectConstruct.uid);
-//
-//        workspace.projectConstructs.add(projectConstruct);
-//
-//        // Store reference to last-created project
-//        workspace.lastProjectConstruct = projectConstruct;
-//    }
+    /**
+     * <strong>Examples</strong>
+     * {@code list <construct-type>}
+     *
+     * @param context
+     */
+    public void listConstructsTask(Context context) {
 
-    public void listProjectsTask() {
+        String[] inputLineWords = context.inputLine.split("[ ]+");
 
-        if (workspace.projectConstructs.size() == 0) {
-            System.out.println("none");
-        } else {
-            for (int i = 0; i < workspace.projectConstructs.size(); i++) {
-                System.out.print("" + workspace.projectConstructs.get(i).uid);
+        if (inputLineWords.length == 1) {
 
-                if (workspace.projectConstructs.get(i).deviceConstructs.size() > 0) {
-                    System.out.print(" (" + workspace.projectConstructs.get(i).deviceConstructs.size() + " devices, " + workspace.projectConstructs.get(i).pathConstructs.size() + " paths)");
-                }
+            // TODO: List all constructs!
 
-                System.out.println();
+        } else if (inputLineWords.length == 2) {
+
+            String constructTypeString = inputLineWords[1];
+
+            Class constructType = null;
+            if (constructTypeString.equals("projects")) {
+                constructType = ProjectConstruct.class;
+            } else if (constructTypeString.equals("hosts")) {
+                constructType = HostConstruct.class;
+            } else if (constructTypeString.equals("devices")) {
+                constructType = DeviceConstruct.class;
+            } else if (constructTypeString.equals("ports")) {
+                constructType = PortConstruct.class;
+            } else if (constructTypeString.equals("paths")) {
+                constructType = PathConstruct.class;
+            } else if (constructTypeString.equals("schedules")) {
+                constructType = ScheduleConstruct.class;
+            } else if (constructTypeString.equals("tasks")) {
+                constructType = TaskConstruct.class;
             }
-        }
 
+            for (Construct construct : Manager.elements.values()) {
+                if (construct.getClass() == constructType) {
+                    // System.out.println("" + construct.uid + "\t" + construct.uuid.toString());
+                    System.out.println("" + construct.uid);
+                }
+            }
+
+        }
     }
 
-    public void editProjectTask(Context context) {
+    public void removeConstructTask(Context context) {
 
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 1) {
+
+            // TODO: List all constructs!
+
+        } else if (inputLineWords.length == 2) {
+
+            String addressString = inputLineWords[1];
+
+            Construct construct = Manager.getConstruct(addressString);
+
+            if (construct != null) {
+                // TODO: Remove construct
+            }
+
+        }
+    }
+
+    public void editConstructTask(Context context) {
         // TODO: Lookup context.get("inputLine")
         String[] inputLineWords = context.inputLine.split("[ ]+");
 
         Construct construct = null;
 
+        String constructTypeString = inputLineWords[1];
+
         if (inputLineWords.length == 2) {
-            construct = workspace.lastProjectConstruct;
+
+            if (constructTypeString.equals("project")) {
+                construct = workspace.lastProjectConstruct;
+            } else if (constructTypeString.equals("host")) {
+                construct = workspace.lastHostConstruct;
+            } else if (constructTypeString.equals("device")) {
+                construct = workspace.lastDeviceConstruct;
+            } else if (constructTypeString.equals("port")) {
+                construct = workspace.lastPortConstruct;
+            } else if (constructTypeString.equals("path")) {
+                construct = workspace.lastPathConstruct;
+            } else if (constructTypeString.equals("schedule")) {
+                construct = workspace.lastScheduleConstruct;
+            } else if (constructTypeString.equals("task")) {
+                construct = workspace.lastTaskConstruct;
+            }
+
         } else if (inputLineWords.length > 2) {
+
             construct = Manager.getConstruct(inputLineWords[2]);
+
         }
 
         if (construct != null) {
-            workspace.projectConstruct = (ProjectConstruct) construct;
-            System.out.println("✔ edit project " + workspace.projectConstruct.uid);
-        }
 
-    }
+            workspace.construct = construct;
+            System.out.println("✔ edit " + constructTypeString + " " + workspace.construct.uid);
 
-    public void setProjectTitleTask(Context context) {
+        } else {
 
-        // TODO: Lookup context.get("inputLine")
-        if (workspace.projectConstruct != null) {
-
-            String[] inputLineWords = context.inputLine.split("[ ]+");
-
-            String inputProjectTitle = inputLineWords[3];
-
-            workspace.projectConstruct.title = inputProjectTitle;
-
-            System.out.println("project title changed to " + inputProjectTitle);
-        }
-
-    }
-
-    public void removeProjectTask(Context context) {
-
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            // Remove the project referenced in workspace.lastProjectConstruct
-
-        } else if (inputLineWords.length > 2) {
-
-            // Remove the project with the specified index, tag, UID, UUID.
+            // No port was found with the specified identifier (UID, UUID, tag, index)
 
         }
     }
 
-//    public void addDeviceTask() {
+//    public void editProjectTask(Context context) {
 //
-//        DeviceConstruct deviceConstruct = new DeviceConstruct();
-//        System.out.println("✔ add device " + deviceConstruct.uid);
+//        // TODO: Lookup context.get("inputLine")
+//        String[] inputLineWords = context.inputLine.split("[ ]+");
 //
-//        workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
+//        Construct construct = null;
 //
-//        // Store reference to last-created device
-//        workspace.lastDeviceConstruct = deviceConstruct;
+//        if (inputLineWords.length == 2) {
+//            construct = workspace.lastProjectConstruct;
+//        } else if (inputLineWords.length > 2) {
+//            construct = Manager.getConstruct(inputLineWords[2]);
+//        }
+//
+//        if (construct != null) {
+//            workspace.projectConstruct = (ProjectConstruct) construct;
+//            System.out.println("✔ edit project " + workspace.projectConstruct.uid);
+//        }
 //
 //    }
-
-    public void listDevicesTask() {
-
-        if (workspace.projectConstruct.deviceConstructs.size() == 0) {
-            System.out.println("none");
-        } else {
-            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                System.out.print("" + workspace.projectConstruct.deviceConstructs.get(i).uid);
-
-                if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size() > 0) {
-                    System.out.print(" (" + workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size() + " ports)");
-                }
-
-                System.out.println();
-            }
-        }
-
-    }
 
     public void editDeviceTask(Context context) {
 
@@ -546,34 +574,85 @@ public class Interpreter {
 
     }
 
-    public void removeDeviceTask(Context context) {
+    public void editPortTask(Context context) {
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        Construct portConstruct = null;
+
+        if (inputLineWords.length == 2) {
+            portConstruct = workspace.lastPortConstruct;
+        } else if (inputLineWords.length > 2) {
+            portConstruct = Manager.getConstruct(inputLineWords[2]);
+        }
+
+        if (portConstruct != null) {
+
+            workspace.construct = portConstruct;
+            System.out.println("✔ edit port " + workspace.construct.uid);
+
+        } else {
+
+            // No port was found with the specified identifier (UID, UUID, tag, index)
+
+        }
+
+    }
+
+    public void editPathTask(Context context) {
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        Construct pathConstruct = null;
+
+        if (inputLineWords.length == 2) {
+            pathConstruct = workspace.lastPathConstruct;
+        } else if (inputLineWords.length > 2) {
+            pathConstruct = Manager.getConstruct(inputLineWords[2]);
+        }
+
+        if (pathConstruct != null) {
+
+            workspace.construct = pathConstruct;
+            System.out.println("✔ edit path " + workspace.construct.uid);
+
+        } else {
+
+            // No port was found with the specified identifier (UID, UUID, tag, index)
+
+        }
+    }
+
+    public void editTaskTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
 
         // TODO: Lookup context.get("inputLine")
         String[] inputLineWords = context.inputLine.split("[ ]+");
 
         if (inputLineWords.length == 2) {
 
-            // Remove the device referenced in workspace.lastDeviceConstruct
+            Workspace.setConstruct(workspace, workspace.lastTaskConstruct);
 
         } else if (inputLineWords.length > 2) {
 
-            // Remove the device with the specified index, tag, UID, UUID.
-
         }
+
+        System.out.println("✔ edit task " + workspace.construct.uid);
     }
 
-//    public void addPortTask() {
+//    public void setProjectTitleTask(Context context) {
 //
-//        if (workspace.deviceConstruct != null) {
+//        // TODO: Lookup context.get("inputLine")
+//        if (workspace.projectConstruct != null) {
 //
-//            PortConstruct portConstruct = new PortConstruct();
-//            System.out.println("✔ add port " + portConstruct.uid + " on device " + workspace.deviceConstruct.uid);
+//            String[] inputLineWords = context.inputLine.split("[ ]+");
 //
-//            workspace.deviceConstruct.portConstructs.add(portConstruct);
+//            String inputProjectTitle = inputLineWords[3];
 //
-//            // Store reference to last-created port
-//            workspace.lastPortConstruct = portConstruct;
+//            workspace.projectConstruct.title = inputProjectTitle;
 //
+//            System.out.println("project title changed to " + inputProjectTitle);
 //        }
 //
 //    }
@@ -720,278 +799,6 @@ public class Interpreter {
 //
 //        // TODO: Generalize so can set state of any construct/container. Don't assume port construct is only one with state.
 //        System.out.println("✔ set port attributes to " + workspace.portConstruct.mode + " " + workspace.portConstruct.direction + " " + workspace.portConstruct.voltage);
-
-    }
-
-    // list ports -configurations
-    public void listPortsTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
-
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
-
-                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
-
-                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
-
-                    // Port UID
-                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
-
-                }
-
-            }
-
-        } else if (inputLineWords.length > 2) {
-
-            String modifiers = inputLineWords[2];
-
-            if (!modifiers.equals("-configurations")) {
-                return;
-            }
-
-            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
-
-                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
-
-                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
-
-                    // Port UID
-                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
-
-                    for (int j = 0; j < deviceConstruct.portConstructs.get(i).configurations.size(); j++) {
-
-                        int k = 0;
-                        for (String variableTitle : deviceConstruct.portConstructs.get(i).configurations.get(j).variables.keySet()) {
-
-                            List<String> variableValueSet = deviceConstruct.portConstructs.get(i).configurations.get(j).variables.get(variableTitle).values;
-
-                            for (int l = 0; l < variableValueSet.size(); l++) {
-                                System.out.print("" + variableValueSet.get(l));
-
-                                if ((l + 1) < variableValueSet.size()) {
-                                    System.out.print(", ");
-                                }
-                            }
-
-                            if ((k + 1) < deviceConstruct.portConstructs.get(i).configurations.get(j).variables.size()) {
-                                System.out.print("; ");
-                            }
-
-                            k++;
-
-                        }
-
-                        System.out.println();
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
-    public void editPortTask(Context context) {
-
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        Construct portConstruct = null;
-
-        if (inputLineWords.length == 2) {
-            portConstruct = workspace.lastPortConstruct;
-        } else if (inputLineWords.length > 2) {
-            portConstruct = Manager.getConstruct(inputLineWords[2]);
-        }
-
-        if (portConstruct != null) {
-
-            workspace.construct = portConstruct;
-            System.out.println("✔ edit port " + workspace.construct.uid);
-
-        } else {
-
-            // No port was found with the specified identifier (UID, UUID, tag, index)
-
-        }
-
-    }
-
-    public void removePortTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            // Remove the port referenced in workspace.lastPortConstruct
-
-        } else if (inputLineWords.length > 2) {
-
-            // Remove the device with the specified index, tag, UID, UUID.
-
-        }
-    }
-
-    // e.g., add path device 1 port 3 device 4 port 1
-    public void addPathTask(Context context) {
-
-        // add path <title>
-        // edit path
-        // set source-port[construct-type] uid:34
-        // set target-port[construct-type] uid:34
-
-        if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
-
-            DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
-
-            String[] inputLineWords = context.inputLine.split("[ ]+");
-
-            // TODO: Parse address token (for index, UID, UUID; title/key/tag)
-
-            // <TODO>
-            // TODO: Remove messages!
-            DeviceConstruct sourceDeviceConstruct = (DeviceConstruct) Manager.getConstruct(inputLineWords[3]);
-            PortConstruct sourcePortConstruct = (PortConstruct) Manager.getConstruct(inputLineWords[5]);
-            DeviceConstruct targetDeviceConstruct = (DeviceConstruct) Manager.getConstruct(inputLineWords[7]);
-            PortConstruct targetPortConstruct = (PortConstruct) Manager.getConstruct(inputLineWords[9]);
-            // </TODO>
-
-            PathConstruct pathConstruct = new PathConstruct();
-            pathConstruct.sourcePortConstruct = sourcePortConstruct;
-            pathConstruct.targetPortConstruct = targetPortConstruct;
-
-            workspace.projectConstruct.pathConstructs.add(pathConstruct);
-
-            System.out.println("✔ add path " + pathConstruct.uid + " from device " + sourceDeviceConstruct.uid + " port " + sourcePortConstruct.uid + " to device " + targetDeviceConstruct.uid + " port " + targetPortConstruct.uid);
-
-
-            /**
-             * "solve path [uid]"
-             */
-
-            // TODO: Resolve set of available configurations for path based on compatible configurations of ports in the path.
-
-            // Iterate through configurations for of source port in path. For each source port configurations, check
-            // the other ports' configurations for compatibility; then add each compatible configurations to a list of
-            // compatible configurations.
-            List<HashMap<String, Configuration>> pathConfigurations = new ArrayList<>();
-            for (int i = 0; i < pathConstruct.sourcePortConstruct.configurations.size(); i++) {
-                Configuration sourcePortConfiguration = pathConstruct.sourcePortConstruct.configurations.get(i);
-
-                for (int j = 0; j < pathConstruct.targetPortConstruct.configurations.size(); j++) {
-                    Configuration targetPortConfiguration = pathConstruct.targetPortConstruct.configurations.get(j);
-
-                    // PATH SERIAL FORMAT:
-                    // ~ mode;direction;voltage + mode;direction;voltage
-                    //
-                    // ? mode;ports:uid,uid;voltage
-                    // ? source:uid;target:uid;mode;direction;voltage
-                    // > ports:uid,uid;mode;direction;voltage
-                    //
-                    // ? mode;direction;voltage&mode;direction;voltage
-                    // ? mode;direction;voltage+mode;direction;voltage
-                    // ? mode;direction;voltage|mode;direction;voltage
-
-                    List<Configuration> compatiblePortConfigurations = Configuration.computeCompatibleConfigurations(sourcePortConfiguration, targetPortConfiguration);
-
-                    if (compatiblePortConfigurations != null) {
-                        HashMap<String, Configuration> pathConfiguration = new HashMap<>();
-                        pathConfiguration.put("source-port", compatiblePortConfigurations.get(0));
-                        pathConfiguration.put("target-port", compatiblePortConfigurations.get(1));
-                        pathConfigurations.add(pathConfiguration);
-                    }
-
-                    // TODO: Pick up here. Configuration resolution isn't working, probably because of a logic bug in isCompatible(...)
-                }
-//                System.out.println();
-            }
-
-            // If there is only one path configurations in the compatible configurations list, automatically configure
-            // the path with it, thereby updating the ports' configurations in the path.
-            // TODO: ^
-            if (pathConfigurations.size() == 1) {
-                // Apply the corresponding configurations to ports.
-                HashMap<String, Configuration> pathConfiguration = pathConfigurations.get(0);
-                System.out.println("✔ found compatible configurations");
-
-                // TODO: (QUESTION) Can I specify a path configurations and infer port configurations (for multi-port) or should it be a list of port configurations?
-                // TODO: Apply values based on per-variable configurations?
-                // TODO: Ensure there's only one compatible state for each of the configurations.
-
-                // Source
-                // TODO: print PORT ADDRESS
-                System.out.print("  1. mode:" + pathConfiguration.get("source-port").variables.get("mode").values.get(0));
-                System.out.print(";direction:");
-                for (int k = 0; k < pathConfiguration.get("source-port").variables.get("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.get("source-port").variables.get("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.get("source-port").variables.get("direction").values.size()) {
-                        System.out.print(", ");
-                    }
-                }
-                System.out.print(";voltage:");
-                for (int k = 0; k < pathConfiguration.get("source-port").variables.get("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.get("source-port").variables.get("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.get("source-port").variables.get("voltage").values.size()) {
-                        System.out.print(", ");
-                    }
-                }
-                System.out.print(" | ");
-
-                // Target
-                // TODO: print PORT ADDRESS
-                System.out.print("mode:" + pathConfiguration.get("target-port").variables.get("mode").values.get(0));
-                System.out.print(";direction:");
-                for (int k = 0; k < pathConfiguration.get("target-port").variables.get("direction").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.get("target-port").variables.get("direction").values.get(k));
-                    if ((k + 1) < pathConfiguration.get("target-port").variables.get("direction").values.size()) {
-                        System.out.print(", ");
-                    }
-                }
-                System.out.print(";voltage:");
-                for (int k = 0; k < pathConfiguration.get("target-port").variables.get("voltage").values.size(); k++) {
-                    System.out.print("" + pathConfiguration.get("target-port").variables.get("voltage").values.get(k));
-                    if ((k + 1) < pathConfiguration.get("target-port").variables.get("voltage").values.size()) {
-                        System.out.print(", ");
-                    }
-                }
-                System.out.println();
-
-                // Configure the ports with the single compatible configurations
-                if (pathConfiguration.get("source-port").variables.get("mode").values.size() == 1) {
-                    sourcePortConstruct.variables.get("mode").value = pathConfiguration.get("source-port").variables.get("mode").values.get(0);
-                    System.out.println("  ✔ setting mode: " + sourcePortConstruct.variables.get("mode").value);
-                }
-
-                if (pathConfiguration.get("source-port").variables.get("direction").values.size() == 1) {
-                    sourcePortConstruct.variables.get("direction").value = pathConfiguration.get("source-port").variables.get("direction").values.get(0);
-                    System.out.println("  ✔ setting direction: " + sourcePortConstruct.variables.get("direction").value);
-                }
-
-                if (pathConfiguration.get("source-port").variables.get("voltage").values.size() == 1) {
-                    sourcePortConstruct.variables.get("voltage").value = pathConfiguration.get("source-port").variables.get("voltage").values.get(0);
-                    System.out.println("  ✔ setting voltages: " + sourcePortConstruct.variables.get("voltage").value);
-                }
-
-            }
-
-            // Otherwise, list the available path configurations and prompt the user to set one of them manually.
-            else if (pathConfigurations.size() > 1) {
-                // Apply the corresponding configurations to ports.
-                System.out.println("✔ found compatible configurations");
-                for (int i = 0; i < pathConfigurations.size(); i++) {
-//                    PathConfiguration pathConfiguration = consistentPathConfigurations.get(i);
-//                    System.out.println("\t[" + i + "] (" + pathConstruct.sourcePortConstruct.uid + ", " + pathConstruct.targetPortConstruct.uid + "): (" + pathConfiguration.configurations.get("source-port").mode + ", ...) --- (" + pathConfiguration.configurations.get("target-port").mode + ", ...)");
-                }
-                System.out.println("! set one of these configurations");
-            }
-        }
 
     }
 
@@ -1220,58 +1027,6 @@ public class Interpreter {
 
     }
 
-    public void editPathTask(Context context) {
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        Construct pathConstruct = null;
-
-        if (inputLineWords.length == 2) {
-            pathConstruct = workspace.lastPathConstruct;
-        } else if (inputLineWords.length > 2) {
-            pathConstruct = Manager.getConstruct(inputLineWords[2]);
-        }
-
-        if (pathConstruct != null) {
-
-            workspace.construct = pathConstruct;
-            System.out.println("✔ edit path " + workspace.construct.uid);
-
-        } else {
-
-            // No port was found with the specified identifier (UID, UUID, tag, index)
-
-        }
-    }
-
-    public void listPathsTask() {
-
-        if (workspace.projectConstruct != null) {
-
-            for (int i = 0; i < workspace.projectConstruct.pathConstructs.size(); i++) {
-                System.out.println("" + workspace.projectConstruct.pathConstructs.get(i).uid + " (port " + workspace.projectConstruct.pathConstructs.get(i).sourcePortConstruct.uid + ", port " + workspace.projectConstruct.pathConstructs.get(i).targetPortConstruct.uid + ")");
-            }
-
-        }
-
-    }
-
-    public void removePathTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            // Remove the device referenced in workspace.lastPathConstruct
-
-        } else if (inputLineWords.length > 2) {
-
-            // Remove the path with the specified index, tag, UID, UUID.
-
-        }
-    }
-
     public void setPathConfigurationTask(Context context) {
         // TODO: Change argument to "Context context" (temporary cache/manager)
 
@@ -1305,87 +1060,135 @@ public class Interpreter {
 //
 //    }
 
-    public void editTaskTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
-
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            Workspace.setConstruct(workspace, workspace.lastTaskConstruct);
-
-        } else if (inputLineWords.length > 2) {
-
-//            String inputTaskIdentifier = inputLineWords[2];
-//            if (inputTaskIdentifier.startsWith("uid:")) {
-//
-//                long inputTaskUid = Long.valueOf(inputTaskIdentifier.split(":")[1]);
-//
-//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-//                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uid == inputTaskUid) {
-//                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//            } else if (inputTaskIdentifier.startsWith("uuid:")) {
-//
-//                UUID inputTaskUuid = UUID.fromString(inputTaskIdentifier.split(":")[1]);
-//
-//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                    for (int j = 0; j < workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.size(); j++) {
-//                        if (workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j).uuid.equals(inputTaskUuid)) {
-//                            workspace.taskConstruct = workspace.projectConstruct.deviceConstructs.get(i).scheduleConstruct.taskConstructs.get(j);
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//            } else {
-//
-//                // TODO: Lookup by index.
-//
-//                /*
-//                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
-//
-//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-//                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-//                        break;
-//                    }
-//                }
-//                */
-//
-//            }
-
-        }
-
-        System.out.println("✔ edit task " + workspace.construct.uid);
-    }
-
-    public void removeTaskTask(Context context) {
-        // TODO: Change argument to "Context context" (temporary cache/manager)
-        // TODO: Lookup context.get("inputLine")
-        String[] inputLineWords = context.inputLine.split("[ ]+");
-
-        if (inputLineWords.length == 2) {
-
-            // Remove the path referenced in workspace.lastPathConstruct
-
-        } else if (inputLineWords.length > 2) {
-
-            // Remove the path with the specified index, tag, UID, UUID.
-
-        }
-    }
-
     public void exitTask() {
         System.exit(0);
     }
     // </REFACTOR>
+
+    /*
+    public void listProjectsTask() {
+
+        if (workspace.projectConstructs.size() == 0) {
+            System.out.println("none");
+        } else {
+            for (int i = 0; i < workspace.projectConstructs.size(); i++) {
+                System.out.print("" + workspace.projectConstructs.get(i).uid);
+
+                if (workspace.projectConstructs.get(i).deviceConstructs.size() > 0) {
+                    System.out.print(" (" + workspace.projectConstructs.get(i).deviceConstructs.size() + " devices, " + workspace.projectConstructs.get(i).pathConstructs.size() + " paths)");
+                }
+
+                System.out.println();
+            }
+        }
+
+    }
+
+    public void listDevicesTask() {
+
+        if (workspace.projectConstruct.deviceConstructs.size() == 0) {
+            System.out.println("none");
+        } else {
+            for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
+                System.out.print("" + workspace.projectConstruct.deviceConstructs.get(i).uid);
+
+                if (workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size() > 0) {
+                    System.out.print(" (" + workspace.projectConstruct.deviceConstructs.get(i).portConstructs.size() + " ports)");
+                }
+
+                System.out.println();
+            }
+        }
+
+    }
+
+    // list ports -configurations
+    public void listPortsTask(Context context) {
+        // TODO: Change argument to "Context context" (temporary cache/manager)
+
+        // TODO: Lookup context.get("inputLine")
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 2) {
+
+            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+
+                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
+
+                    // Port UID
+                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
+
+                }
+
+            }
+
+        } else if (inputLineWords.length > 2) {
+
+            String modifiers = inputLineWords[2];
+
+            if (!modifiers.equals("-configurations")) {
+                return;
+            }
+
+            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+
+                for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
+
+                    // Port UID
+                    System.out.println("" + deviceConstruct.portConstructs.get(i).uid);
+
+                    for (int j = 0; j < deviceConstruct.portConstructs.get(i).configurations.size(); j++) {
+
+                        int k = 0;
+                        for (String variableTitle : deviceConstruct.portConstructs.get(i).configurations.get(j).variables.keySet()) {
+
+                            List<String> variableValueSet = deviceConstruct.portConstructs.get(i).configurations.get(j).variables.get(variableTitle).values;
+
+                            for (int l = 0; l < variableValueSet.size(); l++) {
+                                System.out.print("" + variableValueSet.get(l));
+
+                                if ((l + 1) < variableValueSet.size()) {
+                                    System.out.print(", ");
+                                }
+                            }
+
+                            if ((k + 1) < deviceConstruct.portConstructs.get(i).configurations.get(j).variables.size()) {
+                                System.out.print("; ");
+                            }
+
+                            k++;
+
+                        }
+
+                        System.out.println();
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    public void listPathsTask() {
+
+        if (workspace.projectConstruct != null) {
+
+            for (int i = 0; i < workspace.projectConstruct.pathConstructs.size(); i++) {
+                System.out.println("" + workspace.projectConstruct.pathConstructs.get(i).uid + " (port " + workspace.projectConstruct.pathConstructs.get(i).sourcePortConstruct.uid + ", port " + workspace.projectConstruct.pathConstructs.get(i).targetPortConstruct.uid + ")");
+            }
+
+        }
+
+    }
+    */
+
 }
 
 

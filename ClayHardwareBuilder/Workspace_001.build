@@ -1,5 +1,14 @@
 # Builder Script File Format 0.0.1-alpha
 
+# TODO: add construct "project"
+# TODO: add construct "host"
+# TODO: add construct "device"
+# TODO: add construct "port"
+# TODO: add construct "configuration"
+# TODO: add construct "path"
+# TODO: add construct "schedule"
+# TODO: add construct "task"
+
 add project # "test-project"
 edit project # "test-project"
 
@@ -41,6 +50,7 @@ do "add-builder-ports"
 do "add-builder-ports"
 
 # Device: Infrared Rangefinder
+edit project
 add device # NOTE: "add project" always adds the device to the current project.
 
 edit device
@@ -61,18 +71,21 @@ add configuration mode:analog;direction:output;voltage:ttl
 # Paths
 # TODO: Update this path format... break into steps?
 #add path device uid(1) port uid(4) device uid(16) port uid(18)
+edit project
 add path
 edit path
 set source-port:uid(4)
 set target-port:uid(18)
 
 #add path device uid(1) port uid(5) device uid(16) port uid(19)
+edit project
 add path
 edit path
 set source-port:uid(5)
 set target-port:uid(19)
 
 #add path device uid(1) port uid(6) device uid(16) port uid(20)
+edit project
 add path
 edit path
 set source-port:uid(6)
