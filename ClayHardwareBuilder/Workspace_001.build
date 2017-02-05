@@ -12,6 +12,7 @@
 add project # "test-project"
 edit project # "test-project"
 
+# Device: Clay
 add device # "clay-device"
 edit device # "clay-device"
 
@@ -49,7 +50,7 @@ do "add-builder-ports"
 do "add-builder-ports"
 do "add-builder-ports"
 
-# Device: Infrared Rangefinder
+# Device: IR Rangefinder
 edit project
 add device # NOTE: "add project" always adds the device to the current project.
 
@@ -69,7 +70,6 @@ edit port
 add configuration mode:analog;direction:output;voltage:ttl
 
 # Paths
-# TODO: Update this path format... break into steps?
 #add path device uid(1) port uid(4) device uid(16) port uid(18)
 edit project
 add path
@@ -83,6 +83,7 @@ add path
 edit path
 set source-port:uid(5)
 set target-port:uid(19)
+# edit :project(uid:33):device(3):port(4)
 
 #add path device uid(1) port uid(6) device uid(16) port uid(20)
 edit project
@@ -91,21 +92,12 @@ edit path
 set source-port:uid(6)
 set target-port:uid(20)
 
-// TODO: solve <path-uid>
-#solve uid(21)
-#solve uid(22)
-#solve uid(23)
-
 # add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
 # add path { source-port:uid(4); target-port:uid(18) }
 
 edit device uid(1)
 edit port uid(4)
 set configuration mode:digital;direction:output;voltage:ttl
-
-# describe <construct>
-# ...
-# save <construct> # described construct isn't usable (it's in "scratch" until saved)
 
 # Auto-assemble Paths (Sets configuration automatically.)
 solve uid(21)
@@ -142,13 +134,22 @@ set script:myTaskScript(data);
 # ...
 # save
 
+# describe <construct>
+# ...
+# save <construct> # described construct isn't usable (it's in "scratch" until saved)
+
+# /workspace/project/host
+# /workspace/project/device/port
+# /workspace/project/path/port
+# /workspace/project/task
+
 
 # 1 PATH SNAPSHOT/CONFIG --- (1 PORT : 1 PORT) DEVICE/BUS:
 #
 # mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common
 
 
-## 3 PATH DEVICE SNAPSHOT/CONFIG --- (3 PORT : 3 PORT) DEVICE/BUS:
+# 3 PATH DEVICE SNAPSHOT/CONFIG --- (3 PORT : 3 PORT) DEVICE/BUS:
 #
 # [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
 # [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
