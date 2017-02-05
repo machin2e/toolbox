@@ -11,7 +11,7 @@ public class Manager {
 
     public static HashMap<Long, Construct> elements = new HashMap<>();
 
-    public static Construct getConstruct(String address) {
+    public static Construct get(String address) {
 
         // Parse:
         // 3
@@ -23,11 +23,8 @@ public class Manager {
 
             String title = address.substring(1, address.length() - 1);
 
-            System.out.println("title: " + title);
-
             for (long uid : elements.keySet()) {
                 if (elements.get(uid).title != null && elements.get(uid).title.equals(title)) {
-                    System.out.println("found: " + elements.get(uid).uid);
                     return elements.get(uid);
                 }
             }

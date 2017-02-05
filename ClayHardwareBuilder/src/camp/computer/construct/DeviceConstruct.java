@@ -16,4 +16,17 @@ public class DeviceConstruct extends Construct {
         super();
     }
 
+    public static List<PortConstruct> getUnassignedPorts(DeviceConstruct deviceConstruct) {
+
+        List<PortConstruct> unassignedPorts = new ArrayList<>();
+
+        for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
+            if (PortConstruct.isUnassigned(deviceConstruct.portConstructs.get(i))) {
+                unassignedPorts.add(deviceConstruct.portConstructs.get(i));
+            }
+        }
+
+        return unassignedPorts;
+    }
+
 }

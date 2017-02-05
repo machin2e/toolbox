@@ -11,13 +11,16 @@ public abstract class Construct {
     // Identity:
     public UUID uuid = UUID.randomUUID();
     public String title = null; // title/tag(s)
-    // TODO: type
+    // TODO: type (generic type identifier so can use single construct)
 
     // Structure/Links:
     // TODO: parent
     // TODO: siblings
     // TODO: connections (per-construct links)
     // TODO: children
+
+    // TODO: previousVersion
+    // TODO: nextVersions (maybe just use previousVersion)
 
     // TODO: variables/features/properties/states
     // TODO: configuration(s) : assign state to multiple variables

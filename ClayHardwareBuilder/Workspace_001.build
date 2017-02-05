@@ -99,18 +99,18 @@ set target-port:uid(20)
 # add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
 # add path { source-port:uid(4); target-port:uid(18) }
 
-# add path "foo"
-# edit path
-# set "source-port" uid:4
-# set "target-port" uid:18
-# set target-port:uid(18)
-# set target-port:uuid(18)
-# set configuration source-port:uid(18);target-port:uuid(ec2c3e18-fd64-41dd-a828-18ee2b46aee5)
-# set configuration source-port:"port-name";target-port:uuid(ec2c3e18-fd64-41dd-a828-18ee2b46aee5)
-
 edit device uid(1)
 edit port uid(4)
 set configuration mode:digital;direction:output;voltage:ttl
+
+# describe <construct>
+# ...
+# save <construct> # described construct isn't usable (it's in "scratch" until saved)
+
+# Auto-assemble Paths (Sets configuration automatically.)
+solve uid(21)
+solve uid(22)
+solve uid(23)
 
 start "add-task" # (input)
 edit device uid(1) # HACK
@@ -121,6 +121,10 @@ stop
 
 edit project # always jumps to "top-level" project scope, since only one project can be active at a time
 do "add-task"
+
+# Add Script to Tasks
+edit uid(25)
+set script:myTaskScript(data);
 
 # TODO: use port uid:33 as "source-port"
 
@@ -137,3 +141,45 @@ do "add-task"
 # update device "clay"
 # ...
 # save
+
+
+# 1 PATH SNAPSHOT/CONFIG --- (1 PORT : 1 PORT) DEVICE/BUS:
+#
+# mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common
+
+
+## 3 PATH DEVICE SNAPSHOT/CONFIG --- (3 PORT : 3 PORT) DEVICE/BUS:
+#
+# [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
+# [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
+# [ mode:analog;direction:input;voltage:ttl | mode:analog;direction:output;voltage:ttl ]
+
+
+# PROJECT SNAPSHOT/CONFIG --- SET OF 4 DEVICES, EACH 3 PATHS (PATH SETS)
+#
+# Projects need to store the information that is needed to reconstruct what isn't stored
+# explicitly, at minimum. This minimum includes (a) the devices used in the project, and (b) the
+# tasks that control those devices.
+#
+# Additionally, an abstract representation of (a) the paths connecting devices and (b) the ports
+# on hosts to which paths are connected. There can be many such abstract representations that vary
+# based on, for example, whether each device is connected to a single host, or they are connected
+# one-to-one to different hosts.
+#
+# {
+#    [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
+#    [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
+#    [ mode:analog;direction:input;voltage:ttl | mode:analog;direction:output;voltage:ttl ]
+# +
+#    [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
+#    [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
+#    [ mode:analog;direction:input;voltage:ttl | mode:analog;direction:output;voltage:ttl ]
+# +
+#    [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
+#    [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
+#    [ mode:analog;direction:input;voltage:ttl | mode:analog;direction:output;voltage:ttl ]
+# +
+#    [ mode:power;direction:output;voltage:ttl | mode:power;direction:input;voltage:ttl ] &
+#    [ mode:power;direction:input;voltage:common | mode:power;direction:output;voltage:common ] &
+#    [ mode:analog;direction:input;voltage:ttl | mode:analog;direction:output;voltage:ttl ]
+# }

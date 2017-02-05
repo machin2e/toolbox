@@ -1,10 +1,11 @@
 package camp.computer.construct;
 
-public class TaskConstruct extends Construct {
+public class ScriptConstruct extends Construct {
 
     // (task (rev0, rev1, rev2, ..., revN))
 
-    public ScriptConstruct scriptConstruct = null;
+    // TODO: script
+    public String text = null;
 
     // TODO: execute-condition
 
@@ -16,7 +17,7 @@ public class TaskConstruct extends Construct {
 
     // TODO: jump-policy
 
-    public TaskConstruct() {
+    public ScriptConstruct() {
         super();
     }
 
