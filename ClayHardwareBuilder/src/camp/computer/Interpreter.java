@@ -117,6 +117,8 @@ public class Interpreter {
 //                listDevicesTask();
 //                listPortsTask(context);
 //                listPathsTask();
+            } else if (context.inputLine.startsWith("describe")) {
+                describeConstructTask(context);
             } else if (context.inputLine.startsWith("edit project")) {
 //                editProjectTask(context);
                 editConstructTask(context);
@@ -479,6 +481,70 @@ public class Interpreter {
                     System.out.println();
                 }
             }
+
+        }
+    }
+
+    public void describeConstructTask(Context context) {
+
+        // describe
+        // describe path
+        // describe port
+        // describe uid(34)
+        // describe uuid(35)
+        // describe path(...)
+
+        String[] inputLineWords = context.inputLine.split("[ ]+");
+
+        if (inputLineWords.length == 1) {
+
+            // TODO: List all constructs!
+
+            Construct construct = workspace.construct;
+
+            String constructTypeString = null;
+            if (construct.getClass() == ProjectConstruct.class) {
+                constructTypeString = "project";
+            } else if (construct.getClass() == DeviceConstruct.class) {
+                constructTypeString = "device";
+            } else if (construct.getClass() == PortConstruct.class) {
+                constructTypeString = "port";
+            } else if (construct.getClass() == PathConstruct.class) {
+                constructTypeString = "path";
+            } else if (construct.getClass() == ScheduleConstruct.class) {
+                constructTypeString = "schedule";
+            } else if (construct.getClass() == TaskConstruct.class) {
+                constructTypeString = "task";
+            } else if (construct.getClass() == ScriptConstruct.class) {
+                constructTypeString = "script";
+            }
+
+            System.out.println("> " + constructTypeString + " (uid:" + construct.uid + ")");
+
+        } else if (inputLineWords.length == 2) {
+
+            String constructAddressString = inputLineWords[1];
+
+            Construct construct = Manager.get(constructAddressString);
+
+            String constructTypeString = null;
+            if (construct.getClass() == ProjectConstruct.class) {
+                constructTypeString = "project";
+            } else if (construct.getClass() == DeviceConstruct.class) {
+                constructTypeString = "device";
+            } else if (construct.getClass() == PortConstruct.class) {
+                constructTypeString = "port";
+            } else if (construct.getClass() == PathConstruct.class) {
+                constructTypeString = "path";
+            } else if (construct.getClass() == ScheduleConstruct.class) {
+                constructTypeString = "schedule";
+            } else if (construct.getClass() == TaskConstruct.class) {
+                constructTypeString = "task";
+            } else if (construct.getClass() == ScriptConstruct.class) {
+                constructTypeString = "script";
+            }
+
+            System.out.println("> " + constructTypeString + " (uid:" + construct.uid + ")");
 
         }
     }

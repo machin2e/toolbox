@@ -11,7 +11,10 @@ public abstract class Construct {
     // Identity:
     public UUID uuid = UUID.randomUUID();
     public String title = null; // title/tag(s)
+
     // TODO: type (generic type identifier so can use single construct)
+    // TODO: HashMap<?> variables (can be Construct or other values)
+    // Construct (Prototype) -> Container (must specify type or is anonymous) -> Container Revision
 
     // Structure/Links:
     // TODO: parent
@@ -23,7 +26,7 @@ public abstract class Construct {
     // TODO: nextVersions (maybe just use previousVersion)
 
     // TODO: variables/features/properties/states
-    // TODO: configuration(s) : assign state to multiple variables
+    // TODO: configuration(s) : assign state to multiple variables <-- do this for _Container_ not Construct
 
 
     public Construct() {
