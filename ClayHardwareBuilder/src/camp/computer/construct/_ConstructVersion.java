@@ -1,10 +1,10 @@
 package camp.computer.construct;
 
-public class ConstructVersion extends Construct {
+public class _ConstructVersion extends Construct {
 
     // TODO: parent construct UUID/inferred UID
 
-    public ConstructVersion() {
+    public _ConstructVersion() {
         super();
     }
 
