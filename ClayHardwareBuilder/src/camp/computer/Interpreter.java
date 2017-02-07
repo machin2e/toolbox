@@ -8,9 +8,9 @@ import java.util.Scanner;
 import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.HostConstruct;
+import camp.computer.construct.OperationConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
-import camp.computer.construct.ProcessConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.construct.ScheduleConstruct;
 import camp.computer.construct.ScriptConstruct;
@@ -27,7 +27,7 @@ public class Interpreter {
     private List<String> inputLines = new ArrayList<>();
 
     // TODO: Move list of Processes into Workspace
-    private List<ProcessConstruct> processConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set type from default "container" to "namespace", then add an interpreter for that type)!
+    private List<OperationConstruct> operationConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set type from default "container" to "namespace", then add an interpreter for that type)!
 
     // <SETTINGS>
     public static boolean ENABLE_VERBOSE_OUTPUT = false;
@@ -80,8 +80,8 @@ public class Interpreter {
         }
         // </VALIDATE_INPUT>
 
-        if (workspace.processConstruct != null && !inputLine.startsWith("stop")) {
-            workspace.processConstruct.operations.add(inputLine);
+        if (workspace.operationConstruct != null && !inputLine.startsWith("stop")) {
+            workspace.operationConstruct.operations.add(inputLine);
         } else {
 
             // Save line in history
@@ -179,7 +179,7 @@ public class Interpreter {
 
         if (inputLineWords.length == 1) {
 
-            workspace.processConstruct = new ProcessConstruct();
+            workspace.operationConstruct = new OperationConstruct();
 
         } else if (inputLineWords.length > 1) {
 
@@ -188,15 +188,15 @@ public class Interpreter {
 
                 String title = address.substring(1, address.length() - 1);
 
-                workspace.processConstruct = new ProcessConstruct();
-                workspace.processConstruct.title = title;
+                workspace.operationConstruct = new OperationConstruct();
+                workspace.operationConstruct.title = title;
 
             }
 
         }
 
 //        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
-        System.out.println("> start " + workspace.processConstruct.uid);
+        System.out.println("> start " + workspace.operationConstruct.uid);
     }
 
     public void stopProcessTask(Context context) {
@@ -205,12 +205,12 @@ public class Interpreter {
 
         if (inputLineWords.length == 1) {
 
-            processConstructs.add(workspace.processConstruct);
+            operationConstructs.add(workspace.operationConstruct);
 
-            System.out.println("✔ stop " + workspace.processConstruct.uid + " (" + workspace.processConstruct.operations.size() + " operations)");
+            System.out.println("✔ stop " + workspace.operationConstruct.uid + " (" + workspace.operationConstruct.operations.size() + " operations)");
 
             // Reset process construct
-            workspace.processConstruct = null;
+            workspace.operationConstruct = null;
 
         }
 
@@ -222,18 +222,18 @@ public class Interpreter {
 
         if (inputLineWords.length == 2) {
 
-            ProcessConstruct processConstructConstruct = (ProcessConstruct) Manager.get(inputLineWords[1]);
+            OperationConstruct operationConstruct = (OperationConstruct) Manager.get(inputLineWords[1]);
 
-            System.out.println("> do " + processConstructConstruct.uid);
+            System.out.println("> do " + operationConstruct.uid);
 
-            for (int i = 0; i < processConstructConstruct.operations.size(); i++) {
+            for (int i = 0; i < operationConstruct.operations.size(); i++) {
                 // TODO: Add to "command buffer"
-                interpretLine(processConstructConstruct.operations.get(i));
+                interpretLine(operationConstruct.operations.get(i));
             }
 
         }
 
-//        System.out.println("✔ stop " + workspace.processConstruct.uid + " (" + workspace.processConstruct.operations.size() + " operations)");
+//        System.out.println("✔ stop " + workspace.operationConstruct.uid + " (" + workspace.operationConstruct.operations.size() + " operations)");
 
     }
 
@@ -555,9 +555,9 @@ public class Interpreter {
 
         Construct construct = null;
 
-        String constructTypeString = inputLineWords[1];
-
         if (inputLineWords.length == 2) {
+
+            String constructTypeString = inputLineWords[1];
 
             if (constructTypeString.equals("project")) {
                 construct = workspace.lastProjectConstruct;
@@ -584,7 +584,8 @@ public class Interpreter {
         if (construct != null) {
 
             workspace.construct = construct;
-            System.out.println("✔ edit " + constructTypeString + " " + workspace.construct.uid);
+            System.out.println("✔ edit " + workspace.construct.uid);
+//            System.out.println("✔ edit " + constructTypeString + " " + workspace.construct.uid);
 
         } else {
 
@@ -1122,6 +1123,14 @@ public class Interpreter {
 
             String variableTitle = assignmentTokens[0];
             String variableValue = assignmentTokens[1];
+
+            // <HACK>
+            // Note: Hack to handle expressions with nested ":" like "set source-port:port(uid:6)"
+            // TODO: Write custom parser to handle this! Ignore nested ":" in split.
+            if (assignmentTokens.length == 3) {
+                variableValue += ":" + assignmentTokens[2];
+            }
+            // </HACK>
 
             if (workspace.construct.getClass() == PathConstruct.class) {
 //            if (constructTypeString.equals("path")) {

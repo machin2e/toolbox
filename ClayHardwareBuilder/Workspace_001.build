@@ -22,7 +22,10 @@ add project # "test-project"
 # clone project uuid(<uuid>)
 edit project # "test-project"
 
+#
 # Device: Clay
+#
+
 add device # "clay-device"
 edit device # "clay-device"
 
@@ -30,8 +33,6 @@ start "add-builder-ports"
 edit device # TODO: factor out!
 add port
 edit port
-# support state mode:none;direction:null;voltage:null
-# push configuration mode:none;direction:null;voltage:null
 add configuration mode:none;direction:null;voltage:null
 add configuration mode:digital;direction:input,output,bidirectional;voltage:ttl,cmos
 add configuration mode:analog;direction:input,output;voltage:ttl,cmos
@@ -63,7 +64,10 @@ do "add-builder-ports"
 do "add-builder-ports"
 do "add-builder-ports"
 
+#
 # Device: IR Rangefinder
+#
+
 edit project # TODO: factor out!
 add device # NOTE: "add project" always adds the device to the current project.
 
@@ -82,20 +86,71 @@ add port
 edit port
 add configuration mode:analog;direction:output;voltage:ttl
 
-# Paths
-#add path device uid(1) port uid(4) device uid(16) port uid(18)
-edit project # TODO: factor out!
-add path
-edit path
-set source-port:uid(4)
-set target-port:uid(18)
+#
+# Use Case: Connect IR rangefinder to Clay. Create paths, auto-configure,
+#
 
-#add path device uid(1) port uid(5) device uid(16) port uid(19)
+# Paths
 edit project # TODO: factor out!
 add path
 edit path
-set source-port:uid(5)
-set target-port:uid(19)
+set source-port:port(uid:4)
+set target-port:port(uid:18)
+
+edit project # TODO: factor out!
+add path
+edit path
+set source-port:port(uid:5)
+set target-port:port(uid:19)
+# edit :project(uid:33):device(3):port(4)
+
+edit project # TODO: factor out!
+add path
+edit path
+set source-port:port(uid:6) #set source-port:uid(6)
+set target-port:port(uid:20) # set target-port:uid(20)
+
+edit device(uid:1) # edit device uid(1)
+edit port(uid:4) # edit port uid(4)
+set configuration mode:digital;direction:output;voltage:ttl
+
+# Auto-assemble Paths (Sets configuration automatically.)
+solve path(uid:21) # solve uid(21) # solve path(uid:21) # solve path(tag:my-var)
+solve path(uid:22) # solve uid(22)
+solve path(uid:23) # solve uid(23)
+
+# TODO: Test case script for searching for a project and deploying it in a workspace.
+
+start "add-task" # (input)
+edit device(uid:1) # edit device uid(1) # HACK # TODO: factor out!
+# edit device uid(input) # HACK
+add task
+edit task
+stop
+
+edit project # always jumps to "top-level" project scope, since only one project can be active at a time
+do "add-task"
+
+# Add Script to Tasks
+edit task(uid:25) # edit uid(25)
+set script:myTaskScript(data);
+
+
+
+
+# Lookup Syntax
+# ----------------------------------------------------------------------------------------------------
+
+# [Obsolete] edit port uid(25)
+# edit port(uid:25)         # _global_ lookup by UID
+# edit port(uuid:<uuid>)    # _global_ lookup by UUID
+# edit port(1)              # _relative_ lookup list item by index
+# edit my-construct-tag     # _global?_ lookup by tag
+# edit :device(1):port(1)   # explicit "full path" lookup prefixed by ":" indicating "from workspace..."
+#? edit port(my-tag)              # _relative_ lookup list item by list tag and element tag?
+#? edit port                # lookup by property label
+# TODO: extend lookup to include versions... (for certain commands)
+
 # edit :project(uid:33):device(3):port(4)
 # edit .:project(uid:33):device(3):port(4)
 # edit :.project(uid:33):device(3):port(4)
@@ -120,38 +175,8 @@ set target-port:uid(19)
 # set/unset
 # do/undo
 
-#add path device uid(1) port uid(6) device uid(16) port uid(20)
-edit project # TODO: factor out!
-add path
-edit path
-set source-port:uid(6)
-set target-port:uid(20)
-
 # add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
 # add path { source-port:uid(4); target-port:uid(18) }
-
-edit device uid(1)
-edit port uid(4)
-set configuration mode:digital;direction:output;voltage:ttl
-
-# Auto-assemble Paths (Sets configuration automatically.)
-solve uid(21) # solve path(uid:21) # solve path(tag:my-var)
-solve uid(22)
-solve uid(23)
-
-start "add-task" # (input)
-edit device uid(1) # HACK # TODO: factor out!
-# edit device uid(input) # HACK
-add task
-edit task
-stop
-
-edit project # always jumps to "top-level" project scope, since only one project can be active at a time
-do "add-task"
-
-# Add Script to Tasks
-edit uid(25)
-set script:myTaskScript(data);
 
 # TODO: use port uid:33 as "source-port"
 

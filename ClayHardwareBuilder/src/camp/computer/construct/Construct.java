@@ -10,7 +10,10 @@ public abstract class Construct {
 
     // Identity:
     public UUID uuid = UUID.randomUUID();
+
+    // <COMPONENT>
     public String title = null; // title/tag(s)
+    // </COMPONENT>
 
     // TODO: type (generic type identifier so can use single construct)
     // TODO: HashMap<?> variables (can be Construct or other values)

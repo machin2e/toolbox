@@ -6,9 +6,9 @@ import java.util.List;
 import camp.computer.construct.Construct;
 import camp.computer.construct.DeviceConstruct;
 import camp.computer.construct.HostConstruct;
+import camp.computer.construct.OperationConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
-import camp.computer.construct.ProcessConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.construct.ScheduleConstruct;
 import camp.computer.construct.TaskConstruct;
@@ -39,7 +39,7 @@ public class Workspace {
 //    TaskConstruct taskConstruct = null;
 //    PathConstruct pathConstruct = null;
 
-    ProcessConstruct processConstruct = null;
+    OperationConstruct operationConstruct = null;
     // TODO: process label
 
     // Automatically updated each time a construct is created.

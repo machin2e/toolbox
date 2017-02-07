@@ -7,15 +7,13 @@ public class DeviceConstruct extends Construct {
 
     public List<PortConstruct> portConstructs = new ArrayList<>();
 
-    // <REFACTOR>
-    // TODO: Consider replacing with List<TaskConstruct>
     public ScheduleConstruct scheduleConstruct = new ScheduleConstruct();
-    // <REFACTOR>
 
     public DeviceConstruct() {
         super();
     }
 
+    // <API>
     public static List<PortConstruct> getUnassignedPorts(DeviceConstruct deviceConstruct) {
 
         List<PortConstruct> unassignedPorts = new ArrayList<>();
@@ -28,5 +26,6 @@ public class DeviceConstruct extends Construct {
 
         return unassignedPorts;
     }
+    // </API>
 
 }
