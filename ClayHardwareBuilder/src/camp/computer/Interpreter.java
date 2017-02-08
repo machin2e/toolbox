@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Scanner;
 
 import camp.computer.construct.Construct;
+import camp.computer.construct.ControllerConstruct;
 import camp.computer.construct.DeviceConstruct;
-import camp.computer.construct.HostConstruct;
 import camp.computer.construct.OperationConstruct;
 import camp.computer.construct.PathConstruct;
 import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
-import camp.computer.construct.ScheduleConstruct;
 import camp.computer.construct.ScriptConstruct;
 import camp.computer.construct.TaskConstruct;
 import camp.computer.data.format.configuration.Configuration;
@@ -99,11 +98,16 @@ public class Interpreter {
                 stopProcessTask(context);
             } else if (context.inputLine.startsWith("do")) {
                 doProcessTask(context);
-            } else if (context.inputLine.startsWith("save")) {
+            }
+
+            // <VERSION_CONTROL>
+            else if (context.inputLine.startsWith("save")) {
                 saveConstructVersion(context);
             } else if (context.inputLine.startsWith("restore")) {
                 restoreConstructVersion(context);
             }
+            // </VERSION_CONTROL>
+
             // <REFACTOR>
             else if (context.inputLine.startsWith("add configuration")) {
                 addConfigurationTask(context);
@@ -113,31 +117,18 @@ public class Interpreter {
                 addConstructTask(context);
             } else if (context.inputLine.startsWith("list")) {
                 listConstructsTask(context);
-//                listProjectsTask();
-//                listDevicesTask();
-//                listPortsTask(context);
-//                listPathsTask();
-            } else if (context.inputLine.startsWith("describe workspace")) {
+                /*
+                listProjectsTask();
+                listDevicesTask();
+                listPortsTask(context);
+                listPathsTask();
+                */
+            } else if (context.inputLine.startsWith("view")) {
                 describeWorkspaceTask(context);
             } else if (context.inputLine.startsWith("describe")) {
                 describeConstructTask(context);
-            } else if (context.inputLine.startsWith("edit project")) {
-//                editProjectTask(context);
+            } else if (context.inputLine.startsWith("edit")) {
                 editConstructTask(context);
-            } else if (context.inputLine.startsWith("edit device")) {
-//                editDeviceTask(context);
-                editConstructTask(context);
-            } else if (context.inputLine.startsWith("edit port")) {
-//                editPortTask(context);
-                editConstructTask(context);
-            } else if (context.inputLine.startsWith("edit path")) {
-//                editPathTask(context);
-                editConstructTask(context);
-            } else if (context.inputLine.startsWith("edit task")) {
-//                editTaskTask(context);
-                editConstructTask(context);
-            } else if (context.inputLine.startsWith("set project title")) {
-//                setProjectTitleTask(context);
             } else if (context.inputLine.startsWith("remove")) {
                 removeConstructTask(context);
             }
@@ -186,14 +177,15 @@ public class Interpreter {
         } else if (inputLineWords.length > 1) {
 
             String address = inputLineWords[1];
-            if (address.startsWith("\"") && address.endsWith("\"")) {
+//            if (address.startsWith("\"") && address.endsWith("\"")) {
 
-                String title = address.substring(1, address.length() - 1);
+//            String title = address.substring(1, address.length() - 1);
+            String title = String.valueOf(address);
 
-                workspace.operationConstruct = new OperationConstruct();
-                workspace.operationConstruct.title = title;
+            workspace.operationConstruct = new OperationConstruct();
+            workspace.operationConstruct.title = title;
 
-            }
+//            }
 
         }
 
@@ -280,11 +272,7 @@ public class Interpreter {
                 workspace.projectConstructs.add(projectConstruct);
                 workspace.lastProjectConstruct = projectConstruct; // Store reference to last-created project
 
-                System.out.println("✔ add project " + projectConstruct.uid + " to workspace");
-
-            } else if (constructTypeString.equals("host")) {
-
-                // TODO:
+                System.out.println("✔ add project(uid:" + projectConstruct.uid + ") to workspace");
 
             } else if (constructTypeString.equals("device")) {
 
@@ -297,7 +285,7 @@ public class Interpreter {
                     projectConstruct.deviceConstructs.add(deviceConstruct);
                     workspace.lastDeviceConstruct = deviceConstruct; // Store reference to last-created device
 
-                    System.out.println("✔ add device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
+                    System.out.println("✔ add device(uid:" + deviceConstruct.uid + ") to project(uid:" + projectConstruct.uid + ")");
                 }
 
             } else if (constructTypeString.equals("port")) {
@@ -311,7 +299,7 @@ public class Interpreter {
                     deviceConstruct.portConstructs.add(portConstruct);
                     workspace.lastPortConstruct = portConstruct; // Store reference to last-created port
 
-                    System.out.println("✔ add port " + portConstruct.uid + " on device " + deviceConstruct.uid);
+                    System.out.println("✔ add port(uid:" + portConstruct.uid + ") to device(uid:" + deviceConstruct.uid + ")");
                 }
 
             } else if (constructTypeString.equals("path")) {
@@ -325,7 +313,7 @@ public class Interpreter {
                     projectConstruct.pathConstructs.add(pathConstruct);
                     workspace.lastPathConstruct = pathConstruct; // Store reference to last-created port
 
-                    System.out.println("✔ add path " + pathConstruct.uid + " to project " + projectConstruct.uid);
+                    System.out.println("✔ add path(uid:" + pathConstruct.uid + ") to project (uid:" + projectConstruct.uid + ")");
                 }
 
             } else if (constructTypeString.equals("task")) {
@@ -335,7 +323,7 @@ public class Interpreter {
                     DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 
                     TaskConstruct taskConstruct = new TaskConstruct();
-                    deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+                    deviceConstruct.controllerConstruct.taskConstructs.add(taskConstruct);
 
                     // Store reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
@@ -359,10 +347,6 @@ public class Interpreter {
                 projectConstruct.title = constructTitleString;
                 workspace.projectConstructs.add(projectConstruct);
                 workspace.lastProjectConstruct = projectConstruct; // Store reference to last-created project
-
-            } else if (constructTypeString.equals("host")) {
-
-                // TODO:
 
             } else if (constructTypeString.equals("device")) {
 
@@ -418,7 +402,7 @@ public class Interpreter {
 
                     TaskConstruct taskConstruct = new TaskConstruct();
                     taskConstruct.title = constructTitleString;
-                    deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+                    deviceConstruct.controllerConstruct.taskConstructs.add(taskConstruct);
 
                     // Store reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
@@ -456,16 +440,14 @@ public class Interpreter {
             Class constructType = null;
             if (constructTypeString.equals("projects")) {
                 constructType = ProjectConstruct.class;
-            } else if (constructTypeString.equals("hosts")) {
-                constructType = HostConstruct.class;
             } else if (constructTypeString.equals("devices")) {
                 constructType = DeviceConstruct.class;
             } else if (constructTypeString.equals("ports")) {
                 constructType = PortConstruct.class;
             } else if (constructTypeString.equals("paths")) {
                 constructType = PathConstruct.class;
-            } else if (constructTypeString.equals("schedules")) {
-                constructType = ScheduleConstruct.class;
+            } else if (constructTypeString.equals("controllers")) {
+                constructType = ControllerConstruct.class;
             } else if (constructTypeString.equals("tasks")) {
                 constructType = TaskConstruct.class;
             }
@@ -515,8 +497,8 @@ public class Interpreter {
                 constructTypeString = "port";
             } else if (construct.getClass() == PathConstruct.class) {
                 constructTypeString = "path";
-            } else if (construct.getClass() == ScheduleConstruct.class) {
-                constructTypeString = "schedule";
+            } else if (construct.getClass() == ControllerConstruct.class) {
+                constructTypeString = "controller";
             } else if (construct.getClass() == TaskConstruct.class) {
                 constructTypeString = "task";
             } else if (construct.getClass() == ScriptConstruct.class) {
@@ -540,8 +522,8 @@ public class Interpreter {
                 constructTypeString = "port";
             } else if (construct.getClass() == PathConstruct.class) {
                 constructTypeString = "path";
-            } else if (construct.getClass() == ScheduleConstruct.class) {
-                constructTypeString = "schedule";
+            } else if (construct.getClass() == ControllerConstruct.class) {
+                constructTypeString = "controller";
             } else if (construct.getClass() == TaskConstruct.class) {
                 constructTypeString = "task";
             } else if (construct.getClass() == ScriptConstruct.class) {
@@ -579,8 +561,8 @@ public class Interpreter {
 //                constructTypeString = "port";
 //            } else if (construct.getClass() == PathConstruct.class) {
 //                constructTypeString = "path";
-//            } else if (construct.getClass() == ScheduleConstruct.class) {
-//                constructTypeString = "schedule";
+//            } else if (construct.getClass() == ControllerConstruct.class) {
+//                constructTypeString = "controller";
 //            } else if (construct.getClass() == TaskConstruct.class) {
 //                constructTypeString = "task";
 //            } else if (construct.getClass() == ScriptConstruct.class) {
@@ -604,8 +586,8 @@ public class Interpreter {
 //                constructTypeString = "port";
 //            } else if (construct.getClass() == PathConstruct.class) {
 //                constructTypeString = "path";
-//            } else if (construct.getClass() == ScheduleConstruct.class) {
-//                constructTypeString = "schedule";
+//            } else if (construct.getClass() == ControllerConstruct.class) {
+//                constructTypeString = "controller";
 //            } else if (construct.getClass() == TaskConstruct.class) {
 //                constructTypeString = "task";
 //            } else if (construct.getClass() == ScriptConstruct.class) {
@@ -663,16 +645,14 @@ public class Interpreter {
 
             if (constructTypeString.equals("project")) {
                 construct = workspace.lastProjectConstruct;
-            } else if (constructTypeString.equals("host")) {
-                construct = workspace.lastHostConstruct;
             } else if (constructTypeString.equals("device")) {
                 construct = workspace.lastDeviceConstruct;
             } else if (constructTypeString.equals("port")) {
                 construct = workspace.lastPortConstruct;
             } else if (constructTypeString.equals("path")) {
                 construct = workspace.lastPathConstruct;
-            } else if (constructTypeString.equals("schedule")) {
-                construct = workspace.lastScheduleConstruct;
+            } else if (constructTypeString.equals("controller")) {
+                construct = workspace.lastControllerConstruct;
             } else if (constructTypeString.equals("task")) {
                 construct = workspace.lastTaskConstruct;
             }
@@ -686,7 +666,7 @@ public class Interpreter {
         if (construct != null) {
 
             workspace.construct = construct;
-            System.out.println("✔ edit " + workspace.construct.uid);
+//            System.out.println("✔ edit " + workspace.construct.uid);
 //            System.out.println("✔ edit " + constructTypeString + " " + workspace.construct.uid);
 
         } else {
@@ -696,6 +676,11 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Removes the {@code Construct} with the specified identifier from the {@code Manager}.
+     *
+     * @param context
+     */
     public void removeConstructTask(Context context) {
 
         String[] inputLineWords = context.inputLine.split("[ ]+");
@@ -711,7 +696,7 @@ public class Interpreter {
             Construct construct = Manager.get(addressString);
 
             if (construct != null) {
-                // TODO: Remove construct
+                Manager.remove(construct.uid);
             }
 
         }
@@ -1274,14 +1259,6 @@ public class Interpreter {
 
             }
 
-//            else if (assignmentString.equals("host")) {
-//
-//                // TODO:
-//
-//            } else if (assignmentString.equals("device")) {
-//
-//            }
-
             System.out.println("✔ set script " + variableTitle + ":" + variableValue);
 
         }
@@ -1315,7 +1292,7 @@ public class Interpreter {
 //        if (workspace.deviceConstruct != null) {
 //
 //            TaskConstruct taskConstruct = new TaskConstruct();
-//            workspace.deviceConstruct.scheduleConstruct.taskConstructs.add(taskConstruct);
+//            workspace.deviceConstruct.controllerConstruct.taskConstructs.add(taskConstruct);
 //
 //            // Store reference to last-created device
 //            workspace.lastTaskConstruct = taskConstruct;

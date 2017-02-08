@@ -15,6 +15,28 @@ public abstract class Construct {
     public String title = null; // title/tag(s)
     // </COMPONENT>
 
+    // HashMap<String, List<Construct>> constructs;
+
+    /*
+    public List<PortConstruct> portConstructs = new ArrayList<>();
+    public ControllerConstruct controllerConstruct = new ControllerConstruct();
+
+    public PortConstruct sourcePortConstruct = null;
+    public PortConstruct targetPortConstruct = null;
+
+    public HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+    public List<Configuration> configurations = new ArrayList<>();
+
+    public List<DeviceConstruct> deviceConstructs = new ArrayList<>();
+    public List<PathConstruct> pathConstructs = new ArrayList<>();
+
+    public List<TaskConstruct> taskConstructs = new ArrayList<>();
+
+    public String text = null;
+
+    public ScriptConstruct scriptConstruct = null;
+    */
+
     // TODO: type (generic type identifier so can use single construct)
     // TODO: HashMap<?> variables (can be Construct or other values)
     // Construct (Prototype) -> Container (must specify type or is anonymous) -> Container Revision

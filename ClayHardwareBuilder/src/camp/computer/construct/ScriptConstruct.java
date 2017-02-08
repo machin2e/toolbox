@@ -5,7 +5,7 @@ public class ScriptConstruct extends Construct {
     // (task (rev0, rev1, rev2, ..., revN))
 
     // TODO: script
-    public String text = null;
+    public String text;
 
     // TODO: execute-condition
 

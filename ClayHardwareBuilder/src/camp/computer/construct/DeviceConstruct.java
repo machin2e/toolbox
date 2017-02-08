@@ -7,7 +7,7 @@ public class DeviceConstruct extends Construct {
 
     public List<PortConstruct> portConstructs = new ArrayList<>();
 
-    public ScheduleConstruct scheduleConstruct = new ScheduleConstruct();
+    public ControllerConstruct controllerConstruct = new ControllerConstruct();
 
     public DeviceConstruct() {
         super();

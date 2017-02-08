@@ -1,17 +1,17 @@
 # Builder Script File Format 0.0.1-alpha
 
-add project # "test-project"
+add project test-project
 # clone project uuid(<uuid>)
-edit project # "test-project"
+edit project test-project
 
 #
 # Device: Clay
 #
 
-add device # "clay-device"
-edit device # "clay-device"
+add device clay-device
+edit device clay-device
 
-start "add-builder-ports"
+start add-builder-ports
 edit device # TODO: factor out!
 add port
 edit port
@@ -33,18 +33,18 @@ add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
 stop
 # TODO: Detect if device already exists with given structure!
 
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
-do "add-builder-ports"
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
+do add-builder-ports
 
 #
 # Device: IR Rangefinder
@@ -84,6 +84,8 @@ add path
 edit path
 set source-port:port(uid:5)
 set target-port:port(uid:19)
+# set my-val-a:number(34)
+# set my-val-b:number(34.0)
 
 edit project # TODO: factor out!
 add path
@@ -110,7 +112,7 @@ solve path(uid:23)
 
 # TODO: Test case script for searching for a project and deploying it in a workspace.
 
-start "add-task" # (input)
+start add-task # (input)
 edit device(uid:1) # HACK # TODO: factor out!
 # edit device uid(input) # HACK
 add task
@@ -118,7 +120,7 @@ edit task
 stop
 
 edit project
-do "add-task"
+do add-task
 
 # Add Script to Tasks
 edit task(uid:25) # edit uid(25)

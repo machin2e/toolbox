@@ -1,6 +1,8 @@
 package camp.computer.workspace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import camp.computer.construct.Construct;
@@ -32,17 +34,18 @@ public class Manager {
 //
 //        }
 
-        if (constructUri.startsWith("\"") && constructUri.endsWith("\"")) {
+        if (constructUri.startsWith("project")
+                || constructUri.startsWith("device")
+                || constructUri.startsWith("port")
+                || constructUri.startsWith("path")
+                || constructUri.startsWith("task")
+                || constructUri.startsWith("script")) {
 
-            String title = constructUri.substring(1, constructUri.length() - 1);
-
-            for (long uid : elements.keySet()) {
-                if (elements.get(uid).title != null && elements.get(uid).title.equals(title)) {
-                    return elements.get(uid);
-                }
-            }
-
-        } else {
+//        if (constructUri.startsWith("\"") && constructUri.endsWith("\"")) {
+//
+//
+//
+//        } else {
 
             String type = constructUri.substring(0, constructUri.indexOf("("));
 
@@ -53,7 +56,6 @@ public class Manager {
 
             if (identifierType.equals("uid")) {
 
-//                long inputTaskUid = Long.valueOf(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
                 long inputTaskUid = Long.valueOf(identifier);
 
                 if (Manager.elements.containsKey(inputTaskUid)) {
@@ -62,7 +64,6 @@ public class Manager {
 
             } else if (identifierType.equals("uuid")) {
 
-//                UUID inputTaskUuid = UUID.fromString(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
                 UUID inputTaskUuid = UUID.fromString(identifier);
 
                 for (int i = 0; i < Manager.elements.size(); i++) {
@@ -75,54 +76,39 @@ public class Manager {
 
                 // TODO: Lookup by index.
 
-                /*
-                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
-
-                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-                        break;
-                    }
-                }
-                */
-
             }
 
-//            if (address.startsWith("uid")) {
-//
-//                long inputTaskUid = Long.valueOf(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
-//
-//                if (Manager.elements.containsKey(inputTaskUid)) {
-//                    return Manager.elements.get(inputTaskUid);
+        } else {
+
+//            String title = constructUri.substring(1, constructUri.length() - 1);
+            String title = String.valueOf(constructUri);
+
+            List<Construct> constructs = new ArrayList<>(elements.values());
+
+//            for (long uid : elements.keySet()) {
+//                Construct construct = elements.get(uid);
+//                if (construct.title != null && construct.title.equals(title)) {
+//                    return construct;
 //                }
-//
-//            } else if (address.startsWith("uuid")) {
-//
-//                UUID inputTaskUuid = UUID.fromString(address.substring(address.indexOf("(") + 1, address.indexOf(")")));
-//
-//                for (int i = 0; i < Manager.elements.size(); i++) {
-//                    if (Manager.elements.get(i).uuid.equals(inputTaskUuid)) {
-//                        return Manager.elements.get(i);
-//                    }
-//                }
-//
-//            } else {
-//
-//                // TODO: Lookup by index.
-//
-//                /*
-//                long inputDeviceUid = Long.valueOf(inputDeviceIdentifier.split(":")[1]);
-//
-//                for (int i = 0; i < workspace.projectConstruct.deviceConstructs.size(); i++) {
-//                    if (workspace.projectConstruct.deviceConstructs.get(i).uid == inputDeviceUid) {
-//                        workspace.deviceConstruct = workspace.projectConstruct.deviceConstructs.get(i);
-//                        break;
-//                    }
-//                }
-//                */
-//
 //            }
 
+            for (int i = 0; i < constructs.size(); i++) {
+                Construct construct = constructs.get(i);
+                if (construct.title != null && construct.title.equals(title)) {
+                    return construct;
+                }
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public static Construct remove(long uid) {
+
+        if (elements.containsKey(uid)) {
+            return elements.remove(uid);
         }
 
         return null;
