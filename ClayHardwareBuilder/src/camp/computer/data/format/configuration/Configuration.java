@@ -21,12 +21,8 @@ import camp.computer.util.Tuple;
  */
 public class Configuration {
 
-    // [ (Variable, CompatibleStateSubset), (Variable, CompatibleStateSubset), ..., (Variable, CompatibleStateSubset) ]
-
     public HashMap<String, Tuple<String>> variables = new HashMap<>();
 
-    // TODO: PortConfigurationConstraint(State... values)/(variable.values.get(<title>), ...)
-    //public Configuration(Mode mode, ValueSet<Direction> directions, ValueSet<Voltage> voltages) {
     public Configuration(Pair<String, Tuple<String>>... variableValueSets) {
 
         for (int variableIndex = 0; variableIndex < variableValueSets.length; variableIndex++) {
@@ -43,9 +39,7 @@ public class Configuration {
 
     }
 
-    // TODO: discoverCompatiblePortSet(<device-a>, <device-b>)
-
-    // TODO: computeCompatibleConfigurations/computeCompatibleConfigurationSets(<device-a>, <device-b>)
+    // <API>
 
     /**
      * Computes/resolves the pair of "minimal compatible" {@code PortConfigurationConstraint}s
@@ -305,5 +299,6 @@ public class Configuration {
     }
 
     // TODO: rankCompatibleConfigurations(<compatible-configurations-list>)
+    // </API>
 
 }

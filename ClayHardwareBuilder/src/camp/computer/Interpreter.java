@@ -117,6 +117,8 @@ public class Interpreter {
 //                listDevicesTask();
 //                listPortsTask(context);
 //                listPathsTask();
+            } else if (context.inputLine.startsWith("describe workspace")) {
+                describeWorkspaceTask(context);
             } else if (context.inputLine.startsWith("describe")) {
                 describeConstructTask(context);
             } else if (context.inputLine.startsWith("edit project")) {
@@ -196,7 +198,7 @@ public class Interpreter {
         }
 
 //        System.out.println("✔ edit project " + workspace.projectConstruct.uid);
-        System.out.println("> start " + workspace.operationConstruct.uid);
+//        System.out.println("> start " + workspace.operationConstruct.uid);
     }
 
     public void stopProcessTask(Context context) {
@@ -207,7 +209,7 @@ public class Interpreter {
 
             operationConstructs.add(workspace.operationConstruct);
 
-            System.out.println("✔ stop " + workspace.operationConstruct.uid + " (" + workspace.operationConstruct.operations.size() + " operations)");
+//            System.out.println("✔ stop " + workspace.operationConstruct.uid + " (" + workspace.operationConstruct.operations.size() + " operations)");
 
             // Reset process construct
             workspace.operationConstruct = null;
@@ -224,7 +226,7 @@ public class Interpreter {
 
             OperationConstruct operationConstruct = (OperationConstruct) Manager.get(inputLineWords[1]);
 
-            System.out.println("> do " + operationConstruct.uid);
+//            System.out.println("> do " + operationConstruct.uid);
 
             for (int i = 0; i < operationConstruct.operations.size(); i++) {
                 // TODO: Add to "command buffer"
@@ -277,6 +279,8 @@ public class Interpreter {
                 ProjectConstruct projectConstruct = new ProjectConstruct();
                 workspace.projectConstructs.add(projectConstruct);
                 workspace.lastProjectConstruct = projectConstruct; // Store reference to last-created project
+
+                System.out.println("✔ add project " + projectConstruct.uid + " to workspace");
 
             } else if (constructTypeString.equals("host")) {
 
@@ -546,6 +550,104 @@ public class Interpreter {
 
             System.out.println("> " + constructTypeString + " (uid:" + construct.uid + ")");
 
+        }
+    }
+
+    public void describeWorkspaceTask(Context context) {
+
+        // describe
+        // describe path
+        // describe port
+        // describe uid(34)
+        // describe uuid(35)
+        // describe path(...)
+
+//        String[] inputLineWords = context.inputLine.split("[ ]+");
+//
+//        if (inputLineWords.length == 1) {
+//
+//            // TODO: List all constructs!
+//
+//            Construct construct = workspace.construct;
+//
+//            String constructTypeString = null;
+//            if (construct.getClass() == ProjectConstruct.class) {
+//                constructTypeString = "project";
+//            } else if (construct.getClass() == DeviceConstruct.class) {
+//                constructTypeString = "device";
+//            } else if (construct.getClass() == PortConstruct.class) {
+//                constructTypeString = "port";
+//            } else if (construct.getClass() == PathConstruct.class) {
+//                constructTypeString = "path";
+//            } else if (construct.getClass() == ScheduleConstruct.class) {
+//                constructTypeString = "schedule";
+//            } else if (construct.getClass() == TaskConstruct.class) {
+//                constructTypeString = "task";
+//            } else if (construct.getClass() == ScriptConstruct.class) {
+//                constructTypeString = "script";
+//            }
+//
+//            System.out.println("> " + constructTypeString + " (uid:" + construct.uid + ")");
+//
+//        } else if (inputLineWords.length == 2) {
+//
+//            String constructAddressString = inputLineWords[1];
+//
+//            Construct construct = Manager.get(constructAddressString);
+//
+//            String constructTypeString = null;
+//            if (construct.getClass() == ProjectConstruct.class) {
+//                constructTypeString = "project";
+//            } else if (construct.getClass() == DeviceConstruct.class) {
+//                constructTypeString = "device";
+//            } else if (construct.getClass() == PortConstruct.class) {
+//                constructTypeString = "port";
+//            } else if (construct.getClass() == PathConstruct.class) {
+//                constructTypeString = "path";
+//            } else if (construct.getClass() == ScheduleConstruct.class) {
+//                constructTypeString = "schedule";
+//            } else if (construct.getClass() == TaskConstruct.class) {
+//                constructTypeString = "task";
+//            } else if (construct.getClass() == ScriptConstruct.class) {
+//                constructTypeString = "script";
+//            }
+//
+//            System.out.println("> " + constructTypeString + " (uid:" + construct.uid + ")");
+//
+//        }
+
+        System.out.print("workspace (USERNAME)");
+        System.out.println();
+
+        for (int projectIndex = 0; projectIndex < workspace.projectConstructs.size(); projectIndex++) {
+            ProjectConstruct projectConstruct = workspace.projectConstructs.get(projectIndex);
+
+            System.out.print("\tproject");
+            System.out.print(" (uid:" + projectConstruct.uid + ")");
+            System.out.println();
+
+            for (int deviceIndex = 0; deviceIndex < projectConstruct.deviceConstructs.size(); deviceIndex++) {
+                DeviceConstruct deviceConstruct = projectConstruct.deviceConstructs.get(deviceIndex);
+
+                System.out.print("\t\tdevice");
+                System.out.print(" (uid:" + deviceConstruct.uid + ")");
+                System.out.println();
+
+                for (int portIndex = 0; portIndex < deviceConstruct.portConstructs.size(); portIndex++) {
+                    PortConstruct portConstruct = deviceConstruct.portConstructs.get(portIndex);
+
+                    //System.out.print("\t\t\tport" + " (" + portConstruct.configurations.size() + " configurations)");
+                    System.out.print("\t\t\tport");
+                    System.out.print(" (uid:" + portConstruct.uid + ")");
+                    System.out.println();
+
+                    for (int configurationIndex = 0; configurationIndex < portConstruct.configurations.size(); configurationIndex++) {
+                        Configuration configuration = portConstruct.configurations.get(configurationIndex);
+
+                        System.out.println("\t\t\t\tconfiguration");
+                    }
+                }
+            }
         }
     }
 

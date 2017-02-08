@@ -1,23 +1,5 @@
 # Builder Script File Format 0.0.1-alpha
 
-# TODO: add construct "project"
-# TODO: add construct "host"
-# TODO: add construct "device"
-# TODO: add construct "port"
-# TODO: add construct "configuration"
-# TODO: add construct "path"
-# TODO: add construct "schedule"
-# TODO: add construct "task"
-
-# TODO: edit construct project # loads latest revision
-# TODO: add variable mode
-# TODO: add variable direction
-# TODO: add variable voltage
-# ...
-# (create/edit instance)
-# TODO: add configuration mode:none;direction:null;voltage:null
-# ...
-
 add project # "test-project"
 # clone project uuid(<uuid>)
 edit project # "test-project"
@@ -102,33 +84,40 @@ add path
 edit path
 set source-port:port(uid:5)
 set target-port:port(uid:19)
-# edit :project(uid:33):device(3):port(4)
 
 edit project # TODO: factor out!
 add path
 edit path
-set source-port:port(uid:6) #set source-port:uid(6)
-set target-port:port(uid:20) # set target-port:uid(20)
+set source-port:port(uid:6)
+set target-port:port(uid:20)
 
-edit device(uid:1) # edit device uid(1)
-edit port(uid:4) # edit port uid(4)
+edit device(uid:1)
+edit port(uid:4)
 set configuration mode:digital;direction:output;voltage:ttl
 
 # Auto-assemble Paths (Sets configuration automatically.)
-solve path(uid:21) # solve uid(21) # solve path(uid:21) # solve path(tag:my-var)
-solve path(uid:22) # solve uid(22)
-solve path(uid:23) # solve uid(23)
+solve path(uid:21)
+solve path(uid:22)
+solve path(uid:23)
+
+# solve path(port(uid:4),port(uid:18))
+# solve path(port(uid:5),port(uid:19))
+# solve path(port(uid:6),port(uid:20))
+
+# solve path(device(uid:1),device(uid:16)) # assemble path(device(uid:1),device(uid:16))
+
+# solve project(uid(0))
 
 # TODO: Test case script for searching for a project and deploying it in a workspace.
 
 start "add-task" # (input)
-edit device(uid:1) # edit device uid(1) # HACK # TODO: factor out!
+edit device(uid:1) # HACK # TODO: factor out!
 # edit device uid(input) # HACK
 add task
 edit task
 stop
 
-edit project # always jumps to "top-level" project scope, since only one project can be active at a time
+edit project
 do "add-task"
 
 # Add Script to Tasks
@@ -159,6 +148,8 @@ set script:myTaskScript(data);
 # add ..project(uid:33):device(3):port(4)
 # add ..project(uid:33):device(3).port(4)
 
+ # always jumps to "top-level" project scope, since only one project can be active at a time
+
 # builder .
 # device .
 # port .
@@ -174,6 +165,24 @@ set script:myTaskScript(data);
 # edit/unedit
 # set/unset
 # do/undo
+
+# TODO: add construct "project"
+# TODO: add construct "host"
+# TODO: add construct "device"
+# TODO: add construct "port"
+# TODO: add construct "configuration"
+# TODO: add construct "path"
+# TODO: add construct "schedule"
+# TODO: add construct "task"
+
+# TODO: edit construct project # loads latest revision
+# TODO: add variable mode
+# TODO: add variable direction
+# TODO: add variable voltage
+# ...
+# (create/edit instance)
+# TODO: add configuration mode:none;direction:null;voltage:null
+# ...
 
 # add path ( device uid(1) port uid(4); device uid(16) port uid(18) )
 # add path { source-port:uid(4); target-port:uid(18) }
