@@ -1,7 +1,9 @@
 package camp.computer.construct;
 
+import java.util.HashMap;
 import java.util.UUID;
 
+import camp.computer.data.format.configuration.Variable;
 import camp.computer.workspace.Manager;
 
 public abstract class Construct {
@@ -16,12 +18,37 @@ public abstract class Construct {
 
     public String title = null; // label/tag(s)
 
+    public HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+
 
     // + VARIABLES/FEATURES/PROPERTIES (list, string, link to construct, )
     //
-    //   set mode : string
-    //   set direction : string
-    //   set voltage : string
+    //   new port / dir port / def port / for port # Create construct in repository or find existing identical match and return UUID.
+    //   let mode : string : "digital", "analog", ... # if only one value, auto-assign it upon use of construct
+    //   let direction : string : "none", "input", "output", "bidirectional"
+    //   let voltage : string : "cmos", "ttl"
+    //   set mode:digital;direction;output;voltage:cmos,ttl # "set" in the context of "new" adds an allowed configuration
+    //   but mode:digital;direction;output;voltage:cmos,ttl
+    //     support mode:digital;direction;output;voltage:cmos,ttl
+    //     for mode:digital;direction;output;voltage:cmos,ttl
+    //     add setting : mode:digital;direction;output;voltage:cmos,ttl
+    //     add setting : mode:analog;direction;input;voltage:ttl
+    //   done / save / commit
+    //
+    //   use port (uuid:<uuid>) / edit port (...) # Creates INSTANCE based on the CONSTRUCT revision <uuid>
+    //   set mode : "digital"
+    //   set direction : "output"
+    //   set voltage : "cmos"
+    //   done / commit
+    //
+    //   add configuration mode:digital;direction;output;voltage:cmos
+    //      put configuration mode:digital;direction;output;voltage:cmos
+    //
+    //   let source-port : port
+    //   set source-port : port(uid:34)
+    //
+    //   let port : list
+    //   add port : port(uid:44) # adds the port to the list "port"
     //
     //   set ports : list(type:port)
     //      set type ports (port)
