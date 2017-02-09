@@ -10,6 +10,7 @@ public class PathConstruct extends Construct {
 
     public PathConstruct() {
         super();
+        this.type = "path";
     }
 
 }

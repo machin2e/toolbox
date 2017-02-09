@@ -86,7 +86,7 @@ public class Manager {
             List<Construct> constructs = new ArrayList<>(elements.values());
 
 //            for (long uid : elements.keySet()) {
-//                Construct construct = elements.get(uid);
+//                Construct construct = elements.clone(uid);
 //                if (construct.title != null && construct.title.equals(title)) {
 //                    return construct;
 //                }

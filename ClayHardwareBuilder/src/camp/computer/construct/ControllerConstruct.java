@@ -9,6 +9,7 @@ public class ControllerConstruct extends Construct {
 
     public ControllerConstruct() {
         super();
+        this.type = "controller";
     }
 
 }

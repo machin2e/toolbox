@@ -6,14 +6,43 @@ import camp.computer.workspace.Manager;
 
 public abstract class Construct {
 
-    public long uid = Manager.elementCounter++;
+    public static final String DEFAULT_CONSTRUCT_TYPE = "construct";
 
-    // Identity:
-    public UUID uuid = UUID.randomUUID();
+    public UUID uuid = UUID.randomUUID(); // universal identifier (unique among all in central repo)
 
-    // <COMPONENT>
-    public String title = null; // title/tag(s)
-    // </COMPONENT>
+    public long uid = Manager.elementCounter++; // manager/cache UID
+
+    public String type = DEFAULT_CONSTRUCT_TYPE; // type identifier of construct
+
+    public String title = null; // label/tag(s)
+
+
+    // + VARIABLES/FEATURES/PROPERTIES (list, string, link to construct, )
+    //
+    //   set mode : string
+    //   set direction : string
+    //   set voltage : string
+    //
+    //   set ports : list(type:port)
+    //      set type ports (port)
+    //      configure ports (type:port)
+    //      bind ports type:port
+    //      limit ports type:port
+    //      filter ports type:port
+    //      control ports type:port
+    //      restrict ports type:port
+    //   set controller : link(type:controller)
+    //      restrict link type:port
+    //
+    //   set source-port : link(type:port)
+    //   set target-port : link(type:port)
+    //
+    //   set tasks : list(type:task)
+    //
+    //
+    //
+    // + CONFIGURATIONS/ASSIGNMENTS
+
 
     // HashMap<String, List<Construct>> constructs;
 

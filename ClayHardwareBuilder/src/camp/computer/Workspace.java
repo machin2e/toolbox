@@ -19,27 +19,19 @@ import camp.computer.construct.TaskConstruct;
  * <p>
  * TODO: Consider modeling the Inventory's Items, Notebook's Notes as a list.
  */
-public class Workspace {
+public class Workspace extends Construct {
 
     // TODO: Reference to User/Account that owns the Workspace.
 
     // <CACHE>
     public List<ProjectConstruct> projectConstructs = new ArrayList<>();
-//    public Tuple<DeviceConstruct> deviceConstructs = new ArrayList<>();
     // </CACHE>
 
     // TODO: MOVE BELOW INTO INTERPRETER!!!
     // <CONTEXT>
     Construct construct = null;
 
-//    ProjectConstruct projectConstruct = null;
-//    DeviceConstruct deviceConstruct = null;
-//    PortConstruct portConstruct = null;
-//    TaskConstruct taskConstruct = null;
-//    PathConstruct pathConstruct = null;
-
     OperationConstruct operationConstruct = null;
-    // TODO: process label
 
     // Automatically updated each time a construct is created.
     ProjectConstruct lastProjectConstruct = null;
@@ -50,22 +42,9 @@ public class Workspace {
     TaskConstruct lastTaskConstruct = null;
     // </CONTEXT>
 
-//    public static void setConstruct(Workspace workspace, Construct construct) {
-//
-//        if (workspace.construct.getClass() == ProjectConstruct.class) {
-//            workspace.lastProjectConstruct = (ProjectConstruct) workspace.construct;
-//        } else if (workspace.construct.getClass() == DeviceConstruct.class) {
-//            workspace.lastDeviceConstruct = (DeviceConstruct) workspace.construct;
-//        } else if (workspace.construct.getClass() == PortConstruct.class) {
-//            workspace.lastPortConstruct = (PortConstruct) workspace.construct;
-//        } else if (workspace.construct.getClass() == TaskConstruct.class) {
-//            workspace.lastTaskConstruct = (TaskConstruct) workspace.construct;
-//        } else if (workspace.construct.getClass() == PathConstruct.class) {
-//            workspace.lastPathConstruct = (PathConstruct) workspace.construct;
-//        }
-//
-//        workspace.construct = construct;
-//
-//    }
+    public Workspace() {
+        super();
+        this.type = "workspace";
+    }
 
 }

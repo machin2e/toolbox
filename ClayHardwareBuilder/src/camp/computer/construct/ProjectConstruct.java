@@ -13,6 +13,7 @@ public class ProjectConstruct extends Construct {
 
     public ProjectConstruct() {
         super();
+        this.type = "project";
     }
 
 }

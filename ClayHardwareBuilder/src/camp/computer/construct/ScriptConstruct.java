@@ -19,6 +19,7 @@ public class ScriptConstruct extends Construct {
 
     public ScriptConstruct() {
         super();
+        this.type = "script";
     }
 
 }

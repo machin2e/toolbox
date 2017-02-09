@@ -64,7 +64,7 @@ public class Configuration {
 //                System.out.print("null");
 //            } else {
 //                for (int i = 0; i < sourceConfiguration.directions.values.size(); i++) {
-//                    System.out.print("" + sourceConfiguration.directions.values.get(i));
+//                    System.out.print("" + sourceConfiguration.directions.values.clone(i));
 //                    if ((i + 1) < sourceConfiguration.directions.values.size()) {
 //                        System.out.print(",");
 //                    }
@@ -76,7 +76,7 @@ public class Configuration {
 //                System.out.print("null");
 //            } else {
 //                for (int i = 0; i < sourceConfiguration.voltages.values.size(); i++) {
-//                    System.out.print("" + sourceConfiguration.voltages.values.get(i));
+//                    System.out.print("" + sourceConfiguration.voltages.values.clone(i));
 //                    if ((i + 1) < sourceConfiguration.voltages.values.size()) {
 //                        System.out.print(",");
 //                    }
@@ -91,7 +91,7 @@ public class Configuration {
 //                System.out.print("null");
 //            } else {
 //                for (int i = 0; i < targetConfiguration.directions.values.size(); i++) {
-//                    System.out.print("" + targetConfiguration.directions.values.get(i));
+//                    System.out.print("" + targetConfiguration.directions.values.clone(i));
 //                    if ((i + 1) < targetConfiguration.directions.values.size()) {
 //                        System.out.print(",");
 //                    }
@@ -103,7 +103,7 @@ public class Configuration {
 //                System.out.print("null");
 //            } else {
 //                for (int i = 0; i < targetConfiguration.voltages.values.size(); i++) {
-//                    System.out.print("" + targetConfiguration.voltages.values.get(i));
+//                    System.out.print("" + targetConfiguration.voltages.values.clone(i));
 //                    if ((i + 1) < targetConfiguration.voltages.values.size()) {
 //                        System.out.print(",");
 //                    }

@@ -11,7 +11,7 @@ edit project test-project
 add device clay-device
 edit device clay-device
 
-start add-builder-ports
+start add-builder-port # (<device>)
 edit device # TODO: factor out!
 add port
 edit port
@@ -30,21 +30,21 @@ add configuration mode:spi(miso);direction:input;voltage:ttl,cmos
 add configuration mode:spi(ss);direction:output;voltage:ttl,cmos
 add configuration mode:uart(rx);direction:input;voltage:ttl,cmos
 add configuration mode:uart(tx);direction:output;voltage:ttl,cmos
-stop
+stop # add-builder-port
 # TODO: Detect if device already exists with given structure!
 
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
-do add-builder-ports
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
+do add-builder-port
 
 #
 # Device: IR Rangefinder
@@ -76,31 +76,31 @@ add configuration mode:analog;direction:output;voltage:ttl
 edit project # TODO: factor out!
 add path
 edit path
-set source-port:port(uid:4)
-set target-port:port(uid:18)
-
-edit project # TODO: factor out!
-add path
-edit path
 set source-port:port(uid:5)
 set target-port:port(uid:19)
-# set my-val-a:number(34)
-# set my-val-b:number(34.0)
 
 edit project # TODO: factor out!
 add path
 edit path
 set source-port:port(uid:6)
 set target-port:port(uid:20)
+# set my-val-a:number(34)
+# set my-val-b:number(34.0)
 
-edit device(uid:1)
-edit port(uid:4)
+edit project # TODO: factor out!
+add path
+edit path
+set source-port:port(uid:7)
+set target-port:port(uid:21)
+
+edit device(uid:2)
+edit port(uid:5)
 set configuration mode:digital;direction:output;voltage:ttl
 
 # Auto-assemble Paths (Sets configuration automatically.)
-solve path(uid:21)
 solve path(uid:22)
 solve path(uid:23)
+solve path(uid:24)
 
 # solve path(port(uid:4),port(uid:18))
 # solve path(port(uid:5),port(uid:19))
@@ -123,7 +123,7 @@ edit project
 do add-task
 
 # Add Script to Tasks
-edit task(uid:25) # edit uid(25)
+edit task(uid:26) # edit uid(25)
 set script:myTaskScript(data);
 
 

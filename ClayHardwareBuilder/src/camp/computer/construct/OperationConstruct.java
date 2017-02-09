@@ -15,6 +15,7 @@ public class OperationConstruct extends Construct {
 
     public OperationConstruct() {
         super();
+        this.type = "operation";
     }
 
 }

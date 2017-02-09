@@ -18,6 +18,7 @@ public class TaskConstruct extends Construct {
 
     public TaskConstruct() {
         super();
+        this.type = "task";
     }
 
 }

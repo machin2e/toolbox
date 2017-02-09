@@ -16,6 +16,7 @@ public class PortConstruct extends Construct {
 
     public PortConstruct() {
         super();
+        this.type = "port";
     }
 
     public static boolean isUnassigned(PortConstruct portConstruct) {
@@ -24,9 +25,9 @@ public class PortConstruct extends Construct {
         if (portConstruct.variables.get("mode") == null
                 && portConstruct.variables.get("direction") == null
                 && portConstruct.variables.get("voltage") == null) {
-//                portConstruct.variables.get("mode").value == null
-//                && portConstruct.variables.get("direction").value == null
-//                && portConstruct.variables.get("voltage").value == null) {
+//                portConstruct.variables.clone("mode").value == null
+//                && portConstruct.variables.clone("direction").value == null
+//                && portConstruct.variables.clone("voltage").value == null) {
 
             return true;
         }

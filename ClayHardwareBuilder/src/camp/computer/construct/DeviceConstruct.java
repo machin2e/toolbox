@@ -11,6 +11,7 @@ public class DeviceConstruct extends Construct {
 
     public DeviceConstruct() {
         super();
+        this.type = "device";
     }
 
     // <API>
