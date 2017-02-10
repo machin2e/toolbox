@@ -115,7 +115,7 @@ public class Interpreter {
                 addConfigurationTask(context);
             }
             // </REFACTOR>
-            else if (context.inputLine.startsWith("create")) {
+            else if (context.inputLine.startsWith("new")) {
                 createConstructTask(context);
             } else if (context.inputLine.startsWith("browse")) {
                 browseConstructsTask(context);
@@ -482,7 +482,7 @@ public class Interpreter {
                 workspace.projectConstructs.add(projectConstruct);
                 workspace.lastProjectConstruct = projectConstruct; // Marketplace reference to last-created project
 
-                System.out.println("✔ add project(uid:" + projectConstruct.uid + ") to workspace");
+                System.out.println("✔ new project(uid:" + projectConstruct.uid + ") to workspace");
 
             } else if (constructTypeToken.equals("device")) {
 
@@ -495,7 +495,7 @@ public class Interpreter {
                     projectConstruct.deviceConstructs.add(deviceConstruct);
                     workspace.lastDeviceConstruct = deviceConstruct; // Marketplace reference to last-created device
 
-                    System.out.println("✔ add device(uid:" + deviceConstruct.uid + ") to project(uid:" + projectConstruct.uid + ")");
+                    System.out.println("✔ new device(uid:" + deviceConstruct.uid + ") to project(uid:" + projectConstruct.uid + ")");
                 }
 
             } else if (constructTypeToken.equals("port")) {
@@ -509,7 +509,7 @@ public class Interpreter {
                     deviceConstruct.portConstructs.add(portConstruct);
                     workspace.lastPortConstruct = portConstruct; // Marketplace reference to last-created port
 
-                    System.out.println("✔ add port(uid:" + portConstruct.uid + ") to device(uid:" + deviceConstruct.uid + ")");
+                    System.out.println("✔ new port(uid:" + portConstruct.uid + ") to device(uid:" + deviceConstruct.uid + ")");
                 }
 
             } else if (constructTypeToken.equals("path")) {
@@ -523,7 +523,7 @@ public class Interpreter {
                     projectConstruct.pathConstructs.add(pathConstruct);
                     workspace.lastPathConstruct = pathConstruct; // Marketplace reference to last-created port
 
-                    System.out.println("✔ add path(uid:" + pathConstruct.uid + ") to project (uid:" + projectConstruct.uid + ")");
+                    System.out.println("✔ new path(uid:" + pathConstruct.uid + ") to project (uid:" + projectConstruct.uid + ")");
                 }
 
             } else if (constructTypeToken.equals("task")) {
@@ -538,7 +538,7 @@ public class Interpreter {
                     // Marketplace reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
 
-                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
+                    System.out.println("✔ new task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
 
                 }
 
@@ -582,7 +582,7 @@ public class Interpreter {
 
                     deviceConstruct.title = constructTitleString;
 
-                    System.out.println("✔ add device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
+                    System.out.println("✔ new device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
                 }
 
             } else if (constructTypeToken.equals("port")) {
@@ -597,7 +597,7 @@ public class Interpreter {
                     deviceConstruct.portConstructs.add(portConstruct);
                     workspace.lastPortConstruct = portConstruct; // Marketplace reference to last-created port
 
-                    System.out.println("✔ add port " + portConstruct.uid + " on device " + deviceConstruct.uid);
+                    System.out.println("✔ new port " + portConstruct.uid + " on device " + deviceConstruct.uid);
                 }
 
             } else if (constructTypeToken.equals("path")) {
@@ -617,7 +617,7 @@ public class Interpreter {
                     // Marketplace reference to last-created device
                     workspace.lastTaskConstruct = taskConstruct;
 
-                    System.out.println("✔ add task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
+                    System.out.println("✔ new task " + taskConstruct.uid + " to device " + deviceConstruct.uid);
 
                 }
 
@@ -647,27 +647,13 @@ public class Interpreter {
 
             String constructTypeToken = inputLineTokens[1];
 
-            Class constructType = null;
-            if (constructTypeToken.equals("projects")) {
-                constructType = ProjectConstruct.class;
-            } else if (constructTypeToken.equals("devices")) {
-                constructType = DeviceConstruct.class;
-            } else if (constructTypeToken.equals("ports")) {
-                constructType = PortConstruct.class;
-            } else if (constructTypeToken.equals("paths")) {
-                constructType = PathConstruct.class;
-            } else if (constructTypeToken.equals("controllers")) {
-                constructType = ControllerConstruct.class;
-            } else if (constructTypeToken.equals("tasks")) {
-                constructType = TaskConstruct.class;
-            }
-
             for (Construct construct : Manager.elements.values()) {
-                if (construct.getClass() == constructType) {
+                if (construct.type.equals(constructTypeToken)) {
                     // System.out.println("" + construct.uid + "\t" + construct.uuid.toString());
                     System.out.println("" + construct.uid);
                 }
 
+                // <REFACTOR>
                 if (construct.getClass() == DeviceConstruct.class) {
                     List<PortConstruct> unassignedPorts = DeviceConstruct.getUnassignedPorts((DeviceConstruct) construct);
                     System.out.print("Unassigned: ");
@@ -676,6 +662,7 @@ public class Interpreter {
                     }
                     System.out.println();
                 }
+                // </REFACTOR>
             }
 
         }
