@@ -1,4 +1,4 @@
-package camp.computer.culture;
+package camp.computer.commons_culture;
 
 import java.util.UUID;
 

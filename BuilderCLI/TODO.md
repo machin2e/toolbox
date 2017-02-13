@@ -41,7 +41,7 @@
 # TODO: user construct that provides a "home" (workspace) container for the user. Their stuff goes in there.
 
 # add project "MyProjectTitle!"
-# add <construct-title>
+# add <construct-tag>
 
 # add device "Clay"
 
@@ -149,7 +149,7 @@
 # TODO: store index (relative to container); per-session workspace UID (ephemeral); UUID (persistent, for persisting configurations, constructs, etc.)
 # TODO: test "import file <filename>" from within a file, and try nesting file hierarchies...
 # TODO: save/load workspace (.build file)
-# TODO: update "edit" to refer to just one construct, not one of each title of construct
+# TODO: update "edit" to refer to just one construct, not one of each tag of construct
 # TODO: represent/infer "dependencies" based on configuration options---for use in IASM
 
 
@@ -215,7 +215,7 @@ add path device 1 port 3 device 14 port 15
 
 
 
-// TODO: label/title (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.
+// TODO: label/tag (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.
 
 // TODO: List of (portConfiguration string, INPUT | OUTPUT | IO, 0V | 3.3V | 5V – or range) + path constraint/relation resolver/arithmetic
 

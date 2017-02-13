@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
+import camp.computer.commons_culture.Repository;
 import camp.computer.construct.Construct;
 import camp.computer.construct.ControllerConstruct;
 import camp.computer.construct.DeviceConstruct;
@@ -15,7 +16,7 @@ import camp.computer.construct.PortConstruct;
 import camp.computer.construct.ProjectConstruct;
 import camp.computer.construct.ScriptConstruct;
 import camp.computer.construct.TaskConstruct;
-import camp.computer.culture.Repository;
+import camp.computer.construct_v2.Feature;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
@@ -66,6 +67,20 @@ public class Interpreter {
     }
 
     public void interpretLine(String inputLine) {
+        interpretLine_v2(inputLine);
+    }
+
+    enum ContextType {
+        NONE,
+        CONSTRUCT,
+        INSTANCE
+    }
+
+    ContextType contextType = ContextType.NONE;
+    camp.computer.construct_v2.Construct currentConstruct = null;
+    camp.computer.construct_v2.Instance currentInstance = null;
+
+    public void interpretLine_v2(String inputLine) {
 
         // <SANITIZE_INPUT>
         if (inputLine.contains("#")) {
@@ -88,7 +103,537 @@ public class Interpreter {
             // Save line in history
             this.inputLines.add(inputLine);
 
-            // Marketplace context
+            // Store context
+            Context context = new Context();
+            context.inputLine = inputLine;
+
+            if (context.inputLine.startsWith("import file")) {
+                importFileTask(context);
+            } else if (context.inputLine.startsWith("new")) {
+                newTask(context);
+            } else if (context.inputLine.startsWith("has")) {
+                hasTask(context);
+            } else if (context.inputLine.startsWith("let")) {
+                letTask(context);
+            }
+        }
+
+    }
+
+    public void newTask(Context context) {
+        // TODO: Lookup context.clone("inputLine")
+        String[] inputLineTokens = context.inputLine.split("[ ]+");
+
+        if (inputLineTokens.length == 1) {
+
+            // TODO: Add anonymous construct
+
+        } else if (inputLineTokens.length == 2) {
+
+            String typeToken = inputLineTokens[1];
+
+            if (!camp.computer.construct_v2.Construct.hasConstruct(typeToken)) {
+
+                camp.computer.construct_v2.Construct construct = camp.computer.construct_v2.Construct.getConstruct(typeToken);
+
+                System.out.println(typeToken + " (uid: " + construct.uid + "; uuid: " + construct.uuid + ")");
+
+                // Update context
+                contextType = ContextType.CONSTRUCT;
+                currentConstruct = construct;
+
+            } else {
+
+                System.out.println("error: construct already exists");
+
+            }
+
+        }
+    }
+
+    public void hasTask(Context context) {
+
+        String[] inputLineSegments = context.inputLine.split("[ ]*:[ ]*");
+
+        // Determine interpreter's context. Construct or instance?
+        if (contextType == ContextType.CONSTRUCT && currentConstruct != null) {
+
+            // Defaults
+            String featureTagToken = null;
+            Feature.Type featureType = Feature.Type.NONE;
+            Feature.Type listType = null;
+
+            boolean hasError = false;
+
+            // Determine tag and type
+            if (inputLineSegments.length >= 1) {
+
+                // Determine tag
+                String[] inputLineTokens = inputLineSegments[0].split("[ ]+");
+                featureTagToken = inputLineTokens[1];
+
+                // Determine type
+                if (inputLineTokens.length >= 3) {
+                    String featureTypeToken = inputLineTokens[2];
+
+                    if (featureTypeToken.equals("text")) {
+                        featureType = Feature.Type.TEXT;
+                    } else if (featureTypeToken.equals("list")) {
+                        featureType = Feature.Type.LIST;
+                    } else {
+                        if (camp.computer.construct_v2.Construct.hasConstruct(featureTypeToken)) {
+                            featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                        }
+                    }
+                } else {
+                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                    }
+                }
+            }
+
+            // Determine constraints
+            // TODO: Replace with counters for each of these possibilities!
+            boolean isSingletonList = false;
+            boolean isTextContent = true;
+            boolean hasTextContent = false;
+            boolean isConstructContent = true;
+            boolean hasConstructContent = false;
+            boolean hasDomainList = false;
+            boolean hasInvalidConstruct = false;
+
+            List<String> featureDomain = new ArrayList<>();
+            if (inputLineSegments.length >= 2) {
+                String[] constraintTokens = inputLineSegments[1].split("[ ]*,[ ]*");
+
+                // Determine type
+                // Note: Start with ANY, but constrain with increasing generality based on any examples present.
+                if (constraintTokens.length == 1) {
+                    isSingletonList = true;
+                }
+
+                for (int i = 0; i < constraintTokens.length; i++) {
+                    String constraintToken = constraintTokens[i].trim();
+                    if (!constraintToken.startsWith("'") || !constraintToken.endsWith("'")) {
+                        isTextContent = false;
+                    } else if(constraintToken.startsWith("'") && constraintToken.endsWith("'")) {
+                        hasTextContent = true;
+                    } else if ((constraintToken.startsWith("'") && !constraintToken.endsWith("'"))
+                        || (!constraintToken.startsWith("'") && constraintToken.endsWith("'"))) {
+                        hasInvalidConstruct = true;
+                    }
+                }
+
+                if (isTextContent) {
+                    isConstructContent = false;
+                } else {
+                    for (int i = 0; i < constraintTokens.length; i++) {
+                        String constraintToken = constraintTokens[i].trim();
+                        if (!camp.computer.construct_v2.Construct.hasConstruct(constraintToken)) {
+                            hasConstructContent = false;
+                        }
+                    }
+                }
+
+                // Set feature type or check for conflict with current feature type
+                if (!hasInvalidConstruct) {
+                    if (featureType == Feature.Type.NONE) {
+                        // TODO: isListContent
+                        if (isTextContent) {
+                            featureType = Feature.Type.TEXT;
+                            hasDomainList = true;
+                        } else if (isConstructContent) {
+                            featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                            hasDomainList = true;
+                            // TODO: if 'text' construct only, then set type to featureType = TEXT and hasDomainList = false
+                        } else if (hasTextContent && hasConstructContent) {
+                            featureType = Feature.Type.ANY;
+                            hasDomainList = true;
+                            // TODO: Test this... (e.g., with "has foo list : port, 'bar'")
+                        }
+                    } else if (featureType == Feature.Type.TEXT) {
+                        if (isConstructContent) { // e.g., has my-feature text : non-text
+                            for (int i = 0; i < constraintTokens.length; i++) {
+                                String constraintToken = constraintTokens[i].trim();
+                                if (!constraintToken.equals("text")) {
+                                    hasError = true;
+                                }
+                            }
+                        } else if (!isTextContent) { // INVALID: e.g., has my-feature text : 'foo', 'bar', foo-feature
+                            hasError = true;
+                        } else if (isTextContent) {
+                            hasDomainList = true;
+                        }
+                    } else if (featureType == Feature.Type.LIST) {
+                        if (isTextContent) {
+                            listType = Feature.Type.TEXT;
+                            hasDomainList = true;
+                        } else if (isConstructContent) {
+                            listType = Feature.Type.CUSTOM_CONSTRUCT;
+                            hasDomainList = true;
+                        } else if (hasTextContent && hasConstructContent) {
+                            listType = Feature.Type.ANY;
+                            hasDomainList = true;
+                        }
+                    } else if (featureType == Feature.Type.CUSTOM_CONSTRUCT) {
+                        // TODO: Check if the specific construct presently assigned to featureType matches the list (should be identical)
+                        if (!isConstructContent) {
+                            hasError = true;
+                        } else {
+                            for (int i = 0; i < constraintTokens.length; i++) {
+                                String constraintToken = constraintTokens[i].trim();
+                                if (!constraintToken.equals(featureTagToken)) { // NOTE: featureTagToken is the custom type identifier.
+                                    hasError = true;
+                                }
+                            }
+                        }
+                    }
+                    // TODO: NONE, ANY
+                    // TODO: Support listType = Feature.Type.LIST
+                }
+
+                // Set general error flag based on specific error flags.
+                if (hasInvalidConstruct) {
+                    hasError = true;
+                }
+
+                if (!hasError && hasDomainList) {
+                    for (int i = 0; i < constraintTokens.length; i++) {
+                        featureDomain.add(constraintTokens[i].trim());
+                    }
+                }
+
+//                if (featureType == Feature.Type.NONE) {
+//
+//                }
+            }
+
+            // Instantiate feature and print response
+            if (hasError) {
+                System.out.println("Error: Conflicting types present in expression.");
+            } else if (featureTagToken != null) {
+                Feature feature = new Feature(featureTagToken);
+                feature.type = featureType;
+                if (feature.type == Feature.Type.LIST) {
+                    feature.listType = listType;
+                }
+                if (hasDomainList) {
+                    feature.domain.addAll(featureDomain);
+                }
+                currentConstruct.features.put(featureTagToken, feature);
+
+                // Print response
+                System.out.println("added feature '" + feature.tag + "' of type '" + feature.type + "' (" + currentConstruct.features.size() + " features) ");
+//                if (feature.domain.size() > 0) {
+//                    System.out.print(" : ");
+//                    for (int i = 0; i < feature.domain.size(); i++) {
+//                        System.out.print(feature.domain.get(i) + " ");
+//                    }
+//                }
+                if (feature.type == Feature.Type.TEXT) {
+                    if (feature.domain.size() == 0) {
+                        System.out.print("can assign text");
+                    } else if (feature.domain.size() > 0) {
+                        System.out.print("can assign text: ");
+                        for (int i = 0; i < feature.domain.size(); i++) {
+                            System.out.print(feature.domain.get(i) + " ");
+                        }
+                    }
+                } else if (feature.type == Feature.Type.LIST) {
+                    if (feature.listType == Feature.Type.TEXT) {
+                        System.out.print("can contain text: ");
+                        for (int i = 0; i < feature.domain.size(); i++) {
+                            System.out.print(feature.domain.get(i) + " ");
+                        }
+                    } else if (feature.listType == Feature.Type.CUSTOM_CONSTRUCT) {
+                        System.out.print("can contain constructs: ");
+                        for (int i = 0; i < feature.domain.size(); i++) {
+                            System.out.print(feature.domain.get(i) + " ");
+                        }
+                    }
+//                    else if (isConstructContent) {
+//                        System.out.print("can contain: constructs (of <TYPE???, ...>)");
+//                    }
+                } else if (feature.type == Feature.Type.CUSTOM_CONSTRUCT) {
+
+                }
+                System.out.println();
+
+            } else {
+                // Print response
+                System.out.println("error: bad feature syntax");
+            }
+
+        } else if (contextType == ContextType.INSTANCE && currentConstruct != null) {
+
+            // TODO:
+
+        }
+
+//        String[] inputLineSegments = context.inputLine.split("[ ]*:[ ]*");
+//
+//        // Determine interpreter's context. Construct or instance?
+//        if (contextType == ContextType.CUSTOM_CONSTRUCT && currentConstruct != null) {
+//
+//            // Defaults
+//            String featureTagToken = null;
+//            Feature.Type featureType = Feature.Type.NONE;
+//
+//            // Determine tag
+//            if (inputLineSegments.length >= 1) {
+//                String[] inputLineTokens = inputLineSegments[0].split("[ ]+");
+//                featureTagToken = inputLineTokens[1];
+//            }
+//
+//            // Determine type
+//            if (inputLineSegments.length >= 2) {
+//                String featureTypeToken = inputLineSegments[1];
+//
+//                if (featureTypeToken.equals("text")) {
+//                    featureType = Feature.Type.TEXT;
+//                } else if (featureTypeToken.equals("list")) {
+//                    featureType = Feature.Type.LIST;
+//                } else {
+//                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTypeToken)) {
+//                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                    }
+//                }
+//            } else {
+//                if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+//                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                }
+//            }
+//
+//            // Determine constraints
+//            if (inputLineSegments.length >= 3) {
+//                String[] constraintTokens = inputLineSegments[2].split("[ ]*,[ ]*");
+//
+////                if (featureType == Feature.Type.NONE) {
+////
+////                }
+//            }
+//
+//            // Instantiate feature and print response
+//            if (featureTagToken != null) {
+//                Feature feature = new Feature(featureTagToken);
+//                feature.type = featureType;
+//                currentConstruct.features.put(featureTagToken, feature);
+//
+//                // Print response
+//                System.out.println("added feature '" + feature.tag + "' of type '" + feature.type + "' (" + currentConstruct.features.size() + ")");
+//            } else {
+//                // Print response
+//                System.out.println("error: bad feature syntax");
+//            }
+//
+//        } else if (contextType == ContextType.INSTANCE && currentConstruct != null) {
+//
+//            // TODO:
+//
+//        }
+
+
+
+
+//        String[] inputLineTokens = context.inputLine.split("[ ]+");
+//
+//        // Determine interpreter's context. Construct or instance?
+//        if (contextType == ContextType.CUSTOM_CONSTRUCT && currentConstruct != null) {
+//
+//            // Defaults
+//            String featureTagToken = null;
+//            Feature.Type featureType = Feature.Type.NONE;
+//
+//            // Determine tag
+//            if (inputLineTokens.length >= 2) {
+//                featureTagToken = inputLineTokens[1];
+//            }
+//
+//            // Determine type
+//            if (inputLineTokens.length == 2) {
+//                if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+//                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                }
+//            } else if (inputLineTokens.length == 3) {
+//                String featureTypeToken = inputLineTokens[2];
+//                if (featureTypeToken.equals("text")) {
+//                    featureType = Feature.Type.TEXT;
+//                } else if (featureTypeToken.equals("list")) {
+//                    featureType = Feature.Type.LIST;
+//                } else {
+//                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+//                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                    }
+//                }
+//            }
+//
+//            // Instantiate feature and print response
+//            if (featureTagToken != null) {
+//                Feature feature = new Feature(featureTagToken);
+//                feature.type = featureType;
+//                currentConstruct.features.put(featureTagToken, feature);
+//
+//                // Print response
+//                System.out.println("added feature '" + feature.tag + "' of type '" + feature.type + "' (" + currentConstruct.features.size() + ")");
+//            } else {
+//                // Print response
+//                System.out.println("error: bad feature syntax");
+//            }
+//
+//        } else if (contextType == ContextType.INSTANCE && currentConstruct != null) {
+//
+//            // TODO:
+//
+//        }
+    }
+
+    public void hasTask2(Context context) {
+
+        String[] inputLineTokens = context.inputLine.split("[ ]+");
+
+        // Determine interpreter's context. Construct or instance?
+        if (contextType == ContextType.CONSTRUCT && currentConstruct != null) {
+
+            // Defaults
+            String featureTagToken = null;
+            Feature.Type featureType = Feature.Type.NONE;
+
+            // Determine tag
+            if (inputLineTokens.length >= 2) {
+                featureTagToken = inputLineTokens[1];
+            }
+
+            // Determine type
+            if (inputLineTokens.length == 2) {
+                if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                }
+            } else if (inputLineTokens.length == 3) {
+                String featureTypeToken = inputLineTokens[2];
+                if (featureTypeToken.equals("text")) {
+                    featureType = Feature.Type.TEXT;
+                } else if (featureTypeToken.equals("list")) {
+                    featureType = Feature.Type.LIST;
+                } else {
+                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                    }
+                }
+            }
+
+            // Instantiate feature and print response
+            if (featureTagToken != null) {
+                Feature feature = new Feature(featureTagToken);
+                feature.type = featureType;
+                currentConstruct.features.put(featureTagToken, feature);
+
+                // Print response
+                System.out.println("added feature '" + feature.tag + "' of type '" + feature.type + "' (" + currentConstruct.features.size() + ")");
+            } else {
+                // Print response
+                System.out.println("error: bad feature syntax");
+            }
+
+        } else if (contextType == ContextType.INSTANCE && currentConstruct != null) {
+
+            // TODO:
+
+        }
+    }
+
+    // CUSTOM_CONSTRUCT CONTEXT:
+    // let direction : 'none', 'input', 'output', 'bidirectional'
+    // let current-construct : device, port, controller, task, script
+    // let script : script
+    //
+    // INSTANCE CONTEXT:
+    // let mode:digital;direction:input;voltage:cmos
+    public void letTask(Context context) {
+
+        String[] inputLineTokens = context.inputLine.split("[ ]+");
+
+        // Determine interpreter's context. Construct or instance?
+        if (contextType == ContextType.CONSTRUCT && currentConstruct != null) {
+
+            // Defaults
+            String featureTagToken = null;
+
+            // Determine tag
+            if (inputLineTokens.length >= 2) {
+                featureTagToken = inputLineTokens[1];
+            }
+
+            // Parse constraint
+            String letParameters = context.inputLine.substring(context.inputLine.indexOf(":") + 1);
+            String[] letParameterTokens = letParameters.split("[ ]*,[ ]*");
+
+            System.out.println("let parameters (" + letParameterTokens.length + "): " + letParameters);
+            for (int i = 0; i < letParameterTokens.length; i++) {
+                System.out.println("\t" + letParameterTokens[i].trim());
+            }
+
+//            // Determine type
+//            if (inputLineTokens.length == 2) {
+//                if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+//                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                }
+//            } else if (inputLineTokens.length == 3) {
+//                String featureTypeToken = inputLineTokens[2];
+//                if (featureTypeToken.equals("text")) {
+//                    featureType = Feature.Type.TEXT;
+//                } else if (featureTypeToken.equals("list")) {
+//                    featureType = Feature.Type.LIST;
+//                } else {
+//                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+//                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
+//                    }
+//                }
+//            }
+//
+//            // Instantiate feature and print response
+//            if (featureTagToken != null) {
+//                Feature feature = new Feature(featureTagToken);
+//                feature.type = featureType;
+//                currentConstruct.features.put(featureTagToken, feature);
+//
+//                // Print response
+//                System.out.println("added feature '" + feature.tag + "' of type '" + feature.type + "' (" + currentConstruct.features.size() + ")");
+//            } else {
+//                // Print response
+//                System.out.println("error: bad feature syntax");
+//            }
+
+        } else if (contextType == ContextType.INSTANCE && currentConstruct != null) {
+
+            // TODO:
+
+        }
+    }
+
+    public void interpretLine_v1(String inputLine) {
+
+        // <SANITIZE_INPUT>
+        if (inputLine.contains("#")) {
+            inputLine = inputLine.substring(0, inputLine.indexOf("#"));
+        }
+
+        inputLine = inputLine.trim();
+        // </SANITIZE_INPUT>
+
+        // <VALIDATE_INPUT>
+        if (inputLine.length() == 0) {
+            return;
+        }
+        // </VALIDATE_INPUT>
+
+        if (workspace.operationConstruct != null && !inputLine.startsWith("stop")) {
+            workspace.operationConstruct.operations.add(inputLine);
+        } else {
+
+            // Save line in history
+            this.inputLines.add(inputLine);
+
+            // Store context
             Context context = new Context();
             context.inputLine = inputLine;
 
@@ -185,7 +730,7 @@ public class Interpreter {
             String address = inputLineTokens[1];
 //            if (address.startsWith("\"") && address.endsWith("\"")) {
 
-//            String title = address.substring(1, address.length() - 1);
+//            String tag = address.substring(1, address.length() - 1);
             String title = String.valueOf(address);
 
             workspace.operationConstruct = new OperationConstruct();
@@ -345,7 +890,7 @@ public class Interpreter {
 //            if (constructTypeToken.equals("project")) {
 //
 //                ProjectConstruct projectConstruct = new ProjectConstruct();
-//                projectConstruct.title = constructTitleString;
+//                projectConstruct.tag = constructTitleString;
 //                workspace.projectConstructs.add(projectConstruct);
 //                workspace.lastProjectConstruct = projectConstruct; // Marketplace reference to last-created project
 //
@@ -355,7 +900,7 @@ public class Interpreter {
 ////                if (workspace.projectConstruct != null) {
 ////
 ////                    DeviceConstruct deviceConstruct = new DeviceConstruct();
-////                    deviceConstruct.title = constructTitleString;
+////                    deviceConstruct.tag = constructTitleString;
 ////                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 ////                    workspace.lastDeviceConstruct = deviceConstruct; // Marketplace reference to last-created port
 ////
@@ -371,7 +916,7 @@ public class Interpreter {
 //                    projectConstruct.deviceConstructs.add(deviceConstruct);
 //                    workspace.lastDeviceConstruct = deviceConstruct; // Marketplace reference to last-created device
 //
-//                    deviceConstruct.title = constructTitleString;
+//                    deviceConstruct.tag = constructTitleString;
 //
 //                    System.out.println("✔ add device " + deviceConstruct.uid + " to project " + projectConstruct.uid);
 //                }
@@ -384,7 +929,7 @@ public class Interpreter {
 //                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 //
 //                    PortConstruct portConstruct = new PortConstruct();
-//                    portConstruct.title = constructTitleString;
+//                    portConstruct.tag = constructTitleString;
 //                    deviceConstruct.portConstructs.add(portConstruct);
 //                    workspace.lastPortConstruct = portConstruct; // Marketplace reference to last-created port
 //
@@ -402,7 +947,7 @@ public class Interpreter {
 //                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
 //
 //                    TaskConstruct taskConstruct = new TaskConstruct();
-//                    taskConstruct.title = constructTitleString;
+//                    taskConstruct.tag = constructTitleString;
 //                    deviceConstruct.controllerConstruct.taskConstructs.add(taskConstruct);
 //
 //                    // Marketplace reference to last-created device
@@ -564,7 +1109,7 @@ public class Interpreter {
 //                if (workspace.projectConstruct != null) {
 //
 //                    DeviceConstruct deviceConstruct = new DeviceConstruct();
-//                    deviceConstruct.title = constructTitleString;
+//                    deviceConstruct.tag = constructTitleString;
 //                    workspace.projectConstruct.deviceConstructs.add(deviceConstruct);
 //                    workspace.lastDeviceConstruct = deviceConstruct; // Marketplace reference to last-created port
 //
@@ -1021,9 +1566,9 @@ public class Interpreter {
 //
 //            String inputProjectTitle = inputLineTokens[3];
 //
-//            workspace.projectConstruct.title = inputProjectTitle;
+//            workspace.projectConstruct.tag = inputProjectTitle;
 //
-//            System.out.println("project title changed to " + inputProjectTitle);
+//            System.out.println("project tag changed to " + inputProjectTitle);
 //        }
 //
 //    }
@@ -1054,7 +1599,7 @@ public class Interpreter {
 
             // <HACK>
             if (!portConstruct.variables.containsKey(variableTitle)) {
-//                portConstruct.variables.put(variableTitle, new Variable(variableTitle));
+//                portConstruct.features.put(variableTitle, new Variable(variableTitle));
                 portConstruct.variables.put(variableTitle, null);
             }
             // </HACK>
@@ -1090,7 +1635,7 @@ public class Interpreter {
 //        PortConfigurationConstraint.Voltage voltage = null;
 //
 //        // Separate configurations string into tokens separated by ";" substring, each an expression representing an
-//        // attribute state assignment. Separate each attribute assignment by ":", into the attribute title and
+//        // attribute state assignment. Separate each attribute assignment by ":", into the attribute tag and
 //        // by ":" substring value.
 //        String[] configurationOptionList = configurationOptionString.split(";");
 //        for (int i = 0; i < configurationOptionList.length; i++) {
@@ -1239,7 +1784,7 @@ public class Interpreter {
         // solve uid(34)
         // solve path <path-address>
 
-        // add path <title>
+        // add path <tag>
         // edit path
         // set source-port[construct-type] uid:34
         // set target-port[construct-type] uid:34
@@ -1251,7 +1796,7 @@ public class Interpreter {
 
         String[] inputLineTokens = context.inputLine.split("[ ]+");
 
-        // TODO: Parse address token (for index, UID, UUID; title/key/tag)
+        // TODO: Parse address token (for index, UID, UUID; tag/key/tag)
 
         PathConstruct pathConstruct = (PathConstruct) Manager.get(inputLineTokens[1]);
 
@@ -1579,9 +2124,9 @@ public class Interpreter {
                     for (int j = 0; j < deviceConstruct.portConstructs.clone(i).configurations.size(); j++) {
 
                         int k = 0;
-                        for (String variableTitle : deviceConstruct.portConstructs.clone(i).configurations.clone(j).variables.keySet()) {
+                        for (String variableTitle : deviceConstruct.portConstructs.clone(i).configurations.clone(j).features.keySet()) {
 
-                            List<String> variableValueSet = deviceConstruct.portConstructs.clone(i).configurations.clone(j).variables.clone(variableTitle).values;
+                            List<String> variableValueSet = deviceConstruct.portConstructs.clone(i).configurations.clone(j).features.clone(variableTitle).values;
 
                             for (int l = 0; l < variableValueSet.size(); l++) {
                                 System.out.print("" + variableValueSet.clone(l));
@@ -1591,7 +2136,7 @@ public class Interpreter {
                                 }
                             }
 
-                            if ((k + 1) < deviceConstruct.portConstructs.clone(i).configurations.clone(j).variables.size()) {
+                            if ((k + 1) < deviceConstruct.portConstructs.clone(i).configurations.clone(j).features.size()) {
                                 System.out.print("; ");
                             }
 

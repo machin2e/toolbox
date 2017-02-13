@@ -11,7 +11,7 @@ import camp.computer.util.Tuple;
 /**
  * Constrains the values (or values) that can be assigned <em>simultaneously</em> to each of the
  * configurations <em>in combination with each other</em> uniquely identified by each
- * {@code variableConstraint[i].title} to the values (or values) specified in {@code variableConstraint[i].values}.
+ * {@code variableConstraint[i].tag} to the values (or values) specified in {@code variableConstraint[i].values}.
  * <p>
  * Therefore {@code Configuration} specifies a constraint on the valid mutual state assignments among
  * the specified configurations.
@@ -113,7 +113,7 @@ public class Configuration {
 //        // </VERBOSE_LOG>
 
         // <INITIALIZE_CONSTRAINTS>
-        // Generate updated configurations with variables' domains containing only compatible values.
+        // Generate updated configurations with features' domains containing only compatible values.
         Configuration compatibleSourceConfiguration = new Configuration();
         Configuration compatibleTargetConfiguration = new Configuration();
 

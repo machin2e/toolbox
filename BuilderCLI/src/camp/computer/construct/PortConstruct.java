@@ -25,9 +25,9 @@ public class PortConstruct extends Construct {
         if (portConstruct.variables.get("mode") == null
                 && portConstruct.variables.get("direction") == null
                 && portConstruct.variables.get("voltage") == null) {
-//                portConstruct.variables.clone("mode").value == null
-//                && portConstruct.variables.clone("direction").value == null
-//                && portConstruct.variables.clone("voltage").value == null) {
+//                portConstruct.features.clone("mode").value == null
+//                && portConstruct.features.clone("direction").value == null
+//                && portConstruct.features.clone("voltage").value == null) {
 
             return true;
         }

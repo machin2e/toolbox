@@ -5,13 +5,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import camp.computer.construct.Construct;
+import camp.computer.construct_v2.Construct;
 
-public class Manager {
+public class Manager_v2 {
 
     public static long elementCounter = 0L;
 
-    public static HashMap<Long, Construct> elements = new HashMap<>();
+    private static HashMap<Long, Construct> elements = new HashMap<>();
+
+    public static long add(Construct construct) {
+        long uid = Manager_v2.elementCounter++;
+        construct.uid = uid;
+        Manager_v2.elements.put(uid, construct);
+        return uid;
+    }
+
+    public static List<Construct> get() {
+        return new ArrayList<>(elements.values());
+    }
+
+    public static Construct get(long uid) {
+        return elements.get(uid);
+    }
 
     public static Construct get(String constructUri) {
 
@@ -58,17 +73,17 @@ public class Manager {
 
                 long inputTaskUid = Long.valueOf(identifier);
 
-                if (Manager.elements.containsKey(inputTaskUid)) {
-                    return Manager.elements.get(inputTaskUid);
+                if (Manager_v2.elements.containsKey(inputTaskUid)) {
+                    return Manager_v2.elements.get(inputTaskUid);
                 }
 
             } else if (identifierType.equals("uuid")) {
 
                 UUID inputTaskUuid = UUID.fromString(identifier);
 
-                for (int i = 0; i < Manager.elements.size(); i++) {
-                    if (Manager.elements.get(i).uuid.equals(inputTaskUuid)) {
-                        return Manager.elements.get(i);
+                for (int i = 0; i < Manager_v2.elements.size(); i++) {
+                    if (Manager_v2.elements.get(i).uuid.equals(inputTaskUuid)) {
+                        return Manager_v2.elements.get(i);
                     }
                 }
 
@@ -94,7 +109,7 @@ public class Manager {
 
             for (int i = 0; i < constructs.size(); i++) {
                 Construct construct = constructs.get(i);
-                if (construct.title != null && construct.title.equals(title)) {
+                if (construct.tag != null && construct.tag.equals(title)) {
                     return construct;
                 }
             }
