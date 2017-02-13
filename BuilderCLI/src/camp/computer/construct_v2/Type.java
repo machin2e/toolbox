@@ -12,7 +12,7 @@ public class Type {
         this.identifier = identifier;
     }
 
-    public static Type getType(String identifier) {
+    public static Type get(String identifier) {
         if (Type.identifiers.containsKey(identifier)) {
             return Type.identifiers.get(identifier);
         } else {
@@ -22,8 +22,13 @@ public class Type {
         }
     }
 
-    public static boolean hasType(String identifier) {
+    public static boolean has(String identifier) {
         return Type.identifiers.containsKey(identifier);
+    }
+
+    @Override
+    public String toString() {
+        return identifier;
     }
 
 }

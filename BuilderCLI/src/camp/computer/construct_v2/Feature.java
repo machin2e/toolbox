@@ -56,6 +56,7 @@ public class Feature<T> {
     //   let source-port ~~be assigned if it's in the port list~~
     //   let port ~~be appended if the ports satisfy `are-compatible`~~
 
+    /*
     public enum Type {
         // Primitive Constructs:
         NONE,     // denotes the absence of a type
@@ -67,6 +68,7 @@ public class Feature<T> {
         // TODO: Create class to model the specific construct type...
         CUSTOM_CONSTRUCT // custom-defined construct
     }
+    */
 
     // tag/key: string
     // type: string, list, construct-name
@@ -89,7 +91,7 @@ public class Feature<T> {
     // has project list
     tag = "my-tag"
     type = Feature.Type.LIST;
-    domain.add(Construct.getType("list"));
+    domain.add(Construct.get("list"));
     */
 
     /*
@@ -106,7 +108,7 @@ public class Feature<T> {
     // let project : project
     tag = "project"
     type = Feature.Type.LIST
-    domain.add(Construct.getType("project"));
+    domain.add(Construct.get("project"));
     */
 
     /*
