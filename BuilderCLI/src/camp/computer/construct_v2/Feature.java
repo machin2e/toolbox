@@ -80,11 +80,15 @@ public class Feature<T> {
      */
     public String tag = null; // e.g., mode; direction; voltage
 
+    // Content Type
     public Type type;
     // TODO: public String listElementType = null; // Only used for LIST type. Constrains what it can contain...
 
+    // Content Domain
 //    public List<?> domain = new ArrayList<>();
     public List<String> domain = new ArrayList<>(); // if size == 0, then unconstrained!
+
+    // Only used for listType
     public Type listType;
 
     /*

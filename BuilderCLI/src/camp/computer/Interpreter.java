@@ -142,6 +142,7 @@ public class Interpreter {
 
             if (!camp.computer.construct_v2.Construct.hasConstruct(typeToken)) {
 
+                Type.get(typeToken); // Create type token
                 camp.computer.construct_v2.Construct construct = camp.computer.construct_v2.Construct.getConstruct(typeToken);
 
                 System.out.println(typeToken + " (uid: " + construct.uid + "; uuid: " + construct.uuid + ")");
@@ -168,8 +169,6 @@ public class Interpreter {
 
             // Defaults
             String featureTagToken = null;
-//            Feature.Type featureType = Feature.Type.NONE;
-//            Feature.Type listType = null;
             Type featureType = Type.get("none");
             Type listType = null;
 
@@ -178,8 +177,9 @@ public class Interpreter {
             // Determine tag and type
             if (inputLineSegments.length >= 1) {
 
-                // Determine tag
                 String[] inputLineTokens = inputLineSegments[0].split("[ ]+");
+
+                // Determine tag
                 featureTagToken = inputLineTokens[1];
 
                 // Determine type
@@ -188,19 +188,26 @@ public class Interpreter {
 
                     if (featureTypeToken.equals("text")) {
 //                        featureType = Feature.Type.TEXT;
-                        featureType = Type.get("text");
+                        featureType = Type.get(featureTypeToken);
                     } else if (featureTypeToken.equals("list")) {
 //                        featureType = Feature.Type.LIST;
-                        featureType = Type.get("list");
+                        featureType = Type.get(featureTypeToken);
+                        if (Type.has(featureTagToken)) {
+                            listType = Type.get(featureTagToken); // If tag is a construct type, then constraint list to that type by default
+                        } else {
+                            listType = Type.get("any"); // If tag is non-construct type then default list type is "any"
+                        }
                     } else {
                         // TODO: Refactor. There's some weird redundancy here with 'hasConstruct' and 'Type.get'.
-                        if (camp.computer.construct_v2.Construct.hasConstruct(featureTypeToken)) {
+                        if (Type.has(featureTypeToken)) {
+//                        if (camp.computer.construct_v2.Construct.hasConstruct(featureTypeToken)) {
 //                            featureType = Feature.Type.CUSTOM_CONSTRUCT;
                             featureType = Type.get(featureTypeToken);
                         }
                     }
                 } else {
-                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
+                    if (Type.has(featureTagToken)) {
+//                    if (camp.computer.construct_v2.Construct.hasConstruct(featureTagToken)) {
 //                            // TODO: Replace with ConstructType for reserved construct types
 //                            || featureTagToken.equals("text")
 //                            || featureTagToken.equals("list")) {
@@ -212,6 +219,7 @@ public class Interpreter {
 
             // Determine constraints
             // TODO: Replace with counters for each of these possibilities!
+            boolean hasContentConstraint = false;
             boolean isSingletonList = false;
             boolean isTextContent = true;
             boolean hasTextContent = false;
@@ -222,6 +230,8 @@ public class Interpreter {
 
             List<String> featureDomain = new ArrayList<>();
             if (inputLineSegments.length >= 2) {
+                hasContentConstraint = true;
+
                 String[] constraintTokens = inputLineSegments[1].split("[ ]*,[ ]*");
 
                 // Determine type
@@ -266,17 +276,24 @@ public class Interpreter {
 //                            featureType = Feature.Type.TEXT;
                             featureType = Type.get("text");
                             hasDomainList = true;
-                        } else if (isConstructContent) {
-//                            featureType = Feature.Type.CUSTOM_CONSTRUCT;
-                            // TODO: Use generic "construct" type or set specific if there's only one
-                            featureType = Type.get("construct");
-                            hasDomainList = true;
-                            // TODO: if 'text' construct only, then set type to featureType = TEXT and hasDomainList = false
                         } else if (hasTextContent && hasConstructContent) {
 //                            featureType = Feature.Type.ANY;
                             featureType = Type.get("any");
                             hasDomainList = true;
                             // TODO: Test this... (e.g., with "has foo list : port, 'bar'")
+                        } else if (isConstructContent) {
+//                            featureType = Feature.Type.CUSTOM_CONSTRUCT;
+                            // TODO: Use generic "construct" type or set specific if there's only one
+                            if (isSingletonList) {
+                                featureType = Type.get(constraintTokens[0]);
+                                // TODO: if 'text' or other construct only, then set type to featureType = TEXT and hasDomainList = false
+                                if (featureType == Type.get("list")) {
+                                    listType = Type.get("any");
+                                }
+                            } else {
+                                featureType = Type.get("construct");
+                                hasDomainList = true;
+                            }
                         }
 //                    } else if (featureType == Feature.Type.TEXT) {
                     } else if (featureType == Type.get("text")) {
@@ -367,7 +384,7 @@ public class Interpreter {
 //                if (feature.type == Feature.Type.TEXT) {
                 if (feature.type == Type.get("text")) {
                     if (feature.domain.size() == 0) {
-                        System.out.print("can assign: ");
+                         System.out.print("can assign text");
                     } else if (feature.domain.size() > 0) {
                         System.out.print("can assign: ");
                         for (int i = 0; i < feature.domain.size(); i++) {
@@ -386,6 +403,13 @@ public class Interpreter {
                     } else if (feature.listType == Type.get("construct")) {
 //                        System.out.print("can contain " + Feature.Type.CUSTOM_CONSTRUCT + ": ");
                         System.out.print("can contain " + Type.get("construct") + ": ");
+                        for (int i = 0; i < feature.domain.size(); i++) {
+                            System.out.print(feature.domain.get(i) + " ");
+                        }
+                    } else if (feature.listType == Type.get("any")) {
+                        System.out.print("can contain " + Type.get("any") + "");
+                    } else if (Type.has(feature.listType.identifier)) {
+                        System.out.print("can contain " + feature.listType + ": ");
                         for (int i = 0; i < feature.domain.size(); i++) {
                             System.out.print(feature.domain.get(i) + " ");
                         }
