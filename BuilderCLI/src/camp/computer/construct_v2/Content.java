@@ -1,0 +1,46 @@
+package camp.computer.construct_v2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Content {
+
+    // Content Type
+    public Type type = null;
+
+    /**
+     * {@code tag} is a {@code String} that uniquely identifies the {@code Variable} in the
+     * containing {@code VariableMap}. <em>in the namespace</em>.
+     */
+    public String tag = null; // e.g., mode; direction; voltage
+
+    // Content Domain
+    public List<String> domain = new ArrayList<>(); // if size == 0, then unconstrained!
+
+    // Only used for listType
+    public Type listType = null;
+
+    public Object content = null;
+    public Class contentType = null;
+
+    public Content(Feature feature) {
+
+        this.tag = feature.tag;
+
+        this.type = feature.type;
+
+        this.domain.addAll(feature.domain);
+
+        if (this.type == Type.get("list")) {
+            this.content = new ArrayList<>();
+            this.contentType = List.class;
+
+            this.listType = feature.listType;
+        } else if (this.type == Type.get("text")) {
+            this.content = null;
+            this.contentType = Instance.class;
+        }
+
+    }
+
+}

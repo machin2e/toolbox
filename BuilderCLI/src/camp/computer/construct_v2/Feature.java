@@ -56,20 +56,6 @@ public class Feature<T> {
     //   let source-port ~~be assigned if it's in the port list~~
     //   let port ~~be appended if the ports satisfy `are-compatible`~~
 
-    /*
-    public enum Type {
-        // Primitive Constructs:
-        NONE,     // denotes the absence of a type
-        ANY,      // denotes any type
-        TEXT,     // reserved text construct
-        // NUMBER,   // reserved number construct
-        LIST,     // reserved list construct
-        // Custom Construct Placeholder:
-        // TODO: Create class to model the specific construct type...
-        CUSTOM_CONSTRUCT // custom-defined construct
-    }
-    */
-
     // tag/key: string
     // type: string, list, construct-name
     // domain: list of accepted tokens; (or) for lists, stores list of values that can be stored in the list
@@ -81,80 +67,23 @@ public class Feature<T> {
     public String tag = null; // e.g., mode; direction; voltage
 
     // Content Type
-    public Type type;
-    // TODO: public String listElementType = null; // Only used for LIST type. Constrains what it can contain...
+    public Type type = null;
 
     // Content Domain
-//    public List<?> domain = new ArrayList<>();
     public List<String> domain = new ArrayList<>(); // if size == 0, then unconstrained!
+    // public List<?> domain = new ArrayList<>();
 
     // Only used for listType
-    public Type listType;
-
-    /*
-    // has project list
-    tag = "my-tag"
-    type = Feature.Type.LIST;
-    domain.add(Construct.get("list"));
-    */
-
-    /*
-    // new script
-    // has text string
-    tag = "text"
-    type = Feature.Type.TEXT
-    domain.add();
-    */
-
-    /*
-    // new workspace
-    // has project list
-    // let project : project
-    tag = "project"
-    type = Feature.Type.LIST
-    domain.add(Construct.get("project"));
-    */
-
-    /*
-    // new port
-    // has mode
-    // let mode : 'none', 'digital', 'analog', ...
-    tag = "mode"
-    type = Feature.Type.TEXT
-    domain.add("none", "digital", "analog");
-    */
-
-    /*
-    // new configuration
-    // has mode list
-    // let mode : "none", "digital", "analog", ...
-    tag = "mode"
-    type = Feature.Type.LIST
-    domain.add("none", "digital", "analog");
-    */
-
-    /*
-    // <expression>
-    tag =
-    type =
-    domain.add();
-    */
+    public Type listType = null;
 
     //----------------
 
-    public T content = null;
+//    public T content = null;
 
     public Feature(String tag) {
 
         this.tag = tag;
-        this.content = null;
-
-    }
-
-    public Feature(String tag, T content) {
-
-        this.tag = tag;
-        this.content = content;
+//        this.content = null;
 
     }
 

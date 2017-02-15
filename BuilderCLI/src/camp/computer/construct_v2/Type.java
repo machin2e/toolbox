@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 public class Type {
 
+    // TODO: Store Type identifiers in Manager
+    // TODO: Consider using static Type interface to wrap interface to Manager for Type-specific operations
     private static HashMap<String, Type> identifiers = new HashMap<>();
 
     public String identifier = null; // type identifier of construct
@@ -12,7 +14,7 @@ public class Type {
         this.identifier = identifier;
     }
 
-    public static Type get(String identifier) {
+    public static Type add(String identifier) {
         if (Type.identifiers.containsKey(identifier)) {
             return Type.identifiers.get(identifier);
         } else {
@@ -24,6 +26,13 @@ public class Type {
 
     public static boolean has(String identifier) {
         return Type.identifiers.containsKey(identifier);
+    }
+
+    public static Type get(String identifier) {
+        if (Type.identifiers.containsKey(identifier)) {
+            return Type.identifiers.get(identifier);
+        }
+        return null;
     }
 
     @Override

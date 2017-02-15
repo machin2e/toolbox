@@ -56,7 +56,7 @@ add device # NOTE: "add project" always adds the device to the current project.
 edit device
 add port # NOTE: "add port" adds a port to the current device (if editing).
 edit port # NOTE: "edit port" edits the last-added port
-add configuration mode:power;direction:input;voltage:ttl # NOTE: Adds configuration to the current construct!
+add configuration mode:power;direction:input;voltage:ttl # NOTE: Adds configuration to the current identity!
 
 edit device # TODO: factor out!
 add port
@@ -136,7 +136,7 @@ set script:myTaskScript(data);
 # edit port(uid:25)         # _global_ lookup by UID
 # edit port(uuid:<uuid>)    # _global_ lookup by UUID
 # edit port(1)              # _relative_ lookup list item by index
-# edit my-construct-tag     # _global?_ lookup by tag
+# edit my-identity-tag     # _global?_ lookup by tag
 # edit :device(1):port(1)   # explicit "full path" lookup prefixed by ":" indicating "from workspace..."
 #? edit port(my-tag)              # _relative_ lookup list item by list tag and element tag?
 #? edit port                # lookup by property label
@@ -157,7 +157,7 @@ set script:myTaskScript(data);
 # port .
 # configuration .
 
-# TODO: CLI to make directory structure that can be deployed to Clay! Files can be edited with CLI to construct directory; script files are generated and their code can be edited with vim or whatever. The folder contains a git repo automatically and is versioned automatically by the CLI!
+# TODO: CLI to make directory structure that can be deployed to Clay! Files can be edited with CLI to identity directory; script files are generated and their code can be edited with vim or whatever. The folder contains a git repo automatically and is versioned automatically by the CLI!
 # TODO: INSIGHT? MAKE BUILDING STRUCTURE IN SPACE POSSIBLE THROUGH LINEAR SEQUENCES OF CONSTRUCTIVE, UNDOABLE COMMANDS. THEN THEY CAN BE LAID OUT AND MANIPULATED IN TIME.
 # TODO: "builder ." command to create new project folder here (reflect to infer name of workspace (and add login credentials to connect to your repo; auto do this in builder shell)
 
@@ -168,16 +168,16 @@ set script:myTaskScript(data);
 # set/unset
 # do/undo
 
-# TODO: add construct "project"
-# TODO: add construct "host"
-# TODO: add construct "device"
-# TODO: add construct "port"
-# TODO: add construct "configuration"
-# TODO: add construct "path"
-# TODO: add construct "schedule"
-# TODO: add construct "task"
+# TODO: add identity "project"
+# TODO: add identity "host"
+# TODO: add identity "device"
+# TODO: add identity "port"
+# TODO: add identity "configuration"
+# TODO: add identity "path"
+# TODO: add identity "schedule"
+# TODO: add identity "task"
 
-# TODO: edit construct project # loads latest revision
+# TODO: edit identity project # loads latest revision
 # TODO: add variable mode
 # TODO: add variable direction
 # TODO: add variable voltage
@@ -191,8 +191,8 @@ set script:myTaskScript(data);
 
 # TODO: use port uid:33 as "source-port"
 
-# TODO: add construct "device"
-# TODO: add device <construct-tag>
+# TODO: add identity "device"
+# TODO: add device <identity-tag>
 # TODO: edit device
 # TODO: add variable "variable-name"
 # TODO: set variable-name 34
@@ -205,9 +205,9 @@ set script:myTaskScript(data);
 # ...
 # save
 
-# describe <construct>
+# describe <identity>
 # ...
-# save <construct> # described construct isn't usable (it's in "scratch" until saved)
+# save <identity> # described identity isn't usable (it's in "scratch" until saved)
 
 # /workspace/project/host
 # /workspace/project/device/port
@@ -232,8 +232,8 @@ set script:myTaskScript(data);
 # mode:uart(rx);direction:input;voltage:ttl,cmos
 # mode:uart(tx);direction:output;voltage:ttl,cmos
 
-# TODO: Store construct structure hierarchy to prevent redundancy!
-# TODO: Store "construct instances" that identify a device/construct for a given structure configuration within the hierarchy (there can be multiple per config, each with revisions!)
+# TODO: Store identity structure hierarchy to prevent redundancy!
+# TODO: Store "identity instances" that identify a device/identity for a given structure configuration within the hierarchy (there can be multiple per config, each with revisions!)
 
 # 1 PATH SNAPSHOT/CONFIG --- (1 PORT : 1 PORT) DEVICE/BUS:
 #

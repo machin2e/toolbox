@@ -11,6 +11,7 @@ public class Manager_v2 {
 
     public static long elementCounter = 0L;
 
+//    private static HashMap<Long, Identity> elements = new HashMap<>();
     private static HashMap<Long, Construct> elements = new HashMap<>();
 
     public static long add(Construct construct) {
@@ -24,10 +25,22 @@ public class Manager_v2 {
         return new ArrayList<>(elements.values());
     }
 
+    public static <T extends Construct> List<T> get(Class classType) {
+        List<T> constructList = new ArrayList<>();
+        for (Construct construct : elements.values()) {
+            if (construct.getClass() == classType) {
+                constructList.add((T) construct);
+            }
+        }
+        return constructList;
+    }
+
+//    public static Identity add(long uid) {
     public static Construct get(long uid) {
         return elements.get(uid);
     }
 
+//    public static Identity add(String constructUri) {
     public static Construct get(String constructUri) {
 
         // Parse:
@@ -101,7 +114,7 @@ public class Manager_v2 {
             List<Construct> constructs = new ArrayList<>(elements.values());
 
 //            for (long uid : elements.keySet()) {
-//                Construct construct = elements.clone(uid);
+//                Identity construct = elements.clone(uid);
 //                if (construct.tag != null && construct.tag.equals(tag)) {
 //                    return construct;
 //                }
