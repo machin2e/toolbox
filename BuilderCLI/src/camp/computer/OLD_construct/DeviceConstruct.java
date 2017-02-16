@@ -1,9 +1,9 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeviceConstruct extends Construct {
+public class DeviceConstruct extends Construct_v1 {
 
     public List<PortConstruct> portConstructs = new ArrayList<>();
 

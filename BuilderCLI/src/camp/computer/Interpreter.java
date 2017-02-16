@@ -7,33 +7,34 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import camp.computer.commons_culture.Repository;
-import camp.computer.construct.Construct;
-import camp.computer.construct.ControllerConstruct;
-import camp.computer.construct.DeviceConstruct;
-import camp.computer.construct.OperationConstruct;
-import camp.computer.construct.PathConstruct;
-import camp.computer.construct.PortConstruct;
-import camp.computer.construct.ProjectConstruct;
-import camp.computer.construct.ScriptConstruct;
-import camp.computer.construct.TaskConstruct;
-import camp.computer.construct_v2.Feature;
-import camp.computer.construct_v2.Identity;
-import camp.computer.construct_v2.Instance;
-import camp.computer.construct_v2.Type;
+import camp.computer.OLD_construct.Construct_v1;
+import camp.computer.OLD_construct.ControllerConstruct;
+import camp.computer.OLD_construct.DeviceConstruct;
+import camp.computer.OLD_construct.OperationConstruct;
+import camp.computer.OLD_construct.PathConstruct;
+import camp.computer.OLD_construct.PortConstruct;
+import camp.computer.OLD_construct.ProjectConstruct;
+import camp.computer.OLD_construct.ScriptConstruct;
+import camp.computer.OLD_construct.TaskConstruct;
+import camp.computer.construct.Content;
+import camp.computer.construct.Feature;
+import camp.computer.construct.Identity;
+import camp.computer.construct.Instance;
+import camp.computer.construct.Type;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 import camp.computer.util.Pair;
 import camp.computer.util.Tuple;
+import camp.computer.workspace.Manager_v1;
 import camp.computer.workspace.Manager;
-import camp.computer.workspace.Manager_v2;
 
 public class Interpreter {
 
     private List<String> inputLines = new ArrayList<>();
 
     // TODO: Move list of Processes into Workspace
-    private List<OperationConstruct> operationConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set type from default "container" to "namespace", then add an interpreter for that type)!
+    private List<OperationConstruct> operationConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use OLD_construct and set type from default "container" to "namespace", then add an interpreter for that type)!
 
     // <SETTINGS>
     public static boolean ENABLE_VERBOSE_OUTPUT = false;
@@ -47,7 +48,7 @@ public class Interpreter {
         Interpreter.instance = this;
         workspace = new Workspace();
 
-        // Instantiate reserved construct types
+        // Instantiate reserved OLD_construct types
         Type.add("none");
         Type.add("any"); // TODO: Rename to "all"
         Type.add("text");
@@ -90,7 +91,7 @@ public class Interpreter {
 
     ContextType currentContextType = ContextType.NONE;
     Identity currentIdentity = null;
-    camp.computer.construct_v2.Instance currentInstance = null;
+    camp.computer.construct.Instance currentInstance = null;
 
     public void interpretLine_v2(String inputLine) {
 
@@ -129,6 +130,10 @@ public class Interpreter {
                 letTask(context);
             } else if (context.inputLine.startsWith("add")) {
                 addTask(context);
+            } else if (context.inputLine.startsWith("set")) {
+                setTask(context);
+            } else if (context.inputLine.startsWith("get")) {
+                getTask(context);
             }
         }
 
@@ -140,7 +145,7 @@ public class Interpreter {
 
         if (inputLineTokens.length == 1) {
 
-            // TODO: Add anonymous construct
+            // TODO: Add anonymous OLD_construct
 
         } else if (inputLineTokens.length == 2) {
 
@@ -163,7 +168,7 @@ public class Interpreter {
 
             } else {
 
-                System.out.println("error: construct already exists");
+                System.out.println("error: OLD_construct already exists");
 
             }
 
@@ -196,7 +201,7 @@ public class Interpreter {
                 // <REFACTOR>
                 // Check if the feature already exists in the current context
                 if (currentIdentity.features.containsKey(featureTagToken)) {
-                    System.out.println("Warning: Context already contains feature '" + featureTagToken + "'. A new construct revision will be generated.");
+                    System.out.println("Warning: Context already contains feature '" + featureTagToken + "'. A new OLD_construct revision will be generated.");
                 }
                 // </REFACTOR>
 
@@ -210,9 +215,9 @@ public class Interpreter {
                     } else if (featureTypeToken.equals("list")) {
                         featureType = Type.get(featureTypeToken);
                         if (Type.has(featureTagToken)) {
-                            listType = Type.get(featureTagToken); // If tag is a construct type, then constraint list to that type by default
+                            listType = Type.get(featureTagToken); // If tag is a OLD_construct type, then constraint list to that type by default
                         } else {
-                            listType = Type.get("any"); // If tag is non-construct type then default list type is "any"
+                            listType = Type.get("any"); // If tag is non-OLD_construct type then default list type is "any"
                         }
                     } else {
                         // TODO: Refactor. There's some weird redundancy here with 'has' and 'Type.add'.
@@ -222,8 +227,8 @@ public class Interpreter {
                     }
                 } else {
                     if (Type.has(featureTagToken)) {
-//                    if (camp.computer.construct_v2.Identity.has(featureTagToken)) {
-//                            // TODO: Replace with ConstructType for reserved construct types
+//                    if (camp.computer.construct.Identity.has(featureTagToken)) {
+//                            // TODO: Replace with ConstructType for reserved OLD_construct types
                         featureType = Type.get(featureTagToken);
                     } else {
                         featureType = Type.get("any"); // Default type
@@ -272,8 +277,8 @@ public class Interpreter {
                     for (int i = 0; i < constraintTokens.length; i++) {
                         String constraintToken = constraintTokens[i].trim();
                         if (!Type.has(constraintToken)) {
-//                        if (!camp.computer.construct_v2.Identity.has(constraintToken)) {
-//                                // TODO: Replace with ConstructType class (for reserved construct types)
+//                        if (!camp.computer.construct.Identity.has(constraintToken)) {
+//                                // TODO: Replace with ConstructType class (for reserved OLD_construct types)
                             hasConstructContent = false;
                         }
                     }
@@ -295,7 +300,7 @@ public class Interpreter {
                             // TODO: Use generic "construct" type or set specific if there's only one
                             if (isSingletonList) {
                                 featureType = Type.get(constraintTokens[0]);
-                                // TODO: if 'text' or other construct only, then set type to featureType = TEXT and hasDomainList = false
+                                // TODO: if 'text' or other OLD_construct only, then set type to featureType = TEXT and hasDomainList = false
                                 if (featureType == Type.get("list")) {
                                     listType = Type.get("any");
                                 }
@@ -322,14 +327,23 @@ public class Interpreter {
                             listType = Type.get("text");
                             hasDomainList = true;
                         } else if (isConstructContent) {
-                            listType = Type.get("construct");
-                            hasDomainList = true;
+                            if (isSingletonList) {
+                                if (!Type.has(constraintTokens[0])) {
+                                    // Error: Invalid list content type.
+                                    hasError = true;
+                                } else {
+                                    listType = Type.get(constraintTokens[0]);
+                                }
+                            } else {
+                                listType = Type.get("construct");
+                                hasDomainList = true;
+                            }
                         } else if (hasTextContent && hasConstructContent) {
                             listType = Type.get("any");
                             hasDomainList = true;
                         }
                     } else if (featureType == Type.get("construct")) {
-                        // TODO: Check if the specific construct presently assigned to featureType matches the list (should be identical)
+                        // TODO: Check if the specific OLD_construct presently assigned to featureType matches the list (should be identical)
                         if (!isConstructContent) {
                             hasError = true;
                         } else {
@@ -342,7 +356,7 @@ public class Interpreter {
                             }
                         }
                     } else {
-                        // Custom construct type
+                        // Custom OLD_construct type
                         for (int i = 0; i < constraintTokens.length; i++) {
                             String constraintToken = constraintTokens[i].trim();
                             if (!constraintToken.equals(featureType.identifier)) { // NOTE: featureTagToken is the custom type identifier.
@@ -367,7 +381,7 @@ public class Interpreter {
 
             }
 
-            // Instantiate feature, add to construct, and print response
+            // Instantiate feature, add to OLD_construct, and print response
             if (hasError) {
                 System.out.println("Error: Conflicting types present in expression.");
             } else if (featureTagToken != null) {
@@ -465,8 +479,12 @@ public class Interpreter {
 //                    Instance instance = new Instance(identity);
                     Instance instance = Instance.add(type);
 
-                    List<Instance> instanceList = Manager_v2.get(Instance.class);
+                    List<Instance> instanceList = Manager.get(Instance.class);
                     System.out.println("added instance of identity " + instance.type + " (" + instanceList.size() + " instances)");
+
+                    // Update context
+                    currentContextType = ContextType.INSTANCE;
+                    currentInstance = instance;
                 } else {
                     System.out.println("Error: No type or identity matches '" + featureTagToken + "'");
                 }
@@ -482,6 +500,131 @@ public class Interpreter {
 //            }
 
 //        }
+
+    }
+
+    public void setTask(Context context) {
+
+        // Determine interpreter's context. Identity or instance?
+        if (currentContextType == ContextType.INSTANCE && currentInstance != null) {
+
+            String[] inputLineTokens = context.inputLine.split("[ ]+");
+
+            // Defaults
+            String instanceTagToken = null;
+
+            // Determine tag
+            if (inputLineTokens.length >= 3) {
+
+                // Determine tag
+                instanceTagToken = inputLineTokens[1];
+
+                // Determine feature
+                String featureContentToken = inputLineTokens[2];
+
+                // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
+
+                currentInstance.set(instanceTagToken, featureContentToken);
+
+//                Type type = null;
+//                Identity identity = null;
+//                if (Type.has(instanceTagToken)) {
+//                    type = Type.get(instanceTagToken);
+//                    if (Identity.has(type)) {
+//                        identity = Identity.get(type);
+//                    }
+//                }
+
+//                if (type != null && identity != null) {
+//    //                    Instance instance = new Instance(identity);
+//                    Instance instance = Instance.add(type);
+//
+//                    List<Instance> instanceList = Manager.get(Instance.class);
+//                    System.out.println("added instance of identity " + instance.type + " (" + instanceList.size() + " instances)");
+//                } else {
+//                    System.out.println("Error: No type or identity matches '" + instanceTagToken + "'");
+//                }
+            }
+
+            // Parse constraint
+//            String letParameters = context.inputLine.substring(context.inputLine.indexOf(":") + 1);
+//            String[] letParameterTokens = letParameters.split("[ ]*,[ ]*");
+
+//            System.out.println("let parameters (" + letParameterTokens.length + "): " + letParameters);
+//            for (int i = 0; i < letParameterTokens.length; i++) {
+//                System.out.println("\t" + letParameterTokens[i].trim());
+//            }
+
+        }
+
+    }
+
+    // get <feature-identifier>
+    public void getTask(Context context) {
+
+        // Determine interpreter's context. Identity or instance?
+        if (currentContextType == ContextType.INSTANCE && currentInstance != null) {
+
+            String[] inputLineTokens = context.inputLine.split("[ ]+");
+
+            // Defaults
+            String instanceTagToken = null;
+
+            // Determine tag
+            if (inputLineTokens.length >= 2) {
+
+                // Determine tag
+                instanceTagToken = inputLineTokens[1];
+
+                // Determine feature
+//                String featureContentToken = inputLineTokens[2];
+
+                // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
+
+                Content content = currentInstance.get(instanceTagToken);
+
+                if (content.type == Type.get("text")) {
+                    System.out.println("" + ((String) content.content));
+                } else if (content.type == Type.get("list")) {
+                    List contentList = (List) content;
+                    for (int i = 0; i < contentList.size(); i++) {
+                        // TODO: Possibly use Content object for values to pair type with content (like little "files with extensions")?
+//                        if (contentList.get(i).type == Type.get("text")) {
+//                            System.out.println("" + ((String) content.content));
+//                        }
+                    }
+                }
+
+//                Type type = null;
+//                Identity identity = null;
+//                if (Type.has(instanceTagToken)) {
+//                    type = Type.get(instanceTagToken);
+//                    if (Identity.has(type)) {
+//                        identity = Identity.get(type);
+//                    }
+//                }
+
+//                if (type != null && identity != null) {
+//    //                    Instance instance = new Instance(identity);
+//                    Instance instance = Instance.add(type);
+//
+//                    List<Instance> instanceList = Manager.get(Instance.class);
+//                    System.out.println("added instance of identity " + instance.type + " (" + instanceList.size() + " instances)");
+//                } else {
+//                    System.out.println("Error: No type or identity matches '" + instanceTagToken + "'");
+//                }
+            }
+
+            // Parse constraint
+//            String letParameters = context.inputLine.substring(context.inputLine.indexOf(":") + 1);
+//            String[] letParameterTokens = letParameters.split("[ ]*,[ ]*");
+
+//            System.out.println("let parameters (" + letParameterTokens.length + "): " + letParameters);
+//            for (int i = 0; i < letParameterTokens.length; i++) {
+//                System.out.println("\t" + letParameterTokens[i].trim());
+//            }
+
+        }
 
     }
 
@@ -503,7 +646,7 @@ public class Interpreter {
 //
 //            // Determine type
 //            if (inputLineTokens.length == 2) {
-//                if (camp.computer.construct_v2.Identity.has(featureTagToken)) {
+//                if (camp.computer.construct.Identity.has(featureTagToken)) {
 //                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
 //                }
 //            } else if (inputLineTokens.length == 3) {
@@ -513,7 +656,7 @@ public class Interpreter {
 //                } else if (featureTypeToken.equals("list")) {
 //                    featureType = Feature.Type.LIST;
 //                } else {
-//                    if (camp.computer.construct_v2.Identity.has(featureTagToken)) {
+//                    if (camp.computer.construct.Identity.has(featureTagToken)) {
 //                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
 //                    }
 //                }
@@ -541,7 +684,7 @@ public class Interpreter {
 
     // CUSTOM_CONSTRUCT CONTEXT:
     // let direction : 'none', 'input', 'output', 'bidirectional'
-    // let current-construct : device, port, controller, task, script
+    // let current-OLD_construct : device, port, controller, task, script
     // let script : script
     //
     // INSTANCE CONTEXT:
@@ -572,7 +715,7 @@ public class Interpreter {
 
 //            // Determine type
 //            if (inputLineTokens.length == 2) {
-//                if (camp.computer.construct_v2.Identity.has(featureTagToken)) {
+//                if (camp.computer.construct.Identity.has(featureTagToken)) {
 //                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
 //                }
 //            } else if (inputLineTokens.length == 3) {
@@ -582,7 +725,7 @@ public class Interpreter {
 //                } else if (featureTypeToken.equals("list")) {
 //                    featureType = Feature.Type.LIST;
 //                } else {
-//                    if (camp.computer.construct_v2.Identity.has(featureTagToken)) {
+//                    if (camp.computer.construct.Identity.has(featureTagToken)) {
 //                        featureType = Feature.Type.CUSTOM_CONSTRUCT;
 //                    }
 //                }
@@ -752,7 +895,7 @@ public class Interpreter {
 
 //            System.out.println("✔ stop " + workspace.operationConstruct.uid + " (" + workspace.operationConstruct.operations.size() + " operations)");
 
-            // Reset process construct
+            // Reset process OLD_construct
             workspace.operationConstruct = null;
 
         }
@@ -765,7 +908,7 @@ public class Interpreter {
 
         if (inputLineTokens.length == 2) {
 
-            OperationConstruct operationConstruct = (OperationConstruct) Manager.get(inputLineTokens[1]);
+            OperationConstruct operationConstruct = (OperationConstruct) Manager_v1.get(inputLineTokens[1]);
 
 //            System.out.println("> do " + operationConstruct.uid);
 
@@ -783,7 +926,7 @@ public class Interpreter {
     // push
     public void saveConstructVersion(Context context) {
 
-        // TODO: Save new snapshot as a child/successor of the current construct version
+        // TODO: Save new snapshot as a child/successor of the current OLD_construct version
 
         System.out.println("✔ save (revision XXX)");
 
@@ -803,7 +946,7 @@ public class Interpreter {
 
         if (inputLineTokens.length == 1) {
 
-            // TODO: Add anonymous construct
+            // TODO: Add anonymous OLD_construct
 
         } else if (inputLineTokens.length == 2) {
 
@@ -819,10 +962,10 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("device")) {
 
-//                // TODO: Ensure edit construct is a device!
-//                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+//                // TODO: Ensure edit OLD_construct is a device!
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == ProjectConstruct.class) {
 //
-//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
+//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.OLD_construct;
 
                 DeviceConstruct deviceConstruct = new DeviceConstruct();
 //                projectConstruct.deviceConstructs.add(deviceConstruct);
@@ -833,10 +976,10 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("port")) {
 
-//                // TODO: Ensure edit construct is a device!
-//                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+//                // TODO: Ensure edit OLD_construct is a device!
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 //
-//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 
                 PortConstruct portConstruct = new PortConstruct();
 //                    deviceConstruct.portConstructs.add(portConstruct);
@@ -847,10 +990,10 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("path")) {
 
-//                // TODO: Ensure edit construct is a device!
-//                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+//                // TODO: Ensure edit OLD_construct is a device!
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == ProjectConstruct.class) {
 //
-//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
+//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.OLD_construct;
 
                 PathConstruct pathConstruct = new PathConstruct();
 //                    projectConstruct.pathConstructs.add(pathConstruct);
@@ -861,9 +1004,9 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("task")) {
 
-//                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 //
-//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 
                 TaskConstruct taskConstruct = new TaskConstruct();
 //                    deviceConstruct.controllerConstruct.taskConstructs.add(taskConstruct);
@@ -894,7 +1037,7 @@ public class Interpreter {
 //
 //            } else if (constructTypeToken.equals("device")) {
 //
-////                // TODO: Ensure edit construct is a project!
+////                // TODO: Ensure edit OLD_construct is a project!
 ////                if (workspace.projectConstruct != null) {
 ////
 ////                    DeviceConstruct deviceConstruct = new DeviceConstruct();
@@ -905,10 +1048,10 @@ public class Interpreter {
 ////                    System.out.println("✔ add device " + deviceConstruct.uid);
 ////                }
 //
-//                // TODO: Ensure edit construct is a device!
-//                if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
+//                // TODO: Ensure edit OLD_construct is a device!
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == ProjectConstruct.class) {
 //
-//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
+//                    ProjectConstruct projectConstruct = (ProjectConstruct) workspace.OLD_construct;
 //
 //                    DeviceConstruct deviceConstruct = new DeviceConstruct();
 //                    projectConstruct.deviceConstructs.add(deviceConstruct);
@@ -921,10 +1064,10 @@ public class Interpreter {
 //
 //            } else if (constructTypeToken.equals("port")) {
 //
-//                // TODO: Ensure edit construct is a device!
-//                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+//                // TODO: Ensure edit OLD_construct is a device!
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 //
-//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 //
 //                    PortConstruct portConstruct = new PortConstruct();
 //                    portConstruct.tag = constructTitleString;
@@ -940,9 +1083,9 @@ public class Interpreter {
 //
 //            } else if (constructTypeToken.equals("task")) {
 //
-//                if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+//                if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 //
-//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+//                    DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 //
 //                    TaskConstruct taskConstruct = new TaskConstruct();
 //                    taskConstruct.tag = constructTitleString;
@@ -973,7 +1116,7 @@ public class Interpreter {
 
             // TODO: print "3 devices, 50 ports, 10 configurations, etc."
 
-            for (Construct construct : Manager.elements.values()) {
+            for (Construct_v1 construct : Manager_v1.elements.values()) {
                 System.out.println(construct.type + " (uuid:" + construct.uuid + ")");
             }
 
@@ -981,9 +1124,9 @@ public class Interpreter {
 
             String constructTypeToken = inputLineTokens[1];
 
-            for (Construct construct : Manager.elements.values()) {
+            for (Construct_v1 construct : Manager_v1.elements.values()) {
                 if (construct.type.equals(constructTypeToken)) {
-                    // System.out.println("" + construct.uid + "\t" + construct.uuid.toString());
+                    // System.out.println("" + OLD_construct.uid + "\t" + OLD_construct.uuid.toString());
                     System.out.println("" + construct.uid);
                 }
             }
@@ -992,7 +1135,7 @@ public class Interpreter {
     }
 
     // Format:
-    // add <construct-type-tag> <construct-instance-tag>
+    // add <OLD_construct-type-tag> <OLD_construct-instance-tag>
     //
     // Examples:
     // - add project
@@ -1004,7 +1147,7 @@ public class Interpreter {
 
         if (inputLineTokens.length == 1) {
 
-            // TODO: Add anonymous construct
+            // TODO: Add anonymous OLD_construct
 
         } else if (inputLineTokens.length == 2) {
 
@@ -1018,7 +1161,7 @@ public class Interpreter {
 
                 String constructIdentifierToken = inputLineTokens[2].split(":")[1];
                 UUID constructUuid = UUID.fromString(constructIdentifierToken);
-                Construct construct = Repository.clone(constructUuid); // TODO: Return a COPY/CLONE of the project
+                Construct_v1 construct = Repository.clone(constructUuid); // TODO: Return a COPY/CLONE of the project
                 // TODO: add the project to the workspace (so it can be deployed)
 
                 ProjectConstruct projectConstruct = new ProjectConstruct();
@@ -1029,7 +1172,7 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("device")) {
 
-                // TODO: Ensure edit construct is a device!
+                // TODO: Ensure edit OLD_construct is a device!
                 if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
 
                     ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
@@ -1043,7 +1186,7 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("port")) {
 
-                // TODO: Ensure edit construct is a device!
+                // TODO: Ensure edit OLD_construct is a device!
                 if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
 
                     DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
@@ -1057,7 +1200,7 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("path")) {
 
-                // TODO: Ensure edit construct is a device!
+                // TODO: Ensure edit OLD_construct is a device!
                 if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
 
                     ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
@@ -1103,7 +1246,7 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("device")) {
 
-//                // TODO: Ensure edit construct is a project!
+//                // TODO: Ensure edit OLD_construct is a project!
 //                if (workspace.projectConstruct != null) {
 //
 //                    DeviceConstruct deviceConstruct = new DeviceConstruct();
@@ -1114,7 +1257,7 @@ public class Interpreter {
 //                    System.out.println("✔ add device " + deviceConstruct.uid);
 //                }
 
-                // TODO: Ensure edit construct is a device!
+                // TODO: Ensure edit OLD_construct is a device!
                 if (workspace.construct != null && workspace.construct.getClass() == ProjectConstruct.class) {
 
                     ProjectConstruct projectConstruct = (ProjectConstruct) workspace.construct;
@@ -1130,7 +1273,7 @@ public class Interpreter {
 
             } else if (constructTypeToken.equals("port")) {
 
-                // TODO: Ensure edit construct is a device!
+                // TODO: Ensure edit OLD_construct is a device!
                 if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
 
                     DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
@@ -1174,7 +1317,7 @@ public class Interpreter {
 
     /**
      * <strong>Examples</strong>
-     * {@code list <construct-type>}
+     * {@code list <OLD_construct-type>}
      *
      * @param context
      */
@@ -1190,9 +1333,9 @@ public class Interpreter {
 
             String constructTypeToken = inputLineTokens[1];
 
-            for (Construct construct : Manager.elements.values()) {
+            for (Construct_v1 construct : Manager_v1.elements.values()) {
                 if (construct.type.equals(constructTypeToken)) {
-                    // System.out.println("" + construct.uid + "\t" + construct.uuid.toString());
+                    // System.out.println("" + OLD_construct.uid + "\t" + OLD_construct.uuid.toString());
                     System.out.println("" + construct.uid);
                 }
 
@@ -1226,7 +1369,7 @@ public class Interpreter {
 
             // TODO: List all constructs!
 
-            Construct construct = workspace.construct;
+            Construct_v1 construct = workspace.construct;
 
             String constructTypeToken = null;
             if (construct.getClass() == ProjectConstruct.class) {
@@ -1251,7 +1394,7 @@ public class Interpreter {
 
             String constructAddressString = inputLineTokens[1];
 
-            Construct construct = Manager.get(constructAddressString);
+            Construct_v1 construct = Manager_v1.get(constructAddressString);
 
             String constructTypeToken = null;
             if (construct.getClass() == ProjectConstruct.class) {
@@ -1290,51 +1433,51 @@ public class Interpreter {
 //
 //            // TODO: List all constructs!
 //
-//            Identity construct = workspace.construct;
+//            Identity OLD_construct = workspace.OLD_construct;
 //
 //            String constructTypeToken = null;
-//            if (construct.getClass() == ProjectConstruct.class) {
+//            if (OLD_construct.getClass() == ProjectConstruct.class) {
 //                constructTypeToken = "project";
-//            } else if (construct.getClass() == DeviceConstruct.class) {
+//            } else if (OLD_construct.getClass() == DeviceConstruct.class) {
 //                constructTypeToken = "device";
-//            } else if (construct.getClass() == PortConstruct.class) {
+//            } else if (OLD_construct.getClass() == PortConstruct.class) {
 //                constructTypeToken = "port";
-//            } else if (construct.getClass() == PathConstruct.class) {
+//            } else if (OLD_construct.getClass() == PathConstruct.class) {
 //                constructTypeToken = "path";
-//            } else if (construct.getClass() == ControllerConstruct.class) {
+//            } else if (OLD_construct.getClass() == ControllerConstruct.class) {
 //                constructTypeToken = "controller";
-//            } else if (construct.getClass() == TaskConstruct.class) {
+//            } else if (OLD_construct.getClass() == TaskConstruct.class) {
 //                constructTypeToken = "task";
-//            } else if (construct.getClass() == ScriptConstruct.class) {
+//            } else if (OLD_construct.getClass() == ScriptConstruct.class) {
 //                constructTypeToken = "script";
 //            }
 //
-//            System.out.println("> " + constructTypeToken + " (uid:" + construct.uid + ")");
+//            System.out.println("> " + constructTypeToken + " (uid:" + OLD_construct.uid + ")");
 //
 //        } else if (inputLineTokens.length == 2) {
 //
 //            String constructAddressString = inputLineTokens[1];
 //
-//            Identity construct = Manager.clone(constructAddressString);
+//            Identity OLD_construct = Manager_v1.clone(constructAddressString);
 //
 //            String constructTypeToken = null;
-//            if (construct.getClass() == ProjectConstruct.class) {
+//            if (OLD_construct.getClass() == ProjectConstruct.class) {
 //                constructTypeToken = "project";
-//            } else if (construct.getClass() == DeviceConstruct.class) {
+//            } else if (OLD_construct.getClass() == DeviceConstruct.class) {
 //                constructTypeToken = "device";
-//            } else if (construct.getClass() == PortConstruct.class) {
+//            } else if (OLD_construct.getClass() == PortConstruct.class) {
 //                constructTypeToken = "port";
-//            } else if (construct.getClass() == PathConstruct.class) {
+//            } else if (OLD_construct.getClass() == PathConstruct.class) {
 //                constructTypeToken = "path";
-//            } else if (construct.getClass() == ControllerConstruct.class) {
+//            } else if (OLD_construct.getClass() == ControllerConstruct.class) {
 //                constructTypeToken = "controller";
-//            } else if (construct.getClass() == TaskConstruct.class) {
+//            } else if (OLD_construct.getClass() == TaskConstruct.class) {
 //                constructTypeToken = "task";
-//            } else if (construct.getClass() == ScriptConstruct.class) {
+//            } else if (OLD_construct.getClass() == ScriptConstruct.class) {
 //                constructTypeToken = "script";
 //            }
 //
-//            System.out.println("> " + constructTypeToken + " (uid:" + construct.uid + ")");
+//            System.out.println("> " + constructTypeToken + " (uid:" + OLD_construct.uid + ")");
 //
 //        }
 
@@ -1377,7 +1520,7 @@ public class Interpreter {
         // TODO: Lookup context.clone("inputLine")
         String[] inputLineTokens = context.inputLine.split("[ ]+");
 
-        Construct construct = null;
+        Construct_v1 construct = null;
 
         if (inputLineTokens.length == 2) {
 
@@ -1399,15 +1542,15 @@ public class Interpreter {
 
         } else if (inputLineTokens.length > 2) {
 
-            construct = Manager.get(inputLineTokens[2]);
+            construct = Manager_v1.get(inputLineTokens[2]);
 
         }
 
         if (construct != null) {
 
             workspace.construct = construct;
-//            System.out.println("✔ edit " + workspace.construct.uid);
-//            System.out.println("✔ edit " + constructTypeToken + " " + workspace.construct.uid);
+//            System.out.println("✔ edit " + workspace.OLD_construct.uid);
+//            System.out.println("✔ edit " + constructTypeToken + " " + workspace.OLD_construct.uid);
 
         } else {
 
@@ -1417,7 +1560,7 @@ public class Interpreter {
     }
 
     /**
-     * Removes the {@code Identity} with the specified identifier from the {@code Manager}.
+     * Removes the {@code Identity} with the specified identifier from the {@code Manager_v1}.
      *
      * @param context
      */
@@ -1433,10 +1576,10 @@ public class Interpreter {
 
             String addressString = inputLineTokens[1];
 
-            Construct construct = Manager.get(addressString);
+            Construct_v1 construct = Manager_v1.get(addressString);
 
             if (construct != null) {
-                Manager.remove(construct.uid);
+                Manager_v1.remove(construct.uid);
             }
 
         }
@@ -1447,16 +1590,16 @@ public class Interpreter {
 //        // TODO: Lookup context.clone("inputLine")
 //        String[] inputLineTokens = context.inputLine.split("[ ]+");
 //
-//        Identity construct = null;
+//        Identity OLD_construct = null;
 //
 //        if (inputLineTokens.length == 2) {
-//            construct = workspace.lastProjectConstruct;
+//            OLD_construct = workspace.lastProjectConstruct;
 //        } else if (inputLineTokens.length > 2) {
-//            construct = Manager.clone(inputLineTokens[2]);
+//            OLD_construct = Manager_v1.clone(inputLineTokens[2]);
 //        }
 //
-//        if (construct != null) {
-//            workspace.projectConstruct = (ProjectConstruct) construct;
+//        if (OLD_construct != null) {
+//            workspace.projectConstruct = (ProjectConstruct) OLD_construct;
 //            System.out.println("✔ edit project " + workspace.projectConstruct.uid);
 //        }
 //
@@ -1472,12 +1615,12 @@ public class Interpreter {
 //        if (inputLineTokens.length == 2) {
 //            deviceConstruct = workspace.lastDeviceConstruct;
 //        } else if (inputLineTokens.length > 2) {
-//            deviceConstruct = Manager.clone(inputLineTokens[2]);
+//            deviceConstruct = Manager_v1.clone(inputLineTokens[2]);
 //        }
 //
 //        if (deviceConstruct != null) {
 //
-//            workspace.construct = deviceConstruct;
+//            workspace.OLD_construct = deviceConstruct;
 //            System.out.println("✔ edit device " + deviceConstruct.uid);
 //
 //        } else {
@@ -1498,13 +1641,13 @@ public class Interpreter {
 //        if (inputLineTokens.length == 2) {
 //            portConstruct = workspace.lastPortConstruct;
 //        } else if (inputLineTokens.length > 2) {
-//            portConstruct = Manager.clone(inputLineTokens[2]);
+//            portConstruct = Manager_v1.clone(inputLineTokens[2]);
 //        }
 //
 //        if (portConstruct != null) {
 //
-//            workspace.construct = portConstruct;
-//            System.out.println("✔ edit port " + workspace.construct.uid);
+//            workspace.OLD_construct = portConstruct;
+//            System.out.println("✔ edit port " + workspace.OLD_construct.uid);
 //
 //        } else {
 //
@@ -1523,13 +1666,13 @@ public class Interpreter {
 //        if (inputLineTokens.length == 2) {
 //            pathConstruct = workspace.lastPathConstruct;
 //        } else if (inputLineTokens.length > 2) {
-//            pathConstruct = Manager.clone(inputLineTokens[2]);
+//            pathConstruct = Manager_v1.clone(inputLineTokens[2]);
 //        }
 //
 //        if (pathConstruct != null) {
 //
-//            workspace.construct = pathConstruct;
-//            System.out.println("✔ edit path " + workspace.construct.uid);
+//            workspace.OLD_construct = pathConstruct;
+//            System.out.println("✔ edit path " + workspace.OLD_construct.uid);
 //
 //        } else {
 //
@@ -1552,7 +1695,7 @@ public class Interpreter {
 //
 //        }
 //
-//        System.out.println("✔ edit task " + workspace.construct.uid);
+//        System.out.println("✔ edit task " + workspace.OLD_construct.uid);
 //    }
 //
 //    public void setProjectTitleTask(Context context) {
@@ -1712,7 +1855,7 @@ public class Interpreter {
 //        workspace.portConstruct.direction = direction;
 //        workspace.portConstruct.voltage = voltage;
 //
-//        // TODO: Generalize so can set state of any construct/container. Don't assume port construct is only one with state.
+//        // TODO: Generalize so can set state of any OLD_construct/container. Don't assume port OLD_construct is only one with state.
 //        System.out.println("✔ set port attributes to " + workspace.portConstruct.mode + " " + workspace.portConstruct.direction + " " + workspace.portConstruct.voltage);
 
     }
@@ -1772,7 +1915,7 @@ public class Interpreter {
     /**
      * Given a path with containing two ports, determines compatible configurations (if any).
      * <p>
-     * "solve <path-construct>"
+     * "solve <path-OLD_construct>"
      * e.g., solve uid(34)
      *
      * @param context
@@ -1784,19 +1927,19 @@ public class Interpreter {
 
         // add path <tag>
         // edit path
-        // set source-port[construct-type] uid:34
-        // set target-port[construct-type] uid:34
+        // set source-port[OLD_construct-type] uid:34
+        // set target-port[OLD_construct-type] uid:34
 
-//        if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
-//        if (workspace.construct != null && workspace.construct.getClass() == PathConstruct.class) {
+//        if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
+//        if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == PathConstruct.class) {
 
-//            DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+//            DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 
         String[] inputLineTokens = context.inputLine.split("[ ]+");
 
         // TODO: Parse address token (for index, UID, UUID; tag/key/tag)
 
-        PathConstruct pathConstruct = (PathConstruct) Manager.get(inputLineTokens[1]);
+        PathConstruct pathConstruct = (PathConstruct) Manager_v1.get(inputLineTokens[1]);
 
         /**
          * "solve path [uid]"
@@ -1940,7 +2083,7 @@ public class Interpreter {
 
         if (inputLineTokens.length == 1) {
 
-            // TODO: Add anonymous construct
+            // TODO: Add anonymous OLD_construct
 
         } else if (inputLineTokens.length == 2) {
 
@@ -1968,14 +2111,14 @@ public class Interpreter {
 
                 if (variableTitle.equals("source-port")) {
 
-                    PortConstruct sourcePort = (PortConstruct) Manager.get(variableValue);
+                    PortConstruct sourcePort = (PortConstruct) Manager_v1.get(variableValue);
                     pathConstruct.sourcePortConstruct = sourcePort;
 
 //                    System.out.println(">>> set source-port " + variableValue);
 
                 } else if (variableTitle.equals("target-port")) {
 
-                    PortConstruct targetPort = (PortConstruct) Manager.get(variableValue);
+                    PortConstruct targetPort = (PortConstruct) Manager_v1.get(variableValue);
                     pathConstruct.targetPortConstruct = targetPort;
 
 //                    System.out.println(">>> set target-port " + variableValue);
@@ -2089,9 +2232,9 @@ public class Interpreter {
 
         if (inputLineTokens.length == 2) {
 
-            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+            if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 
-                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 
                 for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
 
@@ -2110,9 +2253,9 @@ public class Interpreter {
                 return;
             }
 
-            if (workspace.construct != null && workspace.construct.getClass() == DeviceConstruct.class) {
+            if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 
-                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.construct;
+                DeviceConstruct deviceConstruct = (DeviceConstruct) workspace.OLD_construct;
 
                 for (int i = 0; i < deviceConstruct.portConstructs.size(); i++) {
 

@@ -1,4 +1,4 @@
-package camp.computer.construct_v2;
+package camp.computer.construct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,18 @@ public class Content {
 
         this.domain.addAll(feature.domain);
 
+        // none
+        // any
+        // number
         if (this.type == Type.get("list")) {
             this.content = new ArrayList<>();
             this.contentType = List.class;
 
             this.listType = feature.listType;
         } else if (this.type == Type.get("text")) {
+            this.content = null;
+            this.contentType = String.class;
+        } else { // Custom construct
             this.content = null;
             this.contentType = Instance.class;
         }

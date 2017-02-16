@@ -1,4 +1,4 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * or (b) a <em>constructed operation</em> composed of a sequence of primitive operations and other
  * constructed primitives.
  */
-public class OperationConstruct extends Construct {
+public class OperationConstruct extends Construct_v1 {
 
     public List<String> operations = new ArrayList<>();
 

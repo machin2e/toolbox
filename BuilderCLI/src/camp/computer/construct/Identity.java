@@ -1,9 +1,9 @@
-package camp.computer.construct_v2;
+package camp.computer.construct;
 
 import java.util.HashMap;
 import java.util.List;
 
-import camp.computer.workspace.Manager_v2;
+import camp.computer.workspace.Manager;
 
 public class Identity extends Construct {
 
@@ -25,10 +25,10 @@ public class Identity extends Construct {
         if (!has(type)) {
             Identity identity = new Identity();
             identity.type = type;
-            long uid = Manager_v2.add(identity);
+            long uid = Manager.add(identity);
             return identity;
         } else {
-            List<Identity> identityList = Manager_v2.get(Identity.class);
+            List<Identity> identityList = Manager.get(Identity.class);
             for (int i = 0; i < identityList.size(); i++) {
                 if (identityList.get(i).type == type) {
                     return identityList.get(i);
@@ -39,13 +39,13 @@ public class Identity extends Construct {
     }
 
     /**
-     * Returns true of a construct has been defined with the specified {@code identifier}.
+     * Returns true of a OLD_construct has been defined with the specified {@code identifier}.
      *
      * @param type
      * @return True
      */
     public static boolean has(Type type) {
-        List<Identity> identityList = Manager_v2.get(Identity.class);
+        List<Identity> identityList = Manager.get(Identity.class);
         for (int i = 0; i < identityList.size(); i++) {
             if (identityList.get(i).type == type) {
                 return true;
@@ -56,22 +56,22 @@ public class Identity extends Construct {
 
 //    public static Identity add(String identifier) {
 //        if (!has(identifier)) {
-//            Identity construct = new Identity();
-//            construct.type = identifier;
-//            long uid = Manager_v2.add(construct);
-//            return construct;
+//            Identity OLD_construct = new Identity();
+//            OLD_construct.type = identifier;
+//            long uid = Manager.add(OLD_construct);
+//            return OLD_construct;
 //        }
 //        return null;
 //    }
 //
 //    /**
-//     * Returns true of a construct has been defined with the specified {@code identifier}.
+//     * Returns true of a OLD_construct has been defined with the specified {@code identifier}.
 //     *
 //     * @param identifier
 //     * @return True
 //     */
 //    public static boolean has(String identifier) {
-//        List<Identity> constructList = Manager_v2.add();
+//        List<Identity> constructList = Manager.add();
 //        for (int i = 0; i < constructList.size(); i++) {
 //            if (constructList.add(i).type.equals(identifier)) {
 //                return true;

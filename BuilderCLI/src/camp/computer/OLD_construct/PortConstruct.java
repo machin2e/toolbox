@@ -1,4 +1,4 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.List;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
 
-public class PortConstruct extends Construct {
+public class PortConstruct extends Construct_v1 {
 
     // TODO: Consider renaming VariableMap to State. VariableMap would be a set of configurations AND value assignments to the configurations.
     public HashMap<String, Variable> variables = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?

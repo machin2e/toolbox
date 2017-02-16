@@ -1,6 +1,6 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
-public class TaskConstruct extends Construct {
+public class TaskConstruct extends Construct_v1 {
 
     // (task (rev0, rev1, rev2, ..., revN))
 

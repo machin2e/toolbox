@@ -2,7 +2,7 @@ package camp.computer.commons_culture;
 
 import java.util.UUID;
 
-import camp.computer.construct.Construct;
+import camp.computer.OLD_construct.Construct_v1;
 
 public class Repository {
 
@@ -10,9 +10,9 @@ public class Repository {
 
     // Represents the "public" assets repository.
     // Refactor Identity into generic one and allow making custom types
-    // Stream in content for revisions, etc. into same construct. It's a container for content that changes per-revision.
+    // Stream in content for revisions, etc. into same OLD_construct. It's a container for content that changes per-revision.
 
-    public static Construct clone(UUID uuid) { // add/clone/branch
+    public static Construct_v1 clone(UUID uuid) { // add/clone/branch
         // TODO:
         return null;
     }

@@ -5,43 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import camp.computer.construct_v2.Construct;
+import camp.computer.OLD_construct.Construct_v1;
 
-public class Manager_v2 {
+public class Manager_v1 {
 
     public static long elementCounter = 0L;
 
-//    private static HashMap<Long, Identity> elements = new HashMap<>();
-    private static HashMap<Long, Construct> elements = new HashMap<>();
+    public static HashMap<Long, Construct_v1> elements = new HashMap<>();
 
-    public static long add(Construct construct) {
-        long uid = Manager_v2.elementCounter++;
-        construct.uid = uid;
-        Manager_v2.elements.put(uid, construct);
-        return uid;
-    }
-
-    public static List<Construct> get() {
-        return new ArrayList<>(elements.values());
-    }
-
-    public static <T extends Construct> List<T> get(Class classType) {
-        List<T> constructList = new ArrayList<>();
-        for (Construct construct : elements.values()) {
-            if (construct.getClass() == classType) {
-                constructList.add((T) construct);
-            }
-        }
-        return constructList;
-    }
-
-//    public static Identity add(long uid) {
-    public static Construct get(long uid) {
-        return elements.get(uid);
-    }
-
-//    public static Identity add(String constructUri) {
-    public static Construct get(String constructUri) {
+    public static Construct_v1 get(String constructUri) {
 
         // Parse:
         // 3
@@ -52,7 +24,7 @@ public class Manager_v2 {
         // edit port(uid:25)         # _global_ lookup by UID
         // edit port(uuid:<uuid>)    # _global_ lookup by UUID
         // edit port(1)              # _relative_ lookup list item by index
-        // edit my-construct-tag     # _global?_ lookup by tag
+        // edit my-OLD_construct-tag     # _global?_ lookup by tag
         // edit :device(1):port(1)   # explicit "full path" lookup prefixed by ":" indicating "from workspace..."
         //
         // edit port(my-tag)              # _relative_ lookup list item by list tag and element tag?
@@ -86,17 +58,17 @@ public class Manager_v2 {
 
                 long inputTaskUid = Long.valueOf(identifier);
 
-                if (Manager_v2.elements.containsKey(inputTaskUid)) {
-                    return Manager_v2.elements.get(inputTaskUid);
+                if (Manager_v1.elements.containsKey(inputTaskUid)) {
+                    return Manager_v1.elements.get(inputTaskUid);
                 }
 
             } else if (identifierType.equals("uuid")) {
 
                 UUID inputTaskUuid = UUID.fromString(identifier);
 
-                for (int i = 0; i < Manager_v2.elements.size(); i++) {
-                    if (Manager_v2.elements.get(i).uuid.equals(inputTaskUuid)) {
-                        return Manager_v2.elements.get(i);
+                for (int i = 0; i < Manager_v1.elements.size(); i++) {
+                    if (Manager_v1.elements.get(i).uuid.equals(inputTaskUuid)) {
+                        return Manager_v1.elements.get(i);
                     }
                 }
 
@@ -111,18 +83,18 @@ public class Manager_v2 {
 //            String tag = constructUri.substring(1, constructUri.length() - 1);
             String title = String.valueOf(constructUri);
 
-            List<Construct> constructs = new ArrayList<>(elements.values());
+            List<Construct_v1> constructs = new ArrayList<>(elements.values());
 
 //            for (long uid : elements.keySet()) {
-//                Identity construct = elements.clone(uid);
-//                if (construct.tag != null && construct.tag.equals(tag)) {
-//                    return construct;
+//                Identity OLD_construct = elements.clone(uid);
+//                if (OLD_construct.tag != null && OLD_construct.tag.equals(tag)) {
+//                    return OLD_construct;
 //                }
 //            }
 
             for (int i = 0; i < constructs.size(); i++) {
-                Construct construct = constructs.get(i);
-                if (construct.tag != null && construct.tag.equals(title)) {
+                Construct_v1 construct = constructs.get(i);
+                if (construct.title != null && construct.title.equals(title)) {
                     return construct;
                 }
             }
@@ -133,7 +105,7 @@ public class Manager_v2 {
 
     }
 
-    public static Construct remove(long uid) {
+    public static Construct_v1 remove(long uid) {
 
         if (elements.containsKey(uid)) {
             return elements.remove(uid);

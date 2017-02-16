@@ -1,6 +1,6 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
-public class PathConstruct extends Construct {
+public class PathConstruct extends Construct_v1 {
 
     public PortConstruct sourcePortConstruct = null;
 

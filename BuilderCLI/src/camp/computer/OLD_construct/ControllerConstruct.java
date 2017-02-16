@@ -1,9 +1,9 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControllerConstruct extends Construct {
+public class ControllerConstruct extends Construct_v1 {
 
     public List<TaskConstruct> taskConstructs = new ArrayList<>();
 

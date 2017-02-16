@@ -1,6 +1,6 @@
-package camp.computer.construct;
+package camp.computer.OLD_construct;
 
-public class ScriptConstruct extends Construct {
+public class ScriptConstruct extends Construct_v1 {
 
     // (task (rev0, rev1, rev2, ..., revN))
 

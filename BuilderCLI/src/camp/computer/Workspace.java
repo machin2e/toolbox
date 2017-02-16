@@ -3,14 +3,14 @@ package camp.computer;
 import java.util.ArrayList;
 import java.util.List;
 
-import camp.computer.construct.Construct;
-import camp.computer.construct.ControllerConstruct;
-import camp.computer.construct.DeviceConstruct;
-import camp.computer.construct.OperationConstruct;
-import camp.computer.construct.PathConstruct;
-import camp.computer.construct.PortConstruct;
-import camp.computer.construct.ProjectConstruct;
-import camp.computer.construct.TaskConstruct;
+import camp.computer.OLD_construct.Construct_v1;
+import camp.computer.OLD_construct.ControllerConstruct;
+import camp.computer.OLD_construct.DeviceConstruct;
+import camp.computer.OLD_construct.OperationConstruct;
+import camp.computer.OLD_construct.PathConstruct;
+import camp.computer.OLD_construct.PortConstruct;
+import camp.computer.OLD_construct.ProjectConstruct;
+import camp.computer.OLD_construct.TaskConstruct;
 
 /**
  * A {@code Workspace} is provided to the user by default and defines a namespace in which the user creates their
@@ -19,7 +19,7 @@ import camp.computer.construct.TaskConstruct;
  * <p>
  * TODO: Consider modeling the Inventory's Items, Notebook's Notes as a list.
  */
-public class Workspace extends Construct {
+public class Workspace extends Construct_v1 {
 
     // TODO: Reference to User/Account that owns the Workspace.
 
@@ -29,11 +29,11 @@ public class Workspace extends Construct {
 
     // TODO: MOVE BELOW INTO INTERPRETER!!!
     // <CONTEXT>
-    Construct construct = null;
+    Construct_v1 construct = null;
 
     OperationConstruct operationConstruct = null;
 
-    // Automatically updated each time a construct is created.
+    // Automatically updated each time a OLD_construct is created.
     ProjectConstruct lastProjectConstruct = null;
     DeviceConstruct lastDeviceConstruct = null;
     PortConstruct lastPortConstruct = null;

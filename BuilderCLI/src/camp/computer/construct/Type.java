@@ -1,14 +1,14 @@
-package camp.computer.construct_v2;
+package camp.computer.construct;
 
 import java.util.HashMap;
 
 public class Type {
 
-    // TODO: Store Type identifiers in Manager
-    // TODO: Consider using static Type interface to wrap interface to Manager for Type-specific operations
+    // TODO: Store Type identifiers in Manager_v1
+    // TODO: Consider using static Type interface to wrap interface to Manager_v1 for Type-specific operations
     private static HashMap<String, Type> identifiers = new HashMap<>();
 
-    public String identifier = null; // type identifier of construct
+    public String identifier = null; // type identifier of OLD_construct
 
     private Type(String identifier) {
         this.identifier = identifier;
