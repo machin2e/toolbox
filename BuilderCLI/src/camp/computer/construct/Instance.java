@@ -47,40 +47,39 @@ public class Instance extends Construct {
         return null;
     }
 
+    // If listType is "any", allow anything to go in the list
+    // if listType is "text", only allow text to be placed in the list
+    // if listType is specific "text" values, only allow those values in the list
     public void set(String tag, Object content) {
         if (contents.containsKey(tag)) {
             if (contents.get(tag).type == Type.get("none")) {
                 // TODO: Can't assign anything to the feature content
+                System.out.println("Error: Cannot assign feature with type 'none'.");
             } else if (contents.get(tag).type == Type.get("any")) {
                 // TODO: Verify that this is correct!
                 contents.get(tag).content = content;
             } else if (contents.get(tag).type == Type.get("list")) {
                 List contentList = (List) contents.get(tag).content;
-                // TODO: Check type of list contents and restrict to the type (or any if "any")
 
+                // TODO: Check type of list contents and restrict to the type (or any if "any")
                 // TODO: If specific text tokens are allowed AS WELL AS text construct, text construct subsumes the tokens and the tokens are not included in the domain
 
-                // If listType is "any", allow anything to go in the list
-                // if listType is "text", only allow text to be placed in the list
-                // if listType is specific "text" values, only allow those values in the list
-
                 if (contents.get(tag).listType == Type.get("text")) {
-                    // Validate String
-                    boolean isTextValid = true;
-                    String textContent = (String) content;
-                    if (!textContent.startsWith("'") || !textContent.endsWith("'")) {
-                        isTextValid = false;
-                    }
-                    if (isTextValid) {
+                    if (Content.isText((String) content)) {
                         contentList.add(content);
                     } else {
-                        System.out.println("Error: Cannot assign non-text to text feature.");
+                        System.out.println("Error: Cannot add non-text to list (only can contain text).");
                     }
                 } else if (contents.get(tag).listType == Type.get("construct")) {
+                    // TODO: Determine if the construct content is allowed into the list based on the specific type!
                     contentList.add(content);
                 }
             } else if (contents.get(tag).type == Type.get("text")) {
-                contents.get(tag).content = (String) content;
+                if (Content.isText((String) content)) {
+                    contents.get(tag).content = (String) content;
+                } else {
+                    System.out.println("Error: Cannot assign non-text to text feature.");
+                }
             } else {
                 contents.get(tag).content = content;
             }

@@ -6,7 +6,8 @@ import java.util.List;
 public class Content {
 
     // Content Type
-    public Type type = null;
+//    public Type type = null;
+    public List<String> type = new ArrayList<>(); // if size == 0, then unconstrained!
 
     /**
      * {@code tag} is a {@code String} that uniquely identifies the {@code Variable} in the
@@ -47,6 +48,18 @@ public class Content {
             this.contentType = Instance.class;
         }
 
+    }
+
+    public static boolean isText(String featureContent) {
+        if (!featureContent.startsWith("'") || !featureContent.endsWith("'")) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isConstruct(String featureContent) {
+        // TODO:
+        return false;
     }
 
 }

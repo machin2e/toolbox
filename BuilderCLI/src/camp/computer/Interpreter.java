@@ -79,10 +79,6 @@ public class Interpreter {
 
     }
 
-    public void interpretLine(String inputLine) {
-        interpretLine_v2(inputLine);
-    }
-
     enum ContextType {
         NONE,
         CONSTRUCT,
@@ -91,9 +87,9 @@ public class Interpreter {
 
     ContextType currentContextType = ContextType.NONE;
     Identity currentIdentity = null;
-    camp.computer.construct.Instance currentInstance = null;
+    Instance currentInstance = null;
 
-    public void interpretLine_v2(String inputLine) {
+    public void interpretLine(String inputLine) {
 
         // <SANITIZE_INPUT>
         if (inputLine.contains("#")) {
@@ -122,18 +118,28 @@ public class Interpreter {
 
             if (context.inputLine.startsWith("import file")) {
                 importFileTask(context);
-            } else if (context.inputLine.startsWith("new")) {
+            } else if (context.inputLine.startsWith("describe")) { // "new"
                 newTask(context);
             } else if (context.inputLine.startsWith("has")) {
                 hasTask(context);
             } else if (context.inputLine.startsWith("let")) {
                 letTask(context);
-            } else if (context.inputLine.startsWith("add")) {
+            } else if (context.inputLine.startsWith("new")) {
                 addTask(context);
             } else if (context.inputLine.startsWith("set")) {
                 setTask(context);
             } else if (context.inputLine.startsWith("get")) {
                 getTask(context);
+            } else {
+                // TODO: Validate string as valid construct instance identifier.
+                if (context.inputLine.contains("(")) {
+                    String typeTag = context.inputLine.substring(0, context.inputLine.indexOf("("));
+
+                    if (Type.has(typeTag)) {
+                        System.out.println("TODO: lookup " + typeTag + " with <UUID>");
+                        // TODO: Lookup identifier
+                    }
+                }
             }
         }
 
