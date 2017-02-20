@@ -16,14 +16,14 @@ public abstract class Construct_v1 {
 
     public String type = DEFAULT_CONSTRUCT_TYPE; // type identifier of OLD_construct
 
-    public String title = null; // label/tag(s)
+    public String title = null; // label/identifier(s)
 
     // string => String
     // list => ArrayList<?>
     // list of type Type => ArrayList<Type>
-    public HashMap<String, Feature<?>> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+    public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
-    // HashMap<String, List<Identity>> constructs;
+    // HashMap<String, List<Concept>> constructs;
 
     /*
     public List<PortConstruct> portConstructs = new ArrayList<>();
@@ -46,8 +46,8 @@ public abstract class Construct_v1 {
     */
 
     // TODO: type (generic type identifier so can use single OLD_construct)
-    // TODO: HashMap<?> features (can be Identity or other values)
-    // Identity (Prototype) -> Container (must specify type or is anonymous) -> Container Revision
+    // TODO: HashMap<?> features (can be Concept or other values)
+    // Concept (Prototype) -> Container (must specify type or is anonymous) -> Container Revision
 
     // Structure/Links:
     // TODO: parent
@@ -59,7 +59,7 @@ public abstract class Construct_v1 {
     // TODO: nextVersions (maybe just use previousVersion)
 
     // TODO: features/features/properties/states
-    // TODO: configuration(s) : assign state to multiple features <-- do this for _Container_ not Identity
+    // TODO: configuration(s) : assign state to multiple features <-- do this for _Container_ not Concept
 
 
     public Construct_v1() {

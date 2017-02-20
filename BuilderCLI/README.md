@@ -18,7 +18,7 @@ edit port
 
 list attributes
 
-list attribute <tag>
+list attribute <identifier>
 
 ## Compatible Configurations
 

@@ -15,7 +15,7 @@
 # Path: path-a-uid.configuration < mode:power;direction:input;voltage:common & path-b-uid.configuration < mode:power;direction:output;voltage:common
 
 # TODO: Save serial format of [ ] port; [ ] device; [ ] path; [ ] project; [ ] workspace
-# edit project 1 device 3 port 4 # sets identity: port 4
+# edit project 1 device 3 port 4 # sets concept: port 4
 # edit device
 # edit device 3 configuration
 
@@ -34,14 +34,14 @@
 
 # TODO: view project <uid>
 
-# TODO: store last used identity of type X
+# TODO: store last used concept of type X
 # TODO: 1. when first create it
-# TODO: 2. when switching editor focus from current identity type X to _another_ identity type Y (updates last identity of X and Y)
+# TODO: 2. when switching editor focus from current concept type X to _another_ concept type Y (updates last concept of X and Y)
 
-# TODO: user identity that provides a "home" (workspace) container for the user. Their stuff goes in there.
+# TODO: user concept that provides a "home" (workspace) container for the user. Their stuff goes in there.
 
 # add project "MyProjectTitle!"
-# add <identity-tag>
+# add <concept-identifier>
 
 # add device "Clay"
 
@@ -75,7 +75,7 @@
 
 ##########
 
-# new project # Anonymous identity!
+# new project # Anonymous concept!
 # del project
 # create project
 # delete project
@@ -119,8 +119,8 @@
 # OPTION 2: set configuration digital;output;ttl
 # OPTION 3: set configuration mode:digital;direction:output;voltage:ttl
 
-# TODO: configuration --> specification/constraint :::: AVAILABLE CONFIGURATIONS (of identity)
-# TODO: configuration is STATE (of identity)
+# TODO: configuration --> specification/constraint :::: AVAILABLE CONFIGURATIONS (of concept)
+# TODO: configuration is STATE (of concept)
 
 
 
@@ -138,7 +138,7 @@
 # add device (12 ports) --> unpacks to add device; add port; ... (12 total)
 # add device (2 ports)
 
-# TODO: "edit port" to select the last-created identity
+# TODO: "edit port" to select the last-created concept
 #           --OR-- "edit device <uid>"
 #           --OR-- "edit device <uuid>"
 #           --OR-- "edit device <index>"
@@ -149,7 +149,7 @@
 # TODO: store index (relative to container); per-session workspace UID (ephemeral); UUID (persistent, for persisting configurations, identities, etc.)
 # TODO: test "import file <filename>" from within a file, and try nesting file hierarchies...
 # TODO: save/load workspace (.build file)
-# TODO: update "edit" to refer to just one identity, not one of each tag of identity
+# TODO: update "edit" to refer to just one concept, not one of each identifier of concept
 # TODO: represent/infer "dependencies" based on configuration options---for use in IASM
 
 
@@ -215,7 +215,7 @@ add path device 1 port 3 device 14 port 15
 
 
 
-// TODO: label/tag (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.
+// TODO: label/identifier (i.e., "VCC", "AREF", "GND", "A0", "Port 3", "3", etc.
 
 // TODO: List of (portConfiguration string, INPUT | OUTPUT | IO, 0V | 3.3V | 5V – or range) + path constraint/relation resolver/arithmetic
 

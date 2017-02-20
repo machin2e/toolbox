@@ -3,27 +3,30 @@
 ## Construct Identity
 
 new port
-has text
-has text : text
-has text text : text
+has text => infers type 'text'
+has text : text => infers type 'text' from constraint list and accepts any text assignment
+    * has text text : text => INVALID?
 	* has f1 => type should be ALL
 has f2 text
 has f3 : 'foo'
-has f4 : 'foo', 'bar'
+has f4 : 'foo', 'bar' => f4 infers type 'text' and limits domain to 'foo' and 'bar'
 has f5 text : 'foo'
 has f6 text : 'foo', 'bar'
-	* has f7 text : foo => undefined type
+	* has f7 text : foo => ERROR: undefined type
 has f8 text : port
-has f9 text : text
+    * has f9 text : text => INVALID?
 
 has f10 list
 has f11 : list
-? has f12 list : list => f12 list contains lists
+    ? has f12 list : list => f12 list contains lists
 has f13 list : port
 has f14 list : text
 has f15 list : 'foo'
-? has f16 list : 'foo', 'bar'
-has f17 list : 'foo', port
+has f16 list : 'foo', 'bar'
+has f17 list : 'foo', port => infers listTypes TEXT and PORT, text domain 'foo'
+    * has f-18 list : port(uuid:<uuid>), port(uuid:<uuid>)
+    
+*NOTE*: ':' symbol means "can be assigned" for non-list types and accepts examples/literals; and "can contain" for list and accepts both identifier types and examples/literals, inferring types
 
 	* has list
 has port list

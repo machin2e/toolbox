@@ -24,10 +24,10 @@ public class Manager_v1 {
         // edit port(uid:25)         # _global_ lookup by UID
         // edit port(uuid:<uuid>)    # _global_ lookup by UUID
         // edit port(1)              # _relative_ lookup list item by index
-        // edit my-OLD_construct-tag     # _global?_ lookup by tag
+        // edit my-OLD_construct-identifier     # _global?_ lookup by identifier
         // edit :device(1):port(1)   # explicit "full path" lookup prefixed by ":" indicating "from workspace..."
         //
-        // edit port(my-tag)              # _relative_ lookup list item by list tag and element tag?
+        // edit port(my-identifier)              # _relative_ lookup list item by list identifier and element identifier?
         // edit port                # lookup by property label
 
 //        if (address.startsWith("port")) {
@@ -80,14 +80,14 @@ public class Manager_v1 {
 
         } else {
 
-//            String tag = constructUri.substring(1, constructUri.length() - 1);
+//            String identifier = constructUri.substring(1, constructUri.length() - 1);
             String title = String.valueOf(constructUri);
 
             List<Construct_v1> constructs = new ArrayList<>(elements.values());
 
 //            for (long uid : elements.keySet()) {
-//                Identity OLD_construct = elements.clone(uid);
-//                if (OLD_construct.tag != null && OLD_construct.tag.equals(tag)) {
+//                Concept OLD_construct = elements.clone(uid);
+//                if (OLD_construct.identifier != null && OLD_construct.identifier.equals(identifier)) {
 //                    return OLD_construct;
 //                }
 //            }

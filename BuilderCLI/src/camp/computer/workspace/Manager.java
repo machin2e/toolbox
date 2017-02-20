@@ -6,42 +6,56 @@ import java.util.List;
 import java.util.UUID;
 
 import camp.computer.construct.Construct;
+import camp.computer.construct.Identifier;
+import camp.computer.construct.Type;
 
 public class Manager {
 
     public static long elementCounter = 0L;
 
-//    private static HashMap<Long, Identity> elements = new HashMap<>();
-    private static HashMap<Long, Construct> elements = new HashMap<>();
+//    private static HashMap<Long, Concept> elements = new HashMap<>();
+    private static HashMap<Long, Identifier> elements = new HashMap<>();
 
-    public static long add(Construct construct) {
+    public static long add(Identifier identifier) {
         long uid = Manager.elementCounter++;
-        construct.uid = uid;
-        Manager.elements.put(uid, construct);
+        identifier.uid = uid;
+        Manager.elements.put(uid, identifier);
         return uid;
     }
 
-    public static List<Construct> get() {
+    public static List<Identifier> get() {
         return new ArrayList<>(elements.values());
     }
 
-    public static <T extends Construct> List<T> get(Class classType) {
+    public static <T extends Identifier> List<T> get(Class classType) {
         List<T> constructList = new ArrayList<>();
-        for (Construct construct : elements.values()) {
-            if (construct.getClass() == classType) {
-                constructList.add((T) construct);
+        for (Identifier identifier : elements.values()) {
+            if (identifier.getClass() == classType) {
+                constructList.add((T) identifier);
             }
         }
         return constructList;
     }
 
-//    public static Identity add(long uid) {
-    public static Construct get(long uid) {
+//    public static Concept add(long uid) {
+    public static Identifier get(long uid) {
         return elements.get(uid);
     }
 
-//    public static Identity add(String constructUri) {
-    public static Construct get(String constructUri) {
+    public static List<Construct> getConstructList(Type type) {
+        List<Construct> constructList = new ArrayList<>();
+        for (Identifier identifier : elements.values()) {
+            if (identifier.getClass() == Construct.class) {
+                if (((Construct) identifier).type == type) {
+                    constructList.add((Construct) identifier);
+                }
+            }
+        }
+        return constructList;
+    }
+
+//    public static Concept add(String constructUri) {
+    public static Identifier get(String constructUri) {
 
         // Parse:
         // 3
@@ -52,10 +66,10 @@ public class Manager {
         // edit port(uid:25)         # _global_ lookup by UID
         // edit port(uuid:<uuid>)    # _global_ lookup by UUID
         // edit port(1)              # _relative_ lookup list item by index
-        // edit my-OLD_construct-tag     # _global?_ lookup by tag
+        // edit my-OLD_construct-identifier     # _global?_ lookup by identifier
         // edit :device(1):port(1)   # explicit "full path" lookup prefixed by ":" indicating "from workspace..."
         //
-        // edit port(my-tag)              # _relative_ lookup list item by list tag and element tag?
+        // edit port(my-identifier)              # _relative_ lookup list item by list identifier and element identifier?
         // edit port                # lookup by property label
 
 //        if (address.startsWith("port")) {
@@ -108,22 +122,22 @@ public class Manager {
 
         } else {
 
-//            String tag = constructUri.substring(1, constructUri.length() - 1);
+//            String identifier = constructUri.substring(1, constructUri.length() - 1);
             String title = String.valueOf(constructUri);
 
-            List<Construct> constructs = new ArrayList<>(elements.values());
+            List<Identifier> identifiers = new ArrayList<>(elements.values());
 
 //            for (long uid : elements.keySet()) {
-//                Identity OLD_construct = elements.clone(uid);
-//                if (OLD_construct.tag != null && OLD_construct.tag.equals(tag)) {
+//                Concept OLD_construct = elements.clone(uid);
+//                if (OLD_construct.identifier != null && OLD_construct.identifier.equals(identifier)) {
 //                    return OLD_construct;
 //                }
 //            }
 
-            for (int i = 0; i < constructs.size(); i++) {
-                Construct construct = constructs.get(i);
-                if (construct.tag != null && construct.tag.equals(title)) {
-                    return construct;
+            for (int i = 0; i < identifiers.size(); i++) {
+                Identifier identifier = identifiers.get(i);
+                if (identifier.tag != null && identifier.tag.equals(title)) {
+                    return identifier;
                 }
             }
 
@@ -133,7 +147,7 @@ public class Manager {
 
     }
 
-    public static Construct remove(long uid) {
+    public static Identifier remove(long uid) {
 
         if (elements.containsKey(uid)) {
             return elements.remove(uid);

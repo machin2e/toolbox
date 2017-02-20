@@ -8,7 +8,7 @@ public class Type {
     // TODO: Consider using static Type interface to wrap interface to Manager_v1 for Type-specific operations
     private static HashMap<String, Type> identifiers = new HashMap<>();
 
-    public String identifier = null; // type identifier of OLD_construct
+    public String identifier = null; // type identifier of construct
 
     private Type(String identifier) {
         this.identifier = identifier;

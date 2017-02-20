@@ -1,4 +1,4 @@
-package camp.computer.commons_culture;
+package camp.computer.community;
 
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ public class Repository {
     // TODO: Load repository content from file/Redis!
 
     // Represents the "public" assets repository.
-    // Refactor Identity into generic one and allow making custom types
+    // Refactor Concept into generic one and allow making custom types
     // Stream in content for revisions, etc. into same OLD_construct. It's a container for content that changes per-revision.
 
     public static Construct_v1 clone(UUID uuid) { // add/clone/branch
