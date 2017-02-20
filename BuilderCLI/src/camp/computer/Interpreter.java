@@ -18,9 +18,9 @@ import camp.computer.OLD_construct.ScriptConstruct;
 import camp.computer.OLD_construct.TaskConstruct;
 import camp.computer.construct.Concept;
 import camp.computer.construct.Construct;
-import camp.computer.construct.Content;
 import camp.computer.construct.Feature;
 import camp.computer.construct.Identifier;
+import camp.computer.construct.State;
 import camp.computer.construct.Type;
 import camp.computer.data.format.configuration.Configuration;
 import camp.computer.data.format.configuration.Variable;
@@ -774,7 +774,7 @@ public class Interpreter {
                     currentConstruct.add(featureIdentifier, featureContentToken);
 
                     System.out.print(featureIdentifier + " : ");
-                    List list = (List) currentConstruct.contents.get(featureIdentifier).state.content;
+                    List list = (List) currentConstruct.states.get(featureIdentifier).content;
                     for (int i = 0; i < list.size(); i++) {
                         System.out.print(list.get(i));
                         if ((i + 1) < list.size()) {
@@ -859,8 +859,8 @@ public class Interpreter {
 
             if (construct != null) {
                 System.out.println(Application.ANSI_BLUE + construct.type.identifier + Application.ANSI_RESET);
-                for(String featureIdentifier : construct.contents.keySet()) {
-                    System.out.println(Application.ANSI_GREEN + construct.contents.get(featureIdentifier).identifier + Application.ANSI_RESET + " " + Application.ANSI_BLUE + construct.contents.get(featureIdentifier).type + Application.ANSI_RESET);
+                for(String featureIdentifier : construct.features.keySet()) {
+                    System.out.println(Application.ANSI_GREEN + construct.features.get(featureIdentifier).identifier + Application.ANSI_RESET + " " + Application.ANSI_BLUE + construct.features.get(featureIdentifier).type + Application.ANSI_RESET);
                     // TODO: print current content type; print available feature types
                 }
             }
@@ -876,25 +876,25 @@ public class Interpreter {
             String[] inputLineTokens = context.inputLine.split("[ ]+");
 
             // Defaults
-            String instanceTagToken = null;
+            String featureToken = null;
 
             // Determine identifier
             if (inputLineTokens.length >= 2) {
 
                 // Determine identifier
-                instanceTagToken = inputLineTokens[1];
+                featureToken = inputLineTokens[1];
 
                 // Determine feature
 //                String featureContentToken = inputLineTokens[2];
 
                 // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
 
-                Content content = currentConstruct.get(instanceTagToken);
+                State state = currentConstruct.states.get(featureToken);
 
-                if (content.state != null && content.state.type == Type.get("text")) {
-                    System.out.println("" + ((String) content.state.content));
-                } else if (content.state != null && content.state.type == Type.get("text")) {
-                    List contentList = (List) content.state.content;
+                if (state != null && state.type == Type.get("text")) {
+                    System.out.println("" + ((String) state.content));
+                } else if (state != null && state.type == Type.get("text")) {
+                    List contentList = (List) state.content;
                     for (int i = 0; i < contentList.size(); i++) {
                         // TODO: Possibly use Content object for values to pair type with content (like little "files with extensions")?
 //                        if (contentList.get(i).type == Type.get("text")) {

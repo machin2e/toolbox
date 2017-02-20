@@ -11,7 +11,8 @@ public class Construct extends Identifier {
 
     public Type type = null;
 
-    public HashMap<String, Content> contents = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+//    public HashMap<String, Content> contents = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+    public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
     public HashMap<String, State> states = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
     // TODO: configuration(s) : assign state to multiple features <-- do this for _Container_ not Concept
@@ -22,8 +23,13 @@ public class Construct extends Identifier {
 
         // Create Content for each Feature
         for (Feature feature : concept.features.values()) {
-            Content content = new Content(feature);
-            contents.put(content.identifier, content);
+//            Content content = new Content(feature);
+            features.put(feature.identifier, feature);
+            if (feature.type.size() == 1) {
+                states.put(feature.identifier, new State(feature.type.get(0))); // Initialize with only available type if there's only one available
+            } else {
+                states.put(feature.identifier, null); // Default to "any" type by setting null
+            }
         }
 
     }
@@ -42,32 +48,33 @@ public class Construct extends Identifier {
     // if listType is "text", only allow text to be placed in the list
     // if listType is specific "text" values, only allow those values in the list
     public void set(String tag, Object content) {
-        if (contents.containsKey(tag)) {
+        if (features.containsKey(tag)) {
 
-            Type contentType = Content.getType((String) content);
-            Content featureContent = contents.get(tag);
+            Type contentType = Feature.getType((String) content);
+            Feature featureContent = features.get(tag);
             if (featureContent.type.contains(contentType)) {
+                State state = states.get(tag);
 
                 if (contentType == Type.get("none")) {
 
                     // Remove the type of the stored content
-                    if (featureContent.state == null) {
-                        featureContent.state = new State(contentType);
-                    } else if (featureContent.state.type != contentType) {
+                    if (state == null) {
+                        state = new State(contentType);
+                    } else if (state.type != contentType) {
 //                        featureContent.contentType = null;
 //                        featureContent.content = null;
-                        featureContent.state = new State(contentType);
+                        state = new State(contentType);
                     }
 
                 } else if (contentType == Type.get("list")) {
 
                     // Change the type of the stored content if it is not a list
-                    if (featureContent.state == null) {
-                        featureContent.state = new State(contentType);
-                    } else if (featureContent.state.type != contentType) {
+                    if (state == null) {
+                        state = new State(contentType);
+                    } else if (state.type != contentType) {
 //                        featureContent.contentType = List.class;
 //                        featureContent.content = new ArrayList<>();
-                        featureContent.state = new State(contentType);
+                        state = new State(contentType);
                     }
 
                     // Update the content
@@ -75,17 +82,17 @@ public class Construct extends Identifier {
                 } else if (contentType == Type.get("text")) {
 
                     // Change the type of the stored content if it is not a string (for text)
-                    if (featureContent.state == null) {
-                        featureContent.state = new State(contentType);
-                    } else if (featureContent.state.type != contentType) {
+                    if (state == null) {
+                        state = new State(contentType);
+                    } else if (state.type != contentType) {
 //                        featureContent.contentType = String.class;
 //                        featureContent.content = null;
-                        featureContent.state = new State(contentType);
+                        state = new State(contentType);
                     }
 
 //                    if (Content.isText((String) content)) {
                     if (featureContent.domain == null || featureContent.domain.contains((String) content)) {
-                        contents.get(tag).state.content = (String) content;
+                        state.content = (String) content;
                     } else {
                         System.out.println("Error: Specified text is not in the feature's domain.");
                     }
@@ -142,38 +149,39 @@ public class Construct extends Identifier {
         }
     }
 
-    public Content get(String tag) {
-        if (contents.containsKey(tag)) {
-            return contents.get(tag);
+    public Feature get(String tag) {
+        if (features.containsKey(tag)) {
+            return features.get(tag);
         }
         return null;
     }
 
     // TODO: add <list-feature-identifier> : <content>
     public void add(String tag, Object content) {
-        if (contents.containsKey(tag)) {
-            Content featureContent = contents.get(tag);
+        if (features.containsKey(tag)) {
+            Feature feature = features.get(tag);
+            State state = states.get(tag);
 
             // Check if feature can be a list
-            if (!featureContent.type.contains(Type.get("list"))) {
+            if (!feature.type.contains(Type.get("list"))) {
                 System.out.println("Error: Cannot add to a non-list.");
                 return;
             }
 
             // Check if feature is currently configured as a list
-            if (featureContent.state.type != Type.get("list")) {
+            if (state.type != Type.get("list")) {
                 // Change the type of the stored content if it is not a list
-                if (featureContent.state == null) {
-                    featureContent.state = new State(Type.get("list"));
-                } else if (featureContent.state.type != Type.get("list")) {
-                    featureContent.state = new State(Type.get("list"));
+                if (state == null) {
+                    state = new State(Type.get("list"));
+                } else if (state.type != Type.get("list")) {
+                    state = new State(Type.get("list"));
                 }
             }
 
             // Add the content to the list
-            Type contentType = Content.getType((String) content);
+            Type contentType = Feature.getType((String) content);
             if (contentType != null
-                    && (featureContent.listTypes == null || featureContent.listTypes.contains(contentType))) {
+                    && (feature.listTypes == null || feature.listTypes.contains(contentType))) {
 
                 if (contentType == Type.get("none")) {
 
@@ -189,12 +197,12 @@ public class Construct extends Identifier {
                 } else if (contentType == Type.get("list")) {
 
                     // Change the type of the stored content if it is not a list
-                    if (featureContent.state == null) {
-                        featureContent.state = new State(contentType);
-                    } else if (featureContent.state.type != contentType) {
+                    if (state == null) {
+                        state = new State(contentType);
+                    } else if (state.type != contentType) {
 //                        featureContent.contentType = List.class;
 //                        featureContent.content = new ArrayList<>();
-                        featureContent.state = new State(contentType);
+                        state = new State(contentType);
                     }
 
                     // Update the content
@@ -211,8 +219,8 @@ public class Construct extends Identifier {
 //                    }
 
 //                    if (Content.isText((String) content)) {
-                    if (featureContent.domain == null || featureContent.domain.contains((String) content)) {
-                        List list = (List) featureContent.state.content;
+                    if (feature.domain == null || feature.domain.contains((String) content)) {
+                        List list = (List) state.content;
 //                        contents.get(tag).state.content = (String) content;
                         list.add(content);
                     } else {

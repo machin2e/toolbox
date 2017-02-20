@@ -39,4 +39,37 @@ public class Feature {
         this.identifier = identifier;
     }
 
+    // 'text'
+    // text('text')
+    // port(uid:<uid>)
+    // port(uuid:<uid>)
+    // device(uid:<uid>)
+    // device(uuid:<uid>)
+    public static Type getType(String content) {
+
+        if (content.startsWith("'") && content.endsWith("'")) {
+            return Type.get("text");
+        } else if (content.contains("(") && content.contains(")")) {
+            String typeTag = content.substring(0, content.indexOf("("));
+            if (Type.has(typeTag)) {
+                // TODO: Check if specified construct exists
+                return Type.get(typeTag);
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean isText(String featureContent) {
+        if (!featureContent.startsWith("'") || !featureContent.endsWith("'")) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isConstruct(String featureContent) {
+        // TODO:
+        return false;
+    }
+
 }
