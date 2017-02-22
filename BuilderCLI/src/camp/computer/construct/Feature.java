@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * An {@code VariableValueSet} stores a list of identifier values for a specified identifier identified by its unique label.
  */
-public class Feature {
+public class Feature extends Identifier {
 
     // identifier/key: string
     // type: string, list, construct-name
@@ -22,7 +22,7 @@ public class Feature {
     public List<Type> type = new ArrayList<>(); // if size == 0, then unconstrained!
 
     // Content Domain (contains Identifier Types and Identifier Content)
-    // NOTE: This only ever contains "text content" or references to specific constructs
+    // NOTE: This only ever contains "text objectInstance" or references to specific constructs
     public List<String> domain; // if size == 0, then 'none'! if null, then 'any'!
     // TODO: Create a separate feature domain for each type in featureType
 

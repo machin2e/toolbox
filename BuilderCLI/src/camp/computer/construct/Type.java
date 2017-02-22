@@ -1,8 +1,12 @@
 package camp.computer.construct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Type {
+import camp.computer.workspace.Manager;
+
+public class Type extends Identifier {
 
     // TODO: Store Type identifiers in Manager_v1
     // TODO: Consider using static Type interface to wrap interface to Manager_v1 for Type-specific operations
@@ -20,12 +24,17 @@ public class Type {
         } else {
             Type type = new Type(identifier);
             Type.identifiers.put(identifier, type);
+            long uid = Manager.add(type);
             return type;
         }
     }
 
     public static boolean has(String identifier) {
         return Type.identifiers.containsKey(identifier);
+    }
+
+    public static List<Type> get() {
+        return new ArrayList<>(Type.identifiers.values());
     }
 
     public static Type get(String identifier) {

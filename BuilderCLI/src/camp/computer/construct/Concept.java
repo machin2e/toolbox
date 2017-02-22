@@ -9,9 +9,6 @@ public class Concept extends Identifier {
 
     public Type type = null;
 
-    // string => String
-    // list => ArrayList<?>
-    // list of type Type => ArrayList<Type>
     public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
     // TODO: configuration(s) : assign state to multiple features <-- do this for _Container_ not Concept
@@ -49,7 +46,7 @@ public class Concept extends Identifier {
     }
 
     /**
-     * Returns true of a OLD_construct has been defined with the specified {@code identifier}.
+     * Returns true of a construct has been defined with the specified {@code identifier}.
      *
      * @param type
      * @return True
@@ -63,31 +60,5 @@ public class Concept extends Identifier {
         }
         return false;
     }
-
-//    public static Concept add(String identifier) {
-//        if (!has(identifier)) {
-//            Concept OLD_construct = new Concept();
-//            OLD_construct.type = identifier;
-//            long uid = Manager.add(OLD_construct);
-//            return OLD_construct;
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Returns true of a OLD_construct has been defined with the specified {@code identifier}.
-//     *
-//     * @param identifier
-//     * @return True
-//     */
-//    public static boolean has(String identifier) {
-//        List<Concept> constructList = Manager.add();
-//        for (int i = 0; i < constructList.size(); i++) {
-//            if (constructList.add(i).type.equals(identifier)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 }
