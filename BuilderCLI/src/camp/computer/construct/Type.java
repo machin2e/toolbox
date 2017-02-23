@@ -37,12 +37,49 @@ public class Type extends Identifier {
         return new ArrayList<>(Type.identifiers.values());
     }
 
-    public static Type get(String identifier) {
-        if (Type.identifiers.containsKey(identifier)) {
-            return Type.identifiers.get(identifier);
+    // Type identifiers:
+    // text
+    // port
+    //
+    // State expressions:
+    // 'my text content'
+    // text('my text content')
+    // port(id:<uid>)
+    // port(uuid:<uuid>)
+    // device(id:<uid>)
+    // device(uuid:<uuid>)
+    public static Type get(String expression) {
+        if (Type.identifiers.containsKey(expression)) {
+            return Type.identifiers.get(expression);
+        } else if (expression.startsWith("'") && expression.endsWith("'")) { // TODO: Update with regex match
+            return Type.get("text");
+        } else if (expression.contains("(") && expression.contains(")")) { // TODO: update with regex match
+            String typeTag = expression.substring(0, expression.indexOf("("));
+            if (Type.identifiers.containsKey(typeTag)) {
+                return Type.identifiers.get(typeTag);
+            }
+//            if (Type.has(typeTag)) {
+//                // TODO: Check if specified construct exists
+//                return Type.get(typeTag);
+//            }
         }
         return null;
     }
+
+//    public static Type getType(String expression) {
+//
+//        if (expression.startsWith("'") && expression.endsWith("'")) {
+//            return Type.get("text");
+//        } else if (expression.contains("(") && expression.contains(")")) {
+//            String typeTag = expression.substring(0, expression.indexOf("("));
+//            if (Type.has(typeTag)) {
+//                // TODO: Check if specified construct exists
+//                return Type.get(typeTag);
+//            }
+//        }
+//
+//        return null;
+//    }
 
     @Override
     public String toString() {

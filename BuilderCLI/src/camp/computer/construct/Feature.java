@@ -23,7 +23,7 @@ public class Feature extends Identifier {
 
     // Content Domain (contains Identifier Types and Identifier Content)
     // NOTE: This only ever contains "text objectInstance" or references to specific constructs
-    public List<String> domain; // if size == 0, then 'none'! if null, then 'any'!
+    public List<State> domain; // if size == 0, then 'none'! if null, then 'any'!
     // TODO: Create a separate feature domain for each type in featureType
 
     /**
@@ -37,27 +37,6 @@ public class Feature extends Identifier {
 
     public Feature(String identifier) {
         this.identifier = identifier;
-    }
-
-    // 'text'
-    // text('text')
-    // port(uid:<uid>)
-    // port(uuid:<uid>)
-    // device(uid:<uid>)
-    // device(uuid:<uid>)
-    public static Type getType(String content) {
-
-        if (content.startsWith("'") && content.endsWith("'")) {
-            return Type.get("text");
-        } else if (content.contains("(") && content.contains(")")) {
-            String typeTag = content.substring(0, content.indexOf("("));
-            if (Type.has(typeTag)) {
-                // TODO: Check if specified construct exists
-                return Type.get(typeTag);
-            }
-        }
-
-        return null;
     }
 
     public static boolean isText(String featureContent) {

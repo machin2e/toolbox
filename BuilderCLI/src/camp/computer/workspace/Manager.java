@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import camp.computer.construct.Construct;
 import camp.computer.construct.Identifier;
+import camp.computer.construct.State;
 import camp.computer.construct.Type;
 
 public class Manager {
@@ -40,6 +41,86 @@ public class Manager {
 //    public static Concept add(long uid) {
     public static Identifier get(long uid) {
         return elements.get(uid);
+    }
+
+    // Retrieves State from persistent store if it exists! Also caches it!
+    // If the State does not exist (in cache or persistent store), then returns null.
+    public static State getPersistentState(String expression) {
+
+        Type stateType = Type.get(expression);
+        if (stateType != null) {
+
+            if (stateType == Type.get("none")) {
+                // Look for existing (persistent) state for the given expression
+                List<Identifier> identiferList = Manager.get();
+                for (int i = 0; i < identiferList.size(); i++) {
+                    if (identiferList.get(i).getClass() == State.class) {
+                        State state = (State) identiferList.get(i);
+                        // TODO: Also check Type?
+                        if (state.classType == null && state.objectInstance == null) {
+                            return state;
+                        }
+                    }
+                }
+            } else if (stateType == Type.get("text")) {
+
+                // Look for existing (persistent) state for the given expression
+                List<Identifier> identiferList = Manager.get();
+                for (int i = 0; i < identiferList.size(); i++) {
+                    if (identiferList.get(i).getClass() == State.class) {
+                        State state = (State) identiferList.get(i);
+                        String textContent = expression.substring(1, expression.length() - 1);
+                        // TODO: Also check Type?
+                        if (state.classType == String.class && textContent.equals(state.objectInstance)) {
+                            return state;
+                        }
+                    }
+                }
+            } else if (stateType == Type.get("list")) {
+
+                // TODO: Look for permutation of a list?
+
+            } else {
+
+                if (State.isConstructExpression(expression)) {
+
+                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
+                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
+                    String addressToken = expression.substring(expression.indexOf(":") + 1, expression.indexOf(")")).trim(); // text between ':' and ')'
+
+                    long uid = Long.parseLong(addressToken.trim());
+
+                    Identifier identifier = Manager.get(uid);
+//                    if (identifier != null) {
+//                        if (identifier.getClass() == Construct.class) {
+//                            State state = State.getState(stateType);
+//                            state.objectInstance = identifier;
+//                            return state;
+//                        }
+//                    }
+
+
+                    // Look for existing (persistent) state for the given expression
+                    if (identifier != null) {
+                        List<Identifier> identiferList = Manager.get();
+                        for (int i = 0; i < identiferList.size(); i++) {
+                            if (identiferList.get(i).getClass() == State.class) {
+                                State state = (State) identiferList.get(i);
+//                            String textContent = expression.substring(1, expression.length() - 1);
+                                // TODO: Also check Type?
+                                if (state.classType == Construct.class && state.objectInstance != null
+                                        && state.objectInstance == identifier) {
+                                    return state;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return null;
     }
 
     public static List<Construct> getConstructList(Type type) {

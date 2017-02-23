@@ -338,7 +338,7 @@ public class Interpreter {
             boolean hasDomainList = false;
             boolean hasInvalidConstruct = false;
 
-            List<String> featureDomain = new ArrayList<>();
+            List<State> featureDomain = new ArrayList<>();
             if (inputLineSegments.length >= 2) {
                 hasContentConstraint = true;
 
@@ -537,7 +537,8 @@ public class Interpreter {
                     for (int i = 0; i < constraintTokens.length; i++) {
                         String constraintToken = constraintTokens[i];
                         if (constraintToken != null) {
-                            featureDomain.add(constraintToken.trim());
+                            State state = State.getState(constraintToken.trim());
+                            featureDomain.add(state);
                         }
                     }
                 }
@@ -723,25 +724,25 @@ public class Interpreter {
     public void setTask(Context context) {
 
         // Determine interpreter's context. Concept or instance?
-        if (isConceptContext()) {
+        if (isConstructContext()) {
 
             String[] inputLineTokens = context.inputLine.split("[ ]+");
 
             // Defaults
-            String instanceTagToken = null;
+            String featureIdentifier = null;
 
             // Determine identifier
             if (inputLineTokens.length >= 3) {
 
                 // Determine identifier
-                instanceTagToken = inputLineTokens[1];
+                featureIdentifier = inputLineTokens[1];
 
                 // Determine feature
-                String featureContentToken = inputLineTokens[2];
+                String stateExpression = inputLineTokens[2];
 
                 // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
 
-                ((Construct) currentIdentifier).set(instanceTagToken, featureContentToken);
+                ((Construct) currentIdentifier).set(featureIdentifier, stateExpression);
 
             }
 
@@ -793,7 +794,7 @@ public class Interpreter {
                 System.out.print(featureIdentifier + " : ");
                 List list = (List) ((Construct) currentIdentifier).states.get(featureIdentifier).objectInstance;
                 for (int i = 0; i < list.size(); i++) {
-                    System.out.print(list.get(i));
+                    System.out.print(((State) list.get(i)));
                     if ((i + 1) < list.size()) {
                         System.out.print(", ");
                     }
@@ -962,7 +963,8 @@ public class Interpreter {
                 State state = ((Construct) currentIdentifier).states.get(featureToken);
 
                 if (state != null && state.type == Type.get("text")) {
-                    System.out.println("" + ((String) state.objectInstance));
+//                    System.out.println("" + ((String) state.objectInstance));
+                    System.out.println("" + state);
                 } else if (state != null && state.type == Type.get("text")) {
                     List contentList = (List) state.objectInstance;
                     for (int i = 0; i < contentList.size(); i++) {

@@ -49,52 +49,55 @@ public class Construct extends Identifier {
     // If listType is "any", allow anything to go in the list
     // if listType is "text", only allow text to be placed in the list
     // if listType is specific "text" values, only allow those values in the list
-    public void set(String tag, Object content) {
+    public void set(String tag, Object stateExpression) {
         if (features.containsKey(tag)) {
 
-            Type contentType = Feature.getType((String) content);
-            Feature featureContent = features.get(tag);
-            if (featureContent.type.contains(contentType)) {
+            Type stateType = Type.get((String) stateExpression);
+            Feature feature = features.get(tag);
+            if (feature.type.contains(stateType)) {
                 State state = states.get(tag);
 
-                if (contentType == Type.get("none")) {
+                if (stateType == Type.get("none")) {
 
                     // Remove the type of the stored objectInstance
                     if (state == null) {
-                        state = State.getState(contentType);
-                    } else if (state.type != contentType) {
+                        state = State.getState(stateType);
+                    } else if (state.type != stateType) {
 //                        featureContent.classType = null;
 //                        featureContent.objectInstance = null;
-                        state = State.getState(contentType);
+                        state = State.getState(stateType);
                     }
 
-                } else if (contentType == Type.get("list")) {
+                } else if (stateType == Type.get("list")) {
 
                     // Change the type of the stored objectInstance if it is not a list
                     if (state == null) {
-                        state = State.getState(contentType);
-                    } else if (state.type != contentType) {
+                        state = State.getState(stateType);
+                    } else if (state.type != stateType) {
 //                        featureContent.classType = List.class;
 //                        featureContent.objectInstance = new ArrayList<>();
-                        state = State.getState(contentType);
+                        state = State.getState(stateType);
                     }
 
                     // Update the objectInstance
 
-                } else if (contentType == Type.get("text")) {
+                } else if (stateType == Type.get("text")) {
 
                     // Change the type of the stored objectInstance if it is not a string (for text)
-                    if (state == null) {
-                        state = State.getState(contentType);
-                    } else if (state.type != contentType) {
-//                        featureContent.classType = String.class;
-//                        featureContent.objectInstance = null;
-                        state = State.getState(contentType);
-                    }
+//                    if (state == null) {
+//                        state = State.getPersistentState(stateType);
+//                    } else if (state.type != stateType) {
+////                        featureContent.classType = String.class;
+////                        featureContent.objectInstance = null;
+//                        state = State.getPersistentState(stateType);
+//                    }
 
 //                    if (Content.isText((String) objectInstance)) {
-                    if (featureContent.domain == null || featureContent.domain.contains((String) content)) {
-                        state.objectInstance = (String) content;
+                   state = State.getState((String) stateExpression);
+//                    if (feature.domain == null || feature.domain.contains(stateExpression)) {
+                    if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
+//                        state.objectInstance = (String) stateExpression;
+                        states.put(tag, state);
                     } else {
                         System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
                     }
@@ -158,7 +161,17 @@ public class Construct extends Identifier {
     }
 
     // TODO: add <list-feature-identifier> : <objectInstance>
-    public void add(String featureIdentifier, Object stateExpression) {
+
+    /**
+     * Adds a {@code State} to a <em>list</em> {@code Construct}, which is a {@code Construct} with
+     * a {@code Type} uniquely identified by its {@code identifier} equal to {@code "list"}.
+     *
+     * {@code expression} is a <em>state expression</em>.
+     *
+     * @param featureIdentifier
+     * @param expression
+     */
+    public void add(String featureIdentifier, String expression) {
         if (features.containsKey(featureIdentifier)) {
             Feature feature = features.get(featureIdentifier);
             State featureState = states.get(featureIdentifier);
@@ -180,7 +193,7 @@ public class Construct extends Identifier {
             }
 
             // Add the objectInstance to the list
-            Type stateType = Feature.getType((String) stateExpression);
+            Type stateType = Type.get((String) expression);
             if (stateType != null
                     && (feature.listTypes == null || feature.listTypes.contains(stateType))) {
 
@@ -220,18 +233,22 @@ public class Construct extends Identifier {
 //                    }
 
 
-                    // Encapsulate text state
-                    State state = State.getState(stateType);
-                    state.objectInstance = stateExpression;
+//                    // Encapsulate text state
+//                    State state = State.getState(stateType);
+//                    state.objectInstance = expression;
 
+                    // Encapsulate text state
+                    State state = State.getState(expression);
 
 
 //                    if (Content.isText((String) objectInstance)) {
-                    if (feature.domain == null || feature.domain.contains((String) stateExpression)) {
+//                    if (feature.domain == null || feature.domain.contains((String) expression)) {
+                    if (feature.domain == null || feature.domain.contains(state)) {
                     // TODO: if (feature.domain == null || feature.domain.contains(state)) {
                             List list = (List) featureState.objectInstance;
 //                        contents.get(tag).state.objectInstance = (String) objectInstance;
-                            list.add(stateExpression);
+//                            list.add(expression);
+                            list.add(state);
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
                         }
@@ -244,44 +261,24 @@ public class Construct extends Identifier {
 
 //                    // Change the type of the stored objectInstance if it is not a list
 //                    if (state == null) {
-//                        state = State.getState(contentType);
+//                        state = State.getPersistentState(contentType);
 //                    } else if (state.type != contentType) {
 ////                        featureContent.classType = List.class;
 ////                        featureContent.objectInstance = new ArrayList<>();
-//                        state = State.getState(contentType);
+//                        state = State.getPersistentState(contentType);
 //                    }
 
                     // Encapsulate text state
-                    State state = null;
-                    if (Interpreter.isConstructToken((String) stateExpression)) {
-
-                        String typeToken = (String) stateExpression;
-
-                        String typeIdentifierToken = typeToken.substring(0, typeToken.indexOf("(")).trim(); // text before '('
-                        String addressTypeToken = typeToken.substring(typeToken.indexOf("(") + 1, typeToken.indexOf(":")).trim(); // text between '(' and ':'
-                        String addressToken = typeToken.substring(typeToken.indexOf(":") + 1, typeToken.indexOf(")")).trim(); // text between ':' and ')'
-
-                        long uid = Long.parseLong(addressToken.trim());
-
-                        Identifier identifier = Manager.get(uid);
-                        if (identifier != null) {
-                            if (identifier.getClass() == Construct.class) {
-                                state = State.getState(stateType);
-                                state.objectInstance = (Construct) identifier; // TODO:
-                            }
-                        } else {
-                            System.out.println(Error.get("Error: " + stateExpression + " does not exist."));
-                        }
-                    }
-                // TODO: parse out Construct instance
+                    State state = State.getState(expression);
 
                     // Add to the list in memory
 //                    if (Content.isText((String) objectInstance)) {
                     if (state != null) {
-                        if (feature.domain == null || feature.domain.contains((String) stateExpression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
+//                        if (feature.domain == null || feature.domain.contains((String) expression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
+                        if (feature.domain == null || feature.domain.contains(state)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
                             List list = (List) featureState.objectInstance;
 //                        contents.get(tag).state.objectInstance = (String) objectInstance;
-                            list.add(state.objectInstance);
+                            list.add(state);
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
                         }
