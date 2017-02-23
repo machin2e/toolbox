@@ -264,21 +264,27 @@ public class Construct extends Identifier {
                         long uid = Long.parseLong(addressToken.trim());
 
                         Identifier identifier = Manager.get(uid);
-                        if(identifier.getClass() == Construct.class) {
-                            state = State.getState(stateType);
-                            state.objectInstance = (Construct) identifier; // TODO:
+                        if (identifier != null) {
+                            if (identifier.getClass() == Construct.class) {
+                                state = State.getState(stateType);
+                                state.objectInstance = (Construct) identifier; // TODO:
+                            }
+                        } else {
+                            System.out.println(Error.get("Error: " + stateExpression + " does not exist."));
                         }
                     }
                 // TODO: parse out Construct instance
 
                     // Add to the list in memory
 //                    if (Content.isText((String) objectInstance)) {
-                    if (feature.domain == null || feature.domain.contains((String) stateExpression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
-                        List list = (List) featureState.objectInstance;
+                    if (state != null) {
+                        if (feature.domain == null || feature.domain.contains((String) stateExpression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
+                            List list = (List) featureState.objectInstance;
 //                        contents.get(tag).state.objectInstance = (String) objectInstance;
-                        list.add(state.objectInstance);
-                    } else {
-                        System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
+                            list.add(state.objectInstance);
+                        } else {
+                            System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
+                        }
                     }
 
                 }

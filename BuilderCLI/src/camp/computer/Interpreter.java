@@ -761,7 +761,67 @@ public class Interpreter {
 //
 //            if (inputLineSegments.length >= 2) {
 
+            // Sanitize expression
             context.inputLine = context.inputLine.replaceAll("[ ]{2,}", " ");
+            context.inputLine = context.inputLine.replaceAll("[ ]+\\(", "(");
+            context.inputLine = context.inputLine.replaceAll("[ ]+:[ ]+", ":");
+
+            // Defaults
+            String featureIdentifier = null;
+
+            // Tokenize
+            int startIndex = context.inputLine.indexOf(" ") + 1;
+            int stopIndex = context.inputLine.indexOf(" ", startIndex);
+            featureIdentifier = context.inputLine.substring(startIndex, stopIndex);
+            String[] contentSegment = context.inputLine.substring(stopIndex + 1).split("[ ]*,[ ]*");
+
+            // Parse
+//            if (featureIdentifier.length >= 2 && contentSegment.length >= 1) {
+
+            // Determine identifier
+//            featureIdentifier = featureIdentifier[1];
+
+            // Determine feature
+            // TODO: Handle list!
+            for (int j = 0; j < contentSegment.length; j++) {
+                String featureContentToken = contentSegment[j];
+
+                // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
+
+                ((Construct) currentIdentifier).add(featureIdentifier, featureContentToken);
+
+                System.out.print(featureIdentifier + " : ");
+                List list = (List) ((Construct) currentIdentifier).states.get(featureIdentifier).objectInstance;
+                for (int i = 0; i < list.size(); i++) {
+                    System.out.print(list.get(i));
+                    if ((i + 1) < list.size()) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.println();
+
+//                }
+//            } else {
+//                System.out.println(Application.ANSI_RED + "Error: No objectInstance segment was specified." + Application.ANSI_RESET);
+//            }
+            }
+        }
+    }
+
+    // remove some-list : port(id:34), port(uuid:<uuid>), port(id:44)
+    public void removeTask(Context context) {
+
+        // Determine interpreter's context. Concept or instance?
+        if (isConstructContext()) {
+
+//            String[] inputLineSegments = context.inputLine.split("[ ]*:[ ]*");
+//
+//            if (inputLineSegments.length >= 2) {
+
+            // Sanitize expression
+            context.inputLine = context.inputLine.replaceAll("[ ]{2,}", " ");
+            context.inputLine = context.inputLine.replaceAll("[ ]+\\(", "(");
+            context.inputLine = context.inputLine.replaceAll("[ ]+:[ ]+", ":");
 
             // Defaults
             String featureIdentifier = null;
