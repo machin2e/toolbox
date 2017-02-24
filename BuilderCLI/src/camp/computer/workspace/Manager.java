@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import camp.computer.construct.Construct;
+import camp.computer.construct.Expression;
 import camp.computer.construct.Identifier;
 import camp.computer.construct.State;
 import camp.computer.construct.Type;
@@ -57,7 +58,7 @@ public class Manager {
                     if (identiferList.get(i).getClass() == State.class) {
                         State state = (State) identiferList.get(i);
                         // TODO: Also check Type?
-                        if (state.classType == null && state.objectInstance == null) {
+                        if (state.objectType == null && state.object == null) {
                             return state;
                         }
                     }
@@ -71,7 +72,7 @@ public class Manager {
                         State state = (State) identiferList.get(i);
                         String textContent = expression.substring(1, expression.length() - 1);
                         // TODO: Also check Type?
-                        if (state.classType == String.class && textContent.equals(state.objectInstance)) {
+                        if (state.objectType == String.class && textContent.equals(state.object)) {
                             return state;
                         }
                     }
@@ -82,7 +83,7 @@ public class Manager {
 
             } else {
 
-                if (State.isConstructExpression(expression)) {
+                if (Expression.isConstruct(expression)) {
 
                     String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
                     String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
@@ -94,7 +95,7 @@ public class Manager {
 //                    if (identifier != null) {
 //                        if (identifier.getClass() == Construct.class) {
 //                            State state = State.getState(stateType);
-//                            state.objectInstance = identifier;
+//                            state.object = identifier;
 //                            return state;
 //                        }
 //                    }
@@ -108,8 +109,8 @@ public class Manager {
                                 State state = (State) identiferList.get(i);
 //                            String textContent = expression.substring(1, expression.length() - 1);
                                 // TODO: Also check Type?
-                                if (state.classType == Construct.class && state.objectInstance != null
-                                        && state.objectInstance == identifier) {
+                                if (state.objectType == Construct.class && state.object != null
+                                        && state.object == identifier) {
                                     return state;
                                 }
                             }

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import camp.computer.Application;
-import camp.computer.Interpreter;
 import camp.computer.workspace.Manager;
 
 public class Construct extends Identifier {
@@ -25,7 +24,6 @@ public class Construct extends Identifier {
 
         // Create Content for each Feature
         for (Feature feature : concept.features.values()) {
-//            Content objectInstance = new Content(feature);
             features.put(feature.identifier, feature);
             if (feature.type.size() == 1) {
                 states.put(feature.identifier, State.getState(feature.type.get(0))); // Initialize with only available type if there's only one available
@@ -49,55 +47,58 @@ public class Construct extends Identifier {
     // If listType is "any", allow anything to go in the list
     // if listType is "text", only allow text to be placed in the list
     // if listType is specific "text" values, only allow those values in the list
-    public void set(String tag, Object stateExpression) {
-        if (features.containsKey(tag)) {
+    public void set(String featureIdentifier, String expression) {
+        if (features.containsKey(featureIdentifier)) {
 
-            Type stateType = Type.get((String) stateExpression);
-            Feature feature = features.get(tag);
+            Type stateType = Type.get((String) expression);
+            Feature feature = features.get(featureIdentifier);
             if (feature.type.contains(stateType)) {
-                State state = states.get(tag);
+
+                /*
+                // Get feature's current state
+                State state = states.get(featureIdentifier);
 
                 if (stateType == Type.get("none")) {
 
-                    // Remove the type of the stored objectInstance
+                    // Remove the type of the stored object
                     if (state == null) {
                         state = State.getState(stateType);
                     } else if (state.type != stateType) {
-//                        featureContent.classType = null;
-//                        featureContent.objectInstance = null;
+//                        featureContent.objectType = null;
+//                        featureContent.object = null;
                         state = State.getState(stateType);
                     }
 
                 } else if (stateType == Type.get("list")) {
 
-                    // Change the type of the stored objectInstance if it is not a list
+                    // Change the type of the stored object if it is not a list
                     if (state == null) {
                         state = State.getState(stateType);
                     } else if (state.type != stateType) {
-//                        featureContent.classType = List.class;
-//                        featureContent.objectInstance = new ArrayList<>();
+//                        featureContent.objectType = List.class;
+//                        featureContent.object = new ArrayList<>();
                         state = State.getState(stateType);
                     }
 
-                    // Update the objectInstance
+                    // Update the object
 
                 } else if (stateType == Type.get("text")) {
 
-                    // Change the type of the stored objectInstance if it is not a string (for text)
+                    // Change the type of the stored object if it is not a string (for text)
 //                    if (state == null) {
 //                        state = State.getPersistentState(stateType);
 //                    } else if (state.type != stateType) {
-////                        featureContent.classType = String.class;
-////                        featureContent.objectInstance = null;
+////                        featureContent.objectType = String.class;
+////                        featureContent.object = null;
 //                        state = State.getPersistentState(stateType);
 //                    }
 
-//                    if (Content.isText((String) objectInstance)) {
-                   state = State.getState((String) stateExpression);
+//                    if (Content.isText((String) object)) {
+                   state = State.getState((String) expression);
 //                    if (feature.domain == null || feature.domain.contains(stateExpression)) {
                     if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
-//                        state.objectInstance = (String) stateExpression;
-                        states.put(tag, state);
+//                        state.object = (String) stateExpression;
+                        states.put(featureIdentifier, state);
                     } else {
                         System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
                     }
@@ -109,45 +110,59 @@ public class Construct extends Identifier {
 
 
                 }
-            } else {
-                System.out.println(Application.ANSI_RED + "Error: Feature type mismatches objectInstance type." + Application.ANSI_RESET);
+                */
+
+                if (stateType != Type.get("list")) {
+
+                    State state = State.getState(expression);
+
+                    if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
+                        states.put(featureIdentifier, state);
+                        // TODO: Update Construct in database
+                    } else {
+                        System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
+                    }
+
+                } else {
+                    System.out.println(Application.ANSI_RED + "Error: Feature type mismatches object type." + Application.ANSI_RESET);
+                }
             }
 
 
             /*
             if (contents.get(tag).type == Type.get("none")) {
-                // TODO: Can't assign anything to the feature objectInstance
+                // TODO: Can't assign anything to the feature object
                 System.out.println("Error: Cannot assign feature with type 'none'.");
             } else if (contents.get(tag).type == Type.get("any")) {
                 // TODO: Verify that this is correct!
-                contents.get(tag).objectInstance = objectInstance;
+                contents.get(tag).object = object;
             } else if (contents.get(tag).type == Type.get("list")) {
-                List contentList = (List) contents.get(tag).objectInstance;
+                List contentList = (List) contents.get(tag).object;
 
                 // TODO: Check type of list contents and restrict to the type (or any if "any")
                 // TODO: If specific text tokens are allowed AS WELL AS text construct, text construct subsumes the tokens and the tokens are not included in the domain
 
 //                if (contents.get(identifier).listType == Type.get("text")) {
                 if (contents.get(tag).listTypes.contains(Type.get("text"))) {
-                    if (Content.isText((String) objectInstance)) {
-                        contentList.add(objectInstance);
+                    if (Content.isText((String) object)) {
+                        contentList.add(object);
                     } else {
                         System.out.println("Error: Cannot add non-text to list (only can contain text).");
                     }
 //                } else if (contents.get(identifier).listType == Type.get("construct")) {
 //                } else if (contents.get(identifier).listTypes.contains(Type.get("construct"))) {
                 } else {
-                    // TODO: Determine if the construct objectInstance is allowed into the list based on the specific type!
-                    contentList.add(objectInstance);
+                    // TODO: Determine if the construct object is allowed into the list based on the specific type!
+                    contentList.add(object);
                 }
             } else if (contents.get(tag).type == Type.get("text")) {
-                if (Content.isText((String) objectInstance)) {
-                    contents.get(tag).objectInstance = (String) objectInstance;
+                if (Content.isText((String) object)) {
+                    contents.get(tag).object = (String) object;
                 } else {
                     System.out.println("Error: Cannot assign non-text to text feature.");
                 }
             } else {
-                contents.get(tag).objectInstance = objectInstance;
+                contents.get(tag).object = object;
             }
             */
         }
@@ -160,7 +175,7 @@ public class Construct extends Identifier {
         return null;
     }
 
-    // TODO: add <list-feature-identifier> : <objectInstance>
+    // TODO: add <list-feature-identifier> : <object>
 
     /**
      * Adds a {@code State} to a <em>list</em> {@code Construct}, which is a {@code Construct} with
@@ -184,7 +199,7 @@ public class Construct extends Identifier {
 
             // Check if feature is currently configured as a list
             if (featureState.type != Type.get("list")) {
-                // Change the type of the stored objectInstance if it is not a list
+                // Change the type of the stored object if it is not a list
                 if (featureState == null) {
                     featureState = State.getState(Type.get("list"));
                 } else if (featureState.type != Type.get("list")) {
@@ -192,61 +207,61 @@ public class Construct extends Identifier {
                 }
             }
 
-            // Add the objectInstance to the list
+            // Add the object to the list
             Type stateType = Type.get((String) expression);
             if (stateType != null
                     && (feature.listTypes == null || feature.listTypes.contains(stateType))) {
 
                 if (stateType == Type.get("none")) {
 
-//                    // Remove the type of the stored objectInstance
+//                    // Remove the type of the stored object
 //                    if (featureContent.state == null) {
-//                        featureContent.state = new State(classType);
-//                    } else if (featureContent.state.type != classType) {
-////                        featureContent.classType = null;
-////                        featureContent.objectInstance = null;
-//                        featureContent.state = new State(classType);
+//                        featureContent.state = new State(objectType);
+//                    } else if (featureContent.state.type != objectType) {
+////                        featureContent.objectType = null;
+////                        featureContent.object = null;
+//                        featureContent.state = new State(objectType);
 //                    }
 
                 } else if (stateType == Type.get("list")) {
 
-                    // Change the type of the stored objectInstance if it is not a list
+                    // Change the type of the stored object if it is not a list
                     if (featureState == null) {
                         featureState = State.getState(stateType);
                     } else if (featureState.type != stateType) {
-//                        featureContent.classType = List.class;
-//                        featureContent.objectInstance = new ArrayList<>();
+//                        featureContent.objectType = List.class;
+//                        featureContent.object = new ArrayList<>();
                         featureState = State.getState(stateType);
                     }
 
-                    // Update the objectInstance
+                    // Update the object
 
                 } else if (stateType == Type.get("text")) {
 
-                    // Change the type of the stored objectInstance if it is not a string (for text)
+                    // Change the type of the stored object if it is not a string (for text)
 //                    if (featureContent.state == null) {
-//                        featureContent.state = new State(classType);
-//                    } else if (featureContent.state.type != classType) {
-////                        featureContent.classType = String.class;
-////                        featureContent.objectInstance = null;
-//                        featureContent.state = new State(classType);
+//                        featureContent.state = new State(objectType);
+//                    } else if (featureContent.state.type != objectType) {
+////                        featureContent.objectType = String.class;
+////                        featureContent.object = null;
+//                        featureContent.state = new State(objectType);
 //                    }
 
 
 //                    // Encapsulate text state
 //                    State state = State.getState(stateType);
-//                    state.objectInstance = expression;
+//                    state.object = expression;
 
                     // Encapsulate text state
                     State state = State.getState(expression);
 
 
-//                    if (Content.isText((String) objectInstance)) {
+//                    if (Content.isText((String) object)) {
 //                    if (feature.domain == null || feature.domain.contains((String) expression)) {
                     if (feature.domain == null || feature.domain.contains(state)) {
                     // TODO: if (feature.domain == null || feature.domain.contains(state)) {
-                            List list = (List) featureState.objectInstance;
-//                        contents.get(tag).state.objectInstance = (String) objectInstance;
+                            List list = (List) featureState.object;
+//                        contents.get(tag).state.object = (String) object;
 //                            list.add(expression);
                             list.add(state);
                         } else {
@@ -259,12 +274,12 @@ public class Construct extends Identifier {
 
                 } else {
 
-//                    // Change the type of the stored objectInstance if it is not a list
+//                    // Change the type of the stored object if it is not a list
 //                    if (state == null) {
 //                        state = State.getPersistentState(contentType);
 //                    } else if (state.type != contentType) {
-////                        featureContent.classType = List.class;
-////                        featureContent.objectInstance = new ArrayList<>();
+////                        featureContent.objectType = List.class;
+////                        featureContent.object = new ArrayList<>();
 //                        state = State.getPersistentState(contentType);
 //                    }
 
@@ -272,12 +287,12 @@ public class Construct extends Identifier {
                     State state = State.getState(expression);
 
                     // Add to the list in memory
-//                    if (Content.isText((String) objectInstance)) {
+//                    if (Content.isText((String) object)) {
                     if (state != null) {
 //                        if (feature.domain == null || feature.domain.contains((String) expression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
                         if (feature.domain == null || feature.domain.contains(state)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
-                            List list = (List) featureState.objectInstance;
-//                        contents.get(tag).state.objectInstance = (String) objectInstance;
+                            List list = (List) featureState.object;
+//                        contents.get(tag).state.object = (String) object;
                             list.add(state);
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
@@ -286,44 +301,44 @@ public class Construct extends Identifier {
 
                 }
             } else {
-                System.out.println(Application.ANSI_RED + "Error: Feature type mismatches objectInstance type." + Application.ANSI_RESET);
+                System.out.println(Application.ANSI_RED + "Error: Feature type mismatches object type." + Application.ANSI_RESET);
             }
 
 
             /*
             if (contents.get(tag).type == Type.get("none")) {
-                // TODO: Can't assign anything to the feature objectInstance
+                // TODO: Can't assign anything to the feature object
                 System.out.println("Error: Cannot assign feature with type 'none'.");
             } else if (contents.get(tag).type == Type.get("any")) {
                 // TODO: Verify that this is correct!
-                contents.get(tag).objectInstance = objectInstance;
+                contents.get(tag).object = object;
             } else if (contents.get(tag).type == Type.get("list")) {
-                List contentList = (List) contents.get(tag).objectInstance;
+                List contentList = (List) contents.get(tag).object;
 
                 // TODO: Check type of list contents and restrict to the type (or any if "any")
                 // TODO: If specific text tokens are allowed AS WELL AS text construct, text construct subsumes the tokens and the tokens are not included in the domain
 
 //                if (contents.get(identifier).listType == Type.get("text")) {
                 if (contents.get(tag).listTypes.contains(Type.get("text"))) {
-                    if (Content.isText((String) objectInstance)) {
-                        contentList.add(objectInstance);
+                    if (Content.isText((String) object)) {
+                        contentList.add(object);
                     } else {
                         System.out.println("Error: Cannot add non-text to list (only can contain text).");
                     }
 //                } else if (contents.get(identifier).listType == Type.get("construct")) {
 //                } else if (contents.get(identifier).listTypes.contains(Type.get("construct"))) {
                 } else {
-                    // TODO: Determine if the construct objectInstance is allowed into the list based on the specific type!
-                    contentList.add(objectInstance);
+                    // TODO: Determine if the construct object is allowed into the list based on the specific type!
+                    contentList.add(object);
                 }
             } else if (contents.get(tag).type == Type.get("text")) {
-                if (Content.isText((String) objectInstance)) {
-                    contents.get(tag).objectInstance = (String) objectInstance;
+                if (Content.isText((String) object)) {
+                    contents.get(tag).object = (String) object;
                 } else {
                     System.out.println("Error: Cannot assign non-text to text feature.");
                 }
             } else {
-                contents.get(tag).objectInstance = objectInstance;
+                contents.get(tag).object = object;
             }
             */
         }
@@ -331,7 +346,7 @@ public class Construct extends Identifier {
 
     @Override
     public String toString() {
-        return type + "(id:" + uid + ")";
+        return Application.ANSI_BLUE + type + Application.ANSI_RESET + " (id:" + uid + ")";
     }
 
 }

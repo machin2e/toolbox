@@ -3,6 +3,7 @@ package camp.computer.construct;
 import java.util.HashMap;
 import java.util.List;
 
+import camp.computer.Application;
 import camp.computer.workspace.Manager;
 
 public class Concept extends Identifier {
@@ -59,6 +60,11 @@ public class Concept extends Identifier {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return Application.ANSI_BLUE + Application.ANSI_BOLD_ON + type + Application.ANSI_RESET + " (id:" + uid + ")";
     }
 
 }

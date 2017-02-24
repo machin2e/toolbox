@@ -21,6 +21,9 @@ public class Application {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+    public static final String ANSI_BOLD_ON = "\u001B[1m";
+    public static final String ANSI_BOLD_OFF = "\u001B[2m";
+
     public static void main(String[] args) {
 
         // TODO: Create different devices, including Clay, IR rangefinder, PWM servo, Arduino
@@ -32,7 +35,7 @@ public class Application {
 
         // TODO: Save/Load/IASM for Projects
 
-        System.out.println("Builder (Version 0.0.1-alpha)");
+        System.out.println("Builder (Version 0.4.5)");
 
         Interpreter.getInstance().start();
 

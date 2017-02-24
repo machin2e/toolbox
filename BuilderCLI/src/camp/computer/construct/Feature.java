@@ -3,6 +3,8 @@ package camp.computer.construct;
 import java.util.ArrayList;
 import java.util.List;
 
+import camp.computer.Application;
+
 /**
  * An {@code VariableValueSet} stores a list of identifier values for a specified identifier identified by its unique label.
  */
@@ -22,7 +24,7 @@ public class Feature extends Identifier {
     public List<Type> type = new ArrayList<>(); // if size == 0, then unconstrained!
 
     // Content Domain (contains Identifier Types and Identifier Content)
-    // NOTE: This only ever contains "text objectInstance" or references to specific constructs
+    // NOTE: This only ever contains "text object" or references to specific constructs
     public List<State> domain; // if size == 0, then 'none'! if null, then 'any'!
     // TODO: Create a separate feature domain for each type in featureType
 
@@ -49,6 +51,11 @@ public class Feature extends Identifier {
     public static boolean isConstruct(String featureContent) {
         // TODO:
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return Application.ANSI_YELLOW + Application.ANSI_BOLD_ON + identifier + Application.ANSI_RESET;
     }
 
 }

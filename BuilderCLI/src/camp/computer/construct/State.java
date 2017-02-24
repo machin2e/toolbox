@@ -3,43 +3,44 @@ package camp.computer.construct;
 import java.util.ArrayList;
 import java.util.List;
 
+import camp.computer.Application;
 import camp.computer.workspace.Manager;
 
 public class State extends Identifier {
 
-    // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String objectInstance) function to retrieve
+    // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String object) function to retrieve
 
     public Type type = null;
 
-    // Bytes storing actual objectInstance and objectInstance type
-    public Object objectInstance = null;
-    public Class classType = null; // null for "none", List for "list", String for "text", Construct for non-primitive type
+    // Bytes storing actual object and object type
+    public Object object = null;
+    public Class objectType = null; // null for "none", List for "list", String for "text", Construct for non-primitive type
 
     private State(Type type) {
         if (type == Type.get("none")) {
             this.type = type;
-            this.classType = null;
-            this.objectInstance = null;
+            this.objectType = null;
+            this.object = null;
         } else if (type == Type.get("text")) {
             this.type = type;
-            this.classType = String.class;
-            this.objectInstance = null;
+            this.objectType = String.class;
+            this.object = null;
         } else if (type == Type.get("number")) {
             // TODO:
         } else if (type == Type.get("list")) {
             this.type = type;
-            this.classType = List.class;
-            this.objectInstance = new ArrayList<>();
+            this.objectType = List.class;
+            this.object = new ArrayList<>();
         } else { // Custom construct
             this.type = type;
-            this.classType = Construct.class;
-            this.objectInstance = null;
+            this.objectType = Construct.class;
+            this.object = null;
         }
     }
 
     // Returns reference to the "base" state.
     public static State getState(Type type) {
-        // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String objectInstance) function to retrieve
+        // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String object) function to retrieve
 
 
         // TODO: Check if Manager contains the State already and if so, retrieve it and return a reference to it
@@ -64,7 +65,7 @@ public class State extends Identifier {
                     // State wasn't found, so create a new one and return it
                     // TODO: Store in the database
                     state = State.getState(stateType);
-                    state.objectInstance = expression.substring(1, expression.length() - 1);
+                    state.object = expression.substring(1, expression.length() - 1);
                 }
                 return state;
 
@@ -72,7 +73,7 @@ public class State extends Identifier {
 
             } else {
 
-//                if (State.isConstructExpression(expression)) {
+//                if (State.isConstruct(expression)) {
 //
 //                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
 //                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
@@ -84,7 +85,7 @@ public class State extends Identifier {
 //                    if (identifier != null) {
 //                        if (identifier.getClass() == Construct.class) {
 //                            State state = State.getState(stateType);
-//                            state.objectInstance = identifier;
+//                            state.object = identifier;
 //                            return state;
 //                        }
 //                    } else {
@@ -109,7 +110,7 @@ public class State extends Identifier {
                     Identifier identifier = Manager.get(uid);
                     if (identifier != null) {
                         state = State.getState(stateType);
-                        state.objectInstance = identifier;
+                        state.object = identifier;
                         return state;
                     } else {
                         System.out.println(Error.get("Error: " + expression + " does not exist."));
@@ -122,28 +123,37 @@ public class State extends Identifier {
         return null;
     }
 
-    public static boolean isConstructExpression(String expression) {
-        return expression.matches("([a-z]+)[ ]*\\([ ]*(id|uid|uuid)[ ]*:[ ]*[0-9]+[ ]*\\)");
-    }
-
     @Override
     public String toString() {
         if (type != null) {
             if (type == Type.get("none")) {
                 // TODO: Print from "none" construct
-                return "none";
+                return "none (" + this.uid + ")";
             } else if (type == Type.get("text")) {
                 // TODO: Print from "text" construct
-                return "'" + (String) this.objectInstance + "' (id: " + this.uid + ")";
-                // return type + "('" + (String) this.objectInstance + "')";
+//                return "'" + (String) this.object + "' (id: " + this.uid + ")";
+                return Application.ANSI_YELLOW + "'" + this.object + "'" + Application.ANSI_RESET + " (id: " + this.uid + ")";
+                // return type + "('" + (String) this.object + "')";
             } else if (type == Type.get("number")) {
                 // TODO:
                 // TODO: Print from "number" construct
-                // return type + "('" + (String) this.objectInstance + "')";
+                // return type + "('" + (String) this.object + "')";
             } else if (type == Type.get("list")) {
-                return "<TODO:LIST>";
+//                return "<TODO:LIST>" + "' (id: " + this.uid + ")";
+                List list = (List) this.object;
+                String listString = "list (id: " + this.uid + ")";
+                for (int i = 0; i < list.size(); i++) {
+                    if (i == 0) {
+                        listString += " : ";
+                    }
+                    listString += ((State) list.get(i));
+                    if ((i + 1) < list.size()) {
+                        listString += ", ";
+                    }
+                }
+                return listString;
             } else {
-                return type + "(id:" + ((Construct) objectInstance).uid + ")";
+                return type + "(id:" + ((Construct) object).uid + ")";
             }
         } else {
             System.out.println(Error.get("Error: State is in corrupt (type is null)."));

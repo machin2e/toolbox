@@ -1,0 +1,14 @@
+describe port
+has mode text : 'none', 'analog', 'digital', 'pwm'
+has direction text : 'none', 'input', 'output', 'bidirectional'
+has voltage text : 'none', 'ttl', 'cmos'
+
+port
+port
+port
+
+describe device
+has port list
+
+device
+# add port
