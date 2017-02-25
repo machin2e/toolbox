@@ -54,6 +54,8 @@ public class Type extends Identifier {
             return Type.identifiers.get(expression);
         } else if (expression.startsWith("'") && expression.endsWith("'")) { // TODO: Update with regex match
             return Type.get("text");
+        } else if (expression.contains(",")) { // TODO: Update with regex match
+            return Type.get("list");
         } else if (expression.contains("(") && expression.contains(")")) { // TODO: update with regex match
             String typeTag = expression.substring(0, expression.indexOf("("));
             if (Type.identifiers.containsKey(typeTag)) {
@@ -66,21 +68,6 @@ public class Type extends Identifier {
         }
         return null;
     }
-
-//    public static Type getType(String expression) {
-//
-//        if (expression.startsWith("'") && expression.endsWith("'")) {
-//            return Type.get("text");
-//        } else if (expression.contains("(") && expression.contains(")")) {
-//            String typeTag = expression.substring(0, expression.indexOf("("));
-//            if (Type.has(typeTag)) {
-//                // TODO: Check if specified construct exists
-//                return Type.get(typeTag);
-//            }
-//        }
-//
-//        return null;
-//    }
 
     @Override
     public String toString() {

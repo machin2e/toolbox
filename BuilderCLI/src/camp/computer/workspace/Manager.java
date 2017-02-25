@@ -57,13 +57,16 @@ public class Manager {
                 for (int i = 0; i < identiferList.size(); i++) {
                     if (identiferList.get(i).getClass() == State.class) {
                         State state = (State) identiferList.get(i);
-                        // TODO: Also check Type?
-                        if (state.objectType == null && state.object == null) {
+                        if (state.type == Type.get("none") && state.objectType == null && state.object == null) {
                             return state;
                         }
                     }
                 }
             } else if (stateType == Type.get("text")) {
+                // e.g.,
+                // [ ] 'foo'
+                // [ ] text('foo')
+                // [ ] text(id:234)
 
                 // Look for existing (persistent) state for the given expression
                 List<Identifier> identiferList = Manager.get();
@@ -71,8 +74,7 @@ public class Manager {
                     if (identiferList.get(i).getClass() == State.class) {
                         State state = (State) identiferList.get(i);
                         String textContent = expression.substring(1, expression.length() - 1);
-                        // TODO: Also check Type?
-                        if (state.objectType == String.class && textContent.equals(state.object)) {
+                        if (state.type == Type.get("text") && state.objectType == String.class && textContent.equals(state.object)) {
                             return state;
                         }
                     }

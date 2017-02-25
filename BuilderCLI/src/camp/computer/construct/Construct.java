@@ -112,7 +112,7 @@ public class Construct extends Identifier {
                 }
                 */
 
-                if (stateType != Type.get("list")) {
+                if (stateType == Type.get("none")) {
 
                     State state = State.getState(expression);
 
@@ -123,8 +123,23 @@ public class Construct extends Identifier {
                         System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
                     }
 
+                } else if (stateType == Type.get("text")) {
+
+                    State state = State.getState(expression);
+
+                    if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
+                        states.put(featureIdentifier, state);
+                        // TODO: Update Construct in database
+                    } else {
+                        System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
+                    }
+
+                } else if (stateType == Type.get("list")) {
+
                 } else {
+
                     System.out.println(Application.ANSI_RED + "Error: Feature type mismatches object type." + Application.ANSI_RESET);
+
                 }
             }
 

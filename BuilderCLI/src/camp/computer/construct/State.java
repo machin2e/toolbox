@@ -51,12 +51,23 @@ public class State extends Identifier {
 
     // Encapsulate state
     // TODO: Query database for the state corresponding to stateExpression.
+    // e.g.,
+    // none
+    // 3 --or-- 3.4 --or-- 341
+    // text(id:23) --or-- 'foo' --or-- text('foo')
+    // list(id:44) --or-- port, path, project --or-- 'foo', text('bar'), port(uid:3) --or-- port, path, project
+    // port(uid:3)
     public static State getState(String expression) {
         Type stateType = Type.get(expression);
         if (stateType != null) {
 
             if (stateType == Type.get("none")) {
-                State state = State.getState(stateType);
+                State state = Manager.getPersistentState(expression);
+                if (state == null) {
+                    // State wasn't found, so create a new one and return it
+                    // TODO: Store in the database
+                    state = State.getState(stateType);
+                }
                 return state;
             } else if (stateType == Type.get("text")) {
 
@@ -73,31 +84,8 @@ public class State extends Identifier {
 
             } else {
 
-//                if (State.isConstruct(expression)) {
-//
-//                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
-//                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
-//                    String addressToken = expression.substring(expression.indexOf(":") + 1, expression.indexOf(")")).trim(); // text between ':' and ')'
-//
-//                    long uid = Long.parseLong(addressToken.trim());
-//
-//                    Identifier identifier = Manager.get(uid);
-//                    if (identifier != null) {
-//                        if (identifier.getClass() == Construct.class) {
-//                            State state = State.getState(stateType);
-//                            state.object = identifier;
-//                            return state;
-//                        }
-//                    } else {
-//                        System.out.println(Error.get("Error: " + expression + " does not exist."));
-//                    }
-//
-//                }
-
                 State state = Manager.getPersistentState(expression);
-                if (state != null) {
-                    return state;
-                } else {
+                if (state == null) {
 
                     // Create new State
                     // TODO: Add new state to persistent store
@@ -116,6 +104,7 @@ public class State extends Identifier {
                         System.out.println(Error.get("Error: " + expression + " does not exist."));
                     }
                 }
+                return state;
 
             }
 
@@ -128,7 +117,7 @@ public class State extends Identifier {
         if (type != null) {
             if (type == Type.get("none")) {
                 // TODO: Print from "none" construct
-                return "none (" + this.uid + ")";
+                return "none (id: " + this.uid + ")";
             } else if (type == Type.get("text")) {
                 // TODO: Print from "text" construct
 //                return "'" + (String) this.object + "' (id: " + this.uid + ")";

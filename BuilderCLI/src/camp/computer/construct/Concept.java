@@ -8,6 +8,8 @@ import camp.computer.workspace.Manager;
 
 public class Concept extends Identifier {
 
+    // TODO: public boolean isPrimitive = false;
+
     public Type type = null;
 
     public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?

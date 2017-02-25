@@ -308,6 +308,7 @@ public class Interpreter {
                         }
                         featureTypes.add(Type.get(featureIdentifierToken));
                     } else {
+                        // Can contain any type (no type is specified)
 //                        featureTypes.add(Type.get("any")); // Default type
                     }
                 }
@@ -808,7 +809,7 @@ public class Interpreter {
             for (int i = 0; i < typeList.size(); i++) {
                 List<Construct> constructList = Manager.getConstructList(typeList.get(i));
                 // System.out.println("(id: " + typeList.get(i).uid + ") " + Application.ANSI_BLUE + typeList.get(i).identifier + Application.ANSI_RESET + " (" + constructList.size() + ") (uuid: " + typeList.get(i).uuid + ")");
-                System.out.println(Application.ANSI_BLUE + typeList.get(i).identifier + Application.ANSI_RESET + " (" + constructList.size() + ")");
+                System.out.println(Application.ANSI_BLUE + typeList.get(i).identifier + Application.ANSI_RESET + " (count: " + constructList.size() + ")");
             }
 
         } else if (inputLineTokens.length >= 2) {
