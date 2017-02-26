@@ -14,13 +14,13 @@ public abstract class Construct_v1 {
 
     public long uid = Manager_v1.elementCounter++; // manager/cache UID
 
-    public String type = DEFAULT_CONSTRUCT_TYPE; // type identifier of OLD_construct
+    public String type = DEFAULT_CONSTRUCT_TYPE; // types identifier of OLD_construct
 
     public String title = null; // label/identifier(s)
 
     // string => String
     // list => ArrayList<?>
-    // list of type Type => ArrayList<Type>
+    // list of types Type => ArrayList<Type>
     public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
     // HashMap<String, List<Concept>> constructs;
@@ -45,9 +45,9 @@ public abstract class Construct_v1 {
     public ScriptConstruct scriptConstruct = null;
     */
 
-    // TODO: type (generic type identifier so can use single OLD_construct)
+    // TODO: types (generic types identifier so can use single OLD_construct)
     // TODO: HashMap<?> features (can be Concept or other values)
-    // Concept (Prototype) -> Container (must specify type or is anonymous) -> Container Revision
+    // Concept (Prototype) -> Container (must specify types or is anonymous) -> Container Revision
 
     // Structure/Links:
     // TODO: parent

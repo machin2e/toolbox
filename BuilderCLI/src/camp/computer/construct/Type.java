@@ -13,7 +13,11 @@ public class Type extends Identifier {
     // TODO: Consider using static Type interface to wrap interface to Manager_v1 for Type-specific operations
     private static HashMap<String, Type> identifiers = new HashMap<>();
 
-    public String identifier = null; // type identifier of construct
+    public String identifier = null; // types identifier of construct
+
+    // <TODO?>
+    // public List<Domain> domain;
+    // </TODO?>
 
     private Type(String identifier) {
         this.identifier = identifier;

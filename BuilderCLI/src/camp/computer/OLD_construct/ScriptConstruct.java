@@ -13,7 +13,7 @@ public class ScriptConstruct extends Construct_v1 {
 
     // TODO: repeat-strategy [ once, number(1,infinite), condition ]
 
-    // TODO: type [ script-uuid, code-uuid ]
+    // TODO: types [ script-uuid, code-uuid ]
 
     // TODO: jump-policy
 

@@ -11,7 +11,7 @@ import camp.computer.Application;
 public class Feature extends Identifier {
 
     // identifier/key: string
-    // type: string, list, construct-name
+    // types: string, list, construct-name
     // domain: list of accepted tokens; (or) for lists, stores list of values that can be stored in the list
 
     /**
@@ -19,38 +19,27 @@ public class Feature extends Identifier {
      * containing {@code VariableMap}. <em>in the namespace</em>.
      */
     public String identifier = null; // e.g., mode; direction; voltage
+    // TODO: Make identifier separate from feature in database so it's identified uniquely by it's types list and domain list?
 
     // Content Type (e.g., none, any, text, list, etc.)
-    public List<Type> type = new ArrayList<>(); // if size == 0, then unconstrained!
+    public List<Type> types = new ArrayList<>(); // if size == 0, then unconstrained!
 
     // Content Domain (contains Identifier Types and Identifier Content)
     // NOTE: This only ever contains "text object" or references to specific constructs
     public List<State> domain; // if size == 0, then 'none'! if null, then 'any'!
-    // TODO: Create a separate feature domain for each type in featureType
+    // TODO: Create a separate feature domain for each types in featureType
 
     /**
      * Only used for <em>list</em> {@code Type}.
      *
-     * {@code listTypes} is {@code null} when <em>any</em> type is acceptable. {@code listTypes} is
-     * an empty list when the list's type is <em>none</em>, meaning nothing can be added to the
+     * {@code listTypes} is {@code null} when <em>any</em> types is acceptable. {@code listTypes} is
+     * an empty list when the list's types is <em>none</em>, meaning nothing can be added to the
      * list.
      */
     public List<Type> listTypes = null; // if size == 0, then unconstrained!
 
     public Feature(String identifier) {
         this.identifier = identifier;
-    }
-
-    public static boolean isText(String featureContent) {
-        if (!featureContent.startsWith("'") || !featureContent.endsWith("'")) {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean isConstruct(String featureContent) {
-        // TODO:
-        return false;
     }
 
     @Override

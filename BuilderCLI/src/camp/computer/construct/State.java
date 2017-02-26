@@ -8,13 +8,13 @@ import camp.computer.workspace.Manager;
 
 public class State extends Identifier {
 
-    // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String object) function to retrieve
+    // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type types, String object) function to retrieve
 
     public Type type = null;
 
-    // Bytes storing actual object and object type
+    // Bytes storing actual object and object types
+    public Class objectType = null; // null for "none", List for "list", String for "text", Construct for non-primitive types
     public Object object = null;
-    public Class objectType = null; // null for "none", List for "list", String for "text", Construct for non-primitive type
 
     private State(Type type) {
         if (type == Type.get("none")) {
@@ -40,7 +40,7 @@ public class State extends Identifier {
 
     // Returns reference to the "base" state.
     public static State getState(Type type) {
-        // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type type, String object) function to retrieve
+        // TODO: Store in Manager and Database as indexable item and use Factory-style getPersistentState(Type types, String object) function to retrieve
 
 
         // TODO: Check if Manager contains the State already and if so, retrieve it and return a reference to it
@@ -122,11 +122,11 @@ public class State extends Identifier {
                 // TODO: Print from "text" construct
 //                return "'" + (String) this.object + "' (id: " + this.uid + ")";
                 return Application.ANSI_YELLOW + "'" + this.object + "'" + Application.ANSI_RESET + " (id: " + this.uid + ")";
-                // return type + "('" + (String) this.object + "')";
+                // return types + "('" + (String) this.object + "')";
             } else if (type == Type.get("number")) {
                 // TODO:
                 // TODO: Print from "number" construct
-                // return type + "('" + (String) this.object + "')";
+                // return types + "('" + (String) this.object + "')";
             } else if (type == Type.get("list")) {
 //                return "<TODO:LIST>" + "' (id: " + this.uid + ")";
                 List list = (List) this.object;
@@ -145,7 +145,7 @@ public class State extends Identifier {
                 return type + "(id:" + ((Construct) object).uid + ")";
             }
         } else {
-            System.out.println(Error.get("Error: State is in corrupt (type is null)."));
+            System.out.println(Error.get("Error: State is in corrupt (types is null)."));
         }
         return null;
     }

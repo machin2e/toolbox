@@ -36,7 +36,7 @@ public class Interpreter {
     private List<String> inputLines = new ArrayList<>();
 
     // TODO: Move list of Processes into Workspace
-    private List<OperationConstruct> operationConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set type from default "container" to "namespace", then add an interpreter for that type)!
+    private List<OperationConstruct> operationConstructs = new ArrayList<>(); // TODO: Define namespaces (or just use construct and set types from default "container" to "namespace", then add an interpreter for that types)!
 
     // <SETTINGS>
     public static boolean ENABLE_VERBOSE_OUTPUT = false;
@@ -63,17 +63,22 @@ public class Interpreter {
 
 //        if (!Concept.has(Type.get("number"))) {
 //            Concept.add(Type.get("number"));
-//            // TODO: add "element" (or "value"?) feature to primitive type (state type number)
+//            // TODO: add "element" (or "value"?) feature to primitive types (state types number)
 //        }
+        */
 
         if (!Concept.has(Type.get("text"))) {
-            Concept.add(Type.get("text"));
-            // TODO: add "element" (or "characters"?) feature for primitive type
+            Concept textConcept = Concept.add(Type.get("text"));
+            Feature feature = new Feature("text");
+            feature.types.add(Type.get("text"));
+            textConcept.features.put("text", feature);
+            // TODO: add "element" (or "characters"?) feature for primitive types
         }
 
+        /*
         if (!Concept.has(Type.get("list"))) {
             Concept.add(Type.get("list"));
-            // TODO: add "elements" feature for primitive type?
+            // TODO: add "elements" feature for primitive types?
         }
         */
     }
@@ -194,7 +199,7 @@ public class Interpreter {
                             } else if (identifier.getClass() == Concept.class) {
                                 System.out.println(Application.ANSI_RED + "Error: The UID is for a concept." + Application.ANSI_RESET);
 //                                Concept concept = (Concept) identifier;
-//                                System.out.println("Found " + concept.type + " with UID " + uid);
+//                                System.out.println("Found " + concept.types + " with UID " + uid);
                             }
                         } else if (context.inputLine.contains("uuid:")) {
 
@@ -240,6 +245,8 @@ public class Interpreter {
         }
     }
 
+    // Examples:
+    // has voltage list : 'none', 'cmos', 'ttl'
     public void hasTask(Context context) {
 
         String[] inputLineSegments = context.inputLine.split("[ ]*:[ ]*");
@@ -254,14 +261,13 @@ public class Interpreter {
 
             boolean hasError = false;
 
-            // Determine identifier and type
+            // Determine identifier and types
             if (inputLineSegments.length >= 1) {
 
                 String[] inputLineTokens = inputLineSegments[0].split("[ ]+");
 
                 // Determine identifier
                 featureIdentifierToken = inputLineTokens[1];
-
 
                 // <REFACTOR>
                 // Check if the feature already exists in the current context
@@ -270,8 +276,7 @@ public class Interpreter {
                 }
                 // </REFACTOR>
 
-
-                // Determine type
+                // Determine types
                 if (inputLineTokens.length >= 3) {
                     String featureTypeToken = inputLineTokens[2];
 
@@ -279,17 +284,18 @@ public class Interpreter {
                         featureTypes = new ArrayList<>();
                     }
 
-                    if (featureTypeToken.equals("text")) {
-                        featureTypes.add(Type.get(featureTypeToken));
-                    } else if (featureTypeToken.equals("list")) {
+//                    if (featureTypeToken.equals("text")) {
+//                        featureTypes.add(Type.get(featureTypeToken));
+//                    } else
+                    if (featureTypeToken.equals("list")) {
                         featureTypes.add(Type.get(featureTypeToken));
                         if (Type.has(featureIdentifierToken)) {
                             if (listTypes == null) {
                                 listTypes = new ArrayList<>();
                             }
-                            listTypes.add(Type.get(featureIdentifierToken)); // If identifier is a construct type, then constraint list to that type by default
+                            listTypes.add(Type.get(featureIdentifierToken)); // If identifier is a construct types, then constraint list to that types by default
                         } else {
-//                            listTypes.add(Type.get("any")); // If identifier is non-construct type then default list type is "any"
+//                            listTypes.add(Type.get("any")); // If identifier is non-construct types then default list types is "any"
                             listTypes = null;
                         }
                     } else {
@@ -308,8 +314,8 @@ public class Interpreter {
                         }
                         featureTypes.add(Type.get(featureIdentifierToken));
                     } else {
-                        // Can contain any type (no type is specified)
-//                        featureTypes.add(Type.get("any")); // Default type
+                        // Can contain any types (no types is specified)
+//                        featureTypes.add(Type.get("any")); // Default types
                     }
                 }
             }
@@ -331,7 +337,7 @@ public class Interpreter {
 
                 String[] constraintTokens = inputLineSegments[1].split("[ ]*,[ ]*");
 
-                // Determine type
+                // Determine types
                 // Note: Start with ANY, but constrain with increasing generality based on any examples present.
                 if (constraintTokens.length == 1) {
                     isSingletonList = true;
@@ -352,10 +358,10 @@ public class Interpreter {
                     }
                 }
 
-                // Set feature type or check for conflict with current feature type
+                // Set feature types or check for conflict with current feature types
                 if (!hasInvalidConstruct) {
-                    if (featureTypes == null) { // i.e., type is "any" (default unless specified)
-                        // Remove type "any" so constrained type can be specified
+                    if (featureTypes == null) { // i.e., types is "any" (default unless specified)
+                        // Remove types "any" so constrained types can be specified
 //                        featureTypes.remove(Type.get("any"));
                         // TODO: isListContent
                         if (isTextContent) {
@@ -363,13 +369,13 @@ public class Interpreter {
                             featureTypes.add(Type.get("text"));
                             hasDomainList = true;
                         } else if (isConstructContent) {
-                            // TODO: Use generic "construct" type or set specific if there's only one
+                            // TODO: Use generic "construct" types or set specific if there's only one
                             if (isSingletonList) {
                                 // e.g., has mode : list
                                 // e.g., has source : port
                                 featureTypes = new ArrayList<>();
                                 featureTypes.add(Type.get(constraintTokens[0]));
-                                // TODO: if 'text' or other construct only, then set type to featureType = TEXT and hasDomainList = false
+                                // TODO: if 'text' or other construct only, then set types to featureType = TEXT and hasDomainList = false
                                 if (featureTypes.contains(Type.get("list"))) {
 //                                    listTypes.add(Type.get("any"));
                                 }
@@ -382,11 +388,11 @@ public class Interpreter {
                             }
                         } else if (hasTextContent && hasConstructContent) {
                             featureTypes = new ArrayList<>();
-                            // Add 'text' list type
+                            // Add 'text' list types
                             featureTypes.add(Type.get("text"));
                             // Add custom types to list types
                             for (int i = 0; i < constraintTokens.length; i++) {
-                                // TODO: Check if type is valid!
+                                // TODO: Check if types is valid!
                                 if (Type.has(constraintTokens[i])) {
                                     featureTypes.add(Type.get(constraintTokens[i]));
                                     // TODO: Check for non-existent Types (from tokens)
@@ -412,7 +418,7 @@ public class Interpreter {
                             hasDomainList = true;
                         }
                     } else if (featureTypes.contains(Type.get("list"))) {
-                        // Remove type "any" so constrained type can be specified
+                        // Remove types "any" so constrained types can be specified
 //                        if (listTypes.contains(Type.get("any"))) {
 //                            listTypes.remove(Type.get("any"));
 //                        }
@@ -429,22 +435,22 @@ public class Interpreter {
                             if (isSingletonList) {
                                 // e.g., has ports list : port
                                 if (!Type.has(constraintTokens[0])) {
-                                    // Error: Invalid list object type.
+                                    // Error: Invalid list object types.
                                     hasError = true;
                                 } else {
-//                                    // Remove "any" time so type constraint functions as expected
+//                                    // Remove "any" time so types constraint functions as expected
 //                                    if (listTypes.contains(Type.get("any"))) {
 //                                        listTypes.remove(Type.get("any"));
 //                                    }
                                     if (listTypes == null) {
                                         listTypes = new ArrayList<>();
                                     }
-                                    // Add the list type constraint
+                                    // Add the list types constraint
                                     listTypes.add(Type.get(constraintTokens[0]));
                                 }
                             } else {
                                 // e.g., has ports-and-paths list : port, path
-                                // TODO: Convert listType to list and add all listed construct types to the type list
+                                // TODO: Convert listType to list and add all listed construct types to the types list
 //                                listTypes.add(Type.get("construct"));
                                 if (listTypes == null) {
                                     listTypes = new ArrayList<>();
@@ -461,11 +467,11 @@ public class Interpreter {
                             if (listTypes == null) {
                                 listTypes = new ArrayList<>();
                             }
-                            // Add 'text' list type
+                            // Add 'text' list types
                             listTypes.add(Type.get("text"));
                             // Add custom types to list types
                             for (int i = 0; i < constraintTokens.length; i++) {
-                                // TODO: Check if type is valid!
+                                // TODO: Check if types is valid!
                                 if (Type.has(constraintTokens[i])) {
                                     listTypes.add(Type.get(constraintTokens[i]));
                                     // TODO: Check for non-existent Types (from tokens)
@@ -483,19 +489,19 @@ public class Interpreter {
 //                            for (int i = 0; i < constraintTokens.length; i++) {
 //                                String constraintToken = constraintTokens[i].trim();
 //                                // TODO: Verify this... it might be a bug...
-//                                if (!constraintToken.equals(featureTagToken)) { // NOTE: featureTagToken is the custom type identifier.
+//                                if (!constraintToken.equals(featureTagToken)) { // NOTE: featureTagToken is the custom types identifier.
 //                                    hasError = true;
 //                                }
 //                            }
 //                        }
                     } else {
-                        // Custom non-primitive construct type
+                        // Custom non-primitive construct types
                         // e.g., has source port : port(uid:3), port(uid:4), port(uid:5)
-                        // TODO: Make sure that the constraint list contains feature object of the correct type (as in the above example)
+                        // TODO: Make sure that the constraint list contains feature object of the correct types (as in the above example)
                         for (int i = 0; i < constraintTokens.length; i++) {
                             String constraintToken = constraintTokens[i].trim();
                             for (int j = 0; j < featureTypes.size(); j++) {
-                                if (!constraintToken.equals(featureTypes.get(j).identifier)) { // NOTE: featureTagToken is the custom type identifier.
+                                if (!constraintToken.equals(featureTypes.get(j).identifier)) { // NOTE: featureTagToken is the custom types identifier.
                                     hasError = true;
                                 }
                             }
@@ -539,9 +545,9 @@ public class Interpreter {
                 // Store feature. Allocates memory for and stores feature.
                 Feature feature = new Feature(featureIdentifierToken);
                 if (featureTypes != null) {
-                    feature.type.addAll(featureTypes);
+                    feature.types.addAll(featureTypes);
                 }
-                if (feature.type.contains(Type.get("list"))) {
+                if (feature.types.contains(Type.get("list"))) {
                     if (listTypes != null) {
                         if (feature.listTypes == null) {
                             feature.listTypes = new ArrayList<>();
@@ -562,17 +568,17 @@ public class Interpreter {
 
                 // Print response
                 String typeString = "";
-                for (int i = 0; i < feature.type.size(); i++) {
-                    typeString += "" + feature.type.get(i);
-                    if ((i + 1) < feature.type.size()) {
+                for (int i = 0; i < feature.types.size(); i++) {
+                    typeString += "" + feature.types.get(i);
+                    if ((i + 1) < feature.types.size()) {
                         typeString += ", ";
                     }
                 }
 //                System.out.println(currentConcept.features.size() + " features");
-                System.out.print("feature " + feature + " type " + typeString + " ");
+                System.out.print("feature " + feature + " types " + typeString + " ");
 
-//                if (feature.type == Type.get("text")) {
-                if (feature.type.contains(Type.get("text"))) {
+//                if (feature.types == Type.get("text")) {
+                if (feature.types.contains(Type.get("text"))) {
                     if (feature.domain != null && feature.domain.size() == 0) {
                         // System.out.print("can assign text");
                     } else if (feature.domain != null && feature.domain.size() > 0) {
@@ -585,8 +591,8 @@ public class Interpreter {
                             }
                         }
                     }
-//                } else if (feature.type == Type.get("list")) {
-                } else if (feature.type.contains(Type.get("list"))) {
+//                } else if (feature.types == Type.get("list")) {
+                } else if (feature.types.contains(Type.get("list"))) {
                     // Print list of types the list can contain
                     // System.out.print("can contain ");
                     if (feature.listTypes == null) {
@@ -632,14 +638,14 @@ public class Interpreter {
 //                            System.out.print(feature.domain.get(i) + " ");
 //                        }
 //                    }
-////                } else if (feature.type == Type.get("construct")) {
-////                } else if (feature.type.contains(Type.get("construct"))) { // TODO: Don't use general "construct"
+////                } else if (feature.types == Type.get("construct")) {
+////                } else if (feature.types.contains(Type.get("construct"))) { // TODO: Don't use general "construct"
                 } else {
                     // Print list of types the feature can be assigned
                     System.out.print("can assign ");
-                    for (int i = 0; i < feature.type.size(); i++) {
-                        System.out.print(feature.type.get(i));
-                        if ((i + 1) < feature.type.size()) {
+                    for (int i = 0; i < feature.types.size(); i++) {
+                        System.out.print(feature.types.get(i));
+                        if ((i + 1) < feature.types.size()) {
                             System.out.print(", ");
                         }
                     }
@@ -694,13 +700,13 @@ public class Interpreter {
                 if (type != null && concept != null) {
                     Construct construct = Construct.add(type);
 
-//                    System.out.println("(id: " + construct.uid + ") " + Application.ANSI_GREEN + construct.type + Application.ANSI_RESET + " (uuid: " + construct.uuid + ")");
+//                    System.out.println("(id: " + construct.uid + ") " + Application.ANSI_GREEN + construct.types + Application.ANSI_RESET + " (uuid: " + construct.uuid + ")");
                     System.out.println("construct " + Application.ANSI_GREEN + construct.type + Application.ANSI_RESET + " (id: " + construct.uid + ")" + " (uuid: " + construct.uuid + ")");
 
                     // Update context
                     currentIdentifier = construct;
                 } else {
-                    System.out.println(Application.ANSI_RED + "Error: No type or concept matches '" + featureTagToken + "'" + Application.ANSI_RESET);
+                    System.out.println(Application.ANSI_RED + "Error: No types or concept matches '" + featureTagToken + "'" + Application.ANSI_RESET);
                 }
             }
 
@@ -717,6 +723,10 @@ public class Interpreter {
 
     }
 
+    // e.g.,
+    // set mode 'analog'
+    // set direction 'input'
+    // set source-port port(id:42)
     public void setTask(Context context) {
 
         // Determine interpreter's context. Concept or instance?
@@ -738,9 +748,10 @@ public class Interpreter {
 
                 // TODO: if featureContentToken is instance UID/UUID, look it up and pass that into "set"
 
-                ((Construct) currentIdentifier).set(featureIdentifier, stateExpression);
+                Construct currentConstruct = (Construct) currentIdentifier;
+                currentConstruct.set(featureIdentifier, stateExpression);
 
-                System.out.println(((Construct) currentIdentifier));
+                System.out.println(currentConstruct);
 
             }
 
@@ -793,7 +804,7 @@ public class Interpreter {
     }
 
     // Usage:
-    // list [<type-identifier>]
+    // list [<types-identifier>]
     //
     // Examples:
     // list         Lists available types.
@@ -833,7 +844,7 @@ public class Interpreter {
 //                        } else if (identifier.getClass() == Concept.class) {
 //                            System.out.println("Error: The UID is for a concept.");
 //                            //                                Concept concept = (Concept) identifier;
-//                            //                                System.out.println("Found " + concept.type + " with UID " + uid);
+//                            //                                System.out.println("Found " + concept.types + " with UID " + uid);
                     }
 
                     if (construct != null && construct.type == Type.get(typeIdentifierToken)) {
@@ -841,14 +852,14 @@ public class Interpreter {
                         for(String featureIdentifier : construct.features.keySet()) {
                             Feature feature = construct.features.get(featureIdentifier);
                             String featureTypes = "";
-                            for (int i = 0; i < feature.type.size(); i++) {
-                                featureTypes += feature.type.get(i);
-                                if ((i + 1) < feature.type.size()) {
+                            for (int i = 0; i < feature.types.size(); i++) {
+                                featureTypes += feature.types.get(i);
+                                if ((i + 1) < feature.types.size()) {
                                     featureTypes += ", ";
                                 }
                             }
                             System.out.println(Application.ANSI_GREEN + construct.features.get(featureIdentifier).identifier + Application.ANSI_RESET + " " + Application.ANSI_BLUE + featureTypes + Application.ANSI_RESET);
-                            // TODO: print current object type; print available feature types
+                            // TODO: print current object types; print available feature types
                         }
                     }
                 } else if (addressToken.equals("uuid")) {
@@ -888,48 +899,48 @@ public class Interpreter {
 
                 System.out.println(state);
 
-//                if (state != null && state.type == Type.get("text")) {
+//                if (state != null && state.types == Type.get("text")) {
 ////                    System.out.println("" + ((String) state.object));
 //                    System.out.println("" + state);
-//                } else if (state != null && state.type == Type.get("text")) {
+//                } else if (state != null && state.types == Type.get("text")) {
 //                    List contentList = (List) state.object;
 //                    for (int i = 0; i < contentList.size(); i++) {
-//                        // TODO: Possibly use Content object for values to pair type with object (like little "files with extensions")?
-////                        if (contentList.get(i).type == Type.get("text")) {
+//                        // TODO: Possibly use Content object for values to pair types with object (like little "files with extensions")?
+////                        if (contentList.get(i).types == Type.get("text")) {
 ////                            System.out.println("" + ((String) object.object));
 ////                        }
 //                    }
 //                }
 
-//                if (object.type == Type.get("text")) {
+//                if (object.types == Type.get("text")) {
 //                    System.out.println("" + ((String) object.object));
-//                } else if (object.type == Type.get("list")) {
+//                } else if (object.types == Type.get("list")) {
 //                    List contentList = (List) object;
 //                    for (int i = 0; i < contentList.size(); i++) {
-//                        // TODO: Possibly use Content object for values to pair type with object (like little "files with extensions")?
-////                        if (contentList.get(i).type == Type.get("text")) {
+//                        // TODO: Possibly use Content object for values to pair types with object (like little "files with extensions")?
+////                        if (contentList.get(i).types == Type.get("text")) {
 ////                            System.out.println("" + ((String) object.object));
 ////                        }
 //                    }
 //                }
 
-//                Type type = null;
+//                Type types = null;
 //                Concept identity = null;
 //                if (Type.has(instanceTagToken)) {
-//                    type = Type.get(instanceTagToken);
-//                    if (Concept.has(type)) {
-//                        identity = Concept.get(type);
+//                    types = Type.get(instanceTagToken);
+//                    if (Concept.has(types)) {
+//                        identity = Concept.get(types);
 //                    }
 //                }
 
-//                if (type != null && identity != null) {
+//                if (types != null && identity != null) {
 //    //                    Construct instance = new Construct(identity);
-//                    Construct instance = Construct.add(type);
+//                    Construct instance = Construct.add(types);
 //
 //                    List<Construct> instanceList = Manager.get(Construct.class);
-//                    System.out.println("added instance of identity " + instance.type + " (" + instanceList.size() + " instances)");
+//                    System.out.println("added instance of identity " + instance.types + " (" + instanceList.size() + " instances)");
 //                } else {
-//                    System.out.println("Error: No type or identity matches '" + instanceTagToken + "'");
+//                    System.out.println("Error: No types or identity matches '" + instanceTagToken + "'");
 //                }
             }
 
@@ -979,7 +990,7 @@ public class Interpreter {
                 System.out.println("\t" + letParameterTokens[i].trim());
             }
 
-//            // Determine type
+//            // Determine types
 //            if (inputLineTokens.length == 2) {
 //                if (camp.computer.construct.Concept.has(featureTagToken)) {
 //                    featureType = Feature.Type.CUSTOM_CONSTRUCT;
@@ -1000,11 +1011,11 @@ public class Interpreter {
 //            // Instantiate feature and print response
 //            if (featureTagToken != null) {
 //                Feature feature = new Feature(featureTagToken);
-//                feature.type = featureType;
+//                feature.types = featureType;
 //                currentConcept.features.put(featureTagToken, feature);
 //
 //                // Print response
-//                System.out.println("added feature '" + feature.identifier + "' of type '" + feature.type + "' (" + currentConcept.features.size() + ")");
+//                System.out.println("added feature '" + feature.identifier + "' of types '" + feature.types + "' (" + currentConcept.features.size() + ")");
 //            } else {
 //                // Print response
 //                System.out.println("error: bad feature syntax");
@@ -1402,7 +1413,7 @@ public class Interpreter {
     }
 
     // Format:
-    // add <OLD_construct-type-identifier> <OLD_construct-instance-identifier>
+    // add <OLD_construct-types-identifier> <OLD_construct-instance-identifier>
     //
     // Examples:
     // - add project
@@ -1584,7 +1595,7 @@ public class Interpreter {
 
     /**
      * <strong>Examples</strong>
-     * {@code list <OLD_construct-type>}
+     * {@code list <OLD_construct-types>}
      *
      * @param context
      */
@@ -2194,8 +2205,8 @@ public class Interpreter {
 
         // add path <identifier>
         // edit path
-        // set source-port[OLD_construct-type] uid:34
-        // set target-port[OLD_construct-type] uid:34
+        // set source-port[OLD_construct-types] uid:34
+        // set target-port[OLD_construct-types] uid:34
 
 //        if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == DeviceConstruct.class) {
 //        if (workspace.OLD_construct != null && workspace.OLD_construct.getClass() == PathConstruct.class) {
