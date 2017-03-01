@@ -6,7 +6,7 @@ public class Command {
 
     /*
     public interface Task {
-        void execute(Context context);
+        void execute(Context object);
     }
 
     Task task;

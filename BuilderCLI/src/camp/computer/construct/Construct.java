@@ -1,7 +1,10 @@
 package camp.computer.construct;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import camp.computer.Application;
 import camp.computer.workspace.Manager;
@@ -20,12 +23,20 @@ public class Construct extends Identifier {
 
     public HashMap<String, Feature> features = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
     // TODO: (Replace ^ with this, based on TODO block above:) Bytes storing actual object and object types
-    public Class objectType = null; // null for "none", List for "list", String for "text", Construct for non-primitive types
+
+    // null for "none"
+    // List for "list" (allocates ArrayList<Object>)
+    // String for "text"
+    // Double for "number"
+    // [DELETE] Construct for non-primitive types
+    // Map for non-primitive construct (allocates HashMap or TreeMap)
+    public Class objectType = null;
     public Object object = null;
     // </CONCEPT>
 
+    // This is only present for non-primitive types (that instantiate a Map)
     // TODO: Remove this after removing the State class.
-    public HashMap<String, State> states = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
+    public HashMap<String, Construct> states = new HashMap<>(); // TODO: Remove? Remove setupConfiguration?
 
     // TODO: configuration(s) : assign state to multiple features <-- do this for _Container_ not Concept
 
@@ -38,37 +49,167 @@ public class Construct extends Identifier {
 
         this.type = concept.type;
 
-        // Create Content for each Feature
-        for (Feature feature : concept.features.values()) {
-            features.put(feature.identifier, feature);
-            if (feature.types.size() == 1) {
-                states.put(feature.identifier, State.getState(feature.types.get(0))); // Initialize with only available types if there's only one available
-            } else {
-                states.put(feature.identifier, null); // Default to "any" types by setting null
+        // Allocate default object based on specified classType
+        if (type == Type.get("none")) {
+            this.objectType = null;
+            this.object = null;
+        } else if (type == Type.get("number")) {
+            this.objectType = Double.class;
+            this.object = 0; // TODO: Default to null?
+        } else if (type == Type.get("text")) {
+            this.objectType = String.class;
+            this.object = ""; // TODO: Default to null?
+        } else if (type == Type.get("list")) {
+            this.objectType = List.class;
+            this.object = new ArrayList<>();
+        } else if (type != null) {
+            this.objectType = Map.class;
+            this.object = new HashMap<String, Feature>();
+
+            // Create Content for each Feature
+            HashMap<String, Feature> features = (HashMap<String, Feature>) this.object;
+            for (Feature feature : concept.features.values()) {
+                features.put(feature.identifier, feature);
+                if (feature.types.size() == 1) {
+                    // TODO: get default construct...
+//                    states.put(feature.identifier, Construct.get(feature.types.get(0))); // Initialize with only available types if there's only one available
+                    states.put(feature.identifier, Construct.get(feature.types.get(0).identifier)); // Initialize with only available types if there's only one available
+//                    states.put(feature.identifier, Manager.getPersistentConstruct(feature.types.get(0).identifier)); // Initialize with only available types if there's only one available
+                } else {
+                    states.put(feature.identifier, null); // Default to "any" types by setting null
+                }
             }
         }
 
+//        // Create Content for each Feature
+//        for (Feature feature : concept.features.values()) {
+//            features.put(feature.identifier, feature);
+//            if (feature.types.size() == 1) {
+//                states.put(feature.identifier, Construct.get(feature.types.get(0))); // Initialize with only available types if there's only one available
+//            } else {
+//                states.put(feature.identifier, null); // Default to "any" types by setting null
+//            }
+//        }
+
     }
 
-    public static Construct add(Type type) {
-        if (Concept.has(type)) {
-            Concept concept = Concept.get(type);
-            Construct construct = new Construct(concept);
-            long uid = Manager.add(construct);
+    public static Construct get(Type type) {
+        Concept concept = Concept.get(type);
+        if (concept != null) {
+            Construct construct = Manager.getPersistentConstruct(type);
+            if (construct == null) {
+                // TODO: Check if default construct for classType already exists!
+                construct = new Construct(concept);
+                long uid = Manager.add(construct);
+                return construct;
+            }
             return construct;
         }
         return null;
+    }
+
+    // Encapsulate state
+    // TODO: Query database for the state corresponding to stateExpression.
+    // e.g.,
+    // none
+    // 3 --or-- 3.4 --or-- 341
+    // text(id:23) --or-- 'foo' --or-- text('foo')
+    // list(id:44) --or-- port, path, project --or-- 'foo', text('bar'), port(uid:3) --or-- port, path, project
+    // port(uid:3)
+    public static Construct get(String expression) {
+        Type constructType = Type.get(expression);
+        if (constructType != null) {
+
+            if (constructType == Type.get("none")) {
+                Construct construct = Manager.getPersistentConstruct(expression);
+                if (construct == null) {
+                    // State wasn't found, so create a new one and return it
+                    // TODO: Store in the database
+                    construct = Construct.get(constructType);
+                }
+                return construct;
+            } else if (constructType == Type.get("text")) {
+                Construct construct = Manager.getPersistentConstruct(expression);
+                if (construct == null) {
+                    // State wasn't found, so create a new one and return it
+                    // TODO: Store in the database
+                    if (expression.startsWith("'") && expression.endsWith("'")) {
+                        Concept conceptType = Concept.get(constructType);
+                        construct = new Construct(conceptType);
+                        long uid = Manager.add(construct);
+                        construct.object = expression.substring(1, expression.length() - 1);
+                    } else {
+                        construct = Construct.get(constructType);
+                        construct.object = "";
+                    }
+                }
+                return construct;
+            } else if (constructType == Type.get("list")) {
+
+            } else {
+
+                Construct construct = Manager.getPersistentConstruct(expression);
+                if (construct == null) {
+
+                    // Create new State
+                    // TODO: Add new state to persistent store
+
+                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
+                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
+                    String addressToken = expression.substring(expression.indexOf(":") + 1, expression.indexOf(")")).trim(); // text between ':' and ')'
+
+                    long uid = Long.parseLong(addressToken.trim());
+                    Identifier identifier = Manager.get(uid);
+                    if (identifier != null) {
+                        construct = Construct.get(constructType);
+                        construct.object = identifier;
+                        return construct;
+                    } else {
+                        System.out.println(Error.get("Error: " + expression + " does not exist."));
+                    }
+                }
+                return construct;
+
+            }
+
+        }
+        return null;
+    }
+
+    public static Construct REFACTOR_getRevise(Construct currentConstruct, String featureToReplace, Construct featureConstructReplacement) {
+
+        Concept concept = Concept.get(currentConstruct.type);
+        Construct newContruct = new Construct(concept);
+
+        // Copy states from source Construct.
+        for (String featureIdentifier : currentConstruct.states.keySet()) {
+            if (featureIdentifier.equals(featureToReplace)) {
+                newContruct.states.put(featureToReplace, featureConstructReplacement);
+            } else {
+                newContruct.states.put(featureIdentifier, currentConstruct.states.get(featureIdentifier));
+            }
+        }
+
+        long uid = Manager.add(newContruct);
+        return newContruct;
+
     }
 
     // If listType is "any", allow anything to go in the list
     // if listType is "text", only allow text to be placed in the list
     // if listType is specific "text" values, only allow those values in the list
     public void set(String featureIdentifier, String expression) {
+
+        // TODO: Check if classType can use "set"
+
+        HashMap<String, Feature> features = (HashMap<String, Feature>) this.object;
+
         if (features.containsKey(featureIdentifier)) {
 
-            Type stateType = Type.get((String) expression);
+            Type constructType = Type.get(expression);
             Feature feature = features.get(featureIdentifier);
-            if (feature.types.contains(stateType)) {
+//            if (feature.types == null || feature.types.contains(constructType)) {
+            if (feature.types.size() == 0 || feature.types.contains(constructType)) {
 
                 /*
                 // Get feature's current state
@@ -128,12 +269,12 @@ public class Construct extends Identifier {
                 }
                 */
 
-                if (stateType == Type.get("none")) {
+                if (constructType == Type.get("none")) {
 
-                    State state = State.getState(expression);
+                    Construct construct = Construct.get(expression);
 
-                    if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
-                        states.put(featureIdentifier, state);
+                    if (feature.domain == null || feature.domain.contains(construct)) { // TODO: Make sure 'contains' works!
+                        states.put(featureIdentifier, construct);
                         // TODO: Update Construct in database
                     } else {
                         System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
@@ -154,7 +295,7 @@ public class Construct extends Identifier {
 //                        System.out.println(Application.ANSI_RED + "Error: Interpreter error. State is null." + Application.ANSI_RESET);
 //                    }
 
-                } else if (stateType == Type.get("list")) {
+                } else if (constructType == Type.get("list")) {
 
                     // TODO: Allow lists to be assigned? Yes!
                     System.out.println(Application.ANSI_RED + "Error: Cannot SET on a list. (This might change!)." + Application.ANSI_RESET);
@@ -170,17 +311,17 @@ public class Construct extends Identifier {
 //                            State featureState = states.get(featureIdentifier);
 //                            Construct featureConstruct = (Construct) featureState.object;
 ////                        contents.get(tag).state.object = (String) object;
-//                            featureConstruct.add(state);
+//                            featureConstruct.get(state);
 //                        } else {
 //                            System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
 //                        }
 //                    }
 
-                    State state = State.getState(expression);
+                    Construct construct = Construct.get(expression);
 
-                    if (state != null) {
-                        if (feature.domain == null || feature.domain.contains(state)) { // TODO: Make sure 'contains' works!
-                            states.put(featureIdentifier, state);
+                    if (construct != null) {
+                        if (feature.domain == null || feature.domain.contains(construct)) { // TODO: Make sure 'contains' works!
+                            states.put(featureIdentifier, construct);
                             // TODO: Update Construct in database
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
@@ -211,15 +352,15 @@ public class Construct extends Identifier {
 //                if (contents.get(identifier).listType == Type.get("text")) {
                 if (contents.get(tag).listTypes.contains(Type.get("text"))) {
                     if (Content.isText((String) object)) {
-                        contentList.add(object);
+                        contentList.get(object);
                     } else {
-                        System.out.println("Error: Cannot add non-text to list (only can contain text).");
+                        System.out.println("Error: Cannot get non-text to list (only can contain text).");
                     }
 //                } else if (contents.get(identifier).listType == Type.get("construct")) {
 //                } else if (contents.get(identifier).listTypes.contains(Type.get("construct"))) {
                 } else {
                     // TODO: Determine if the construct object is allowed into the list based on the specific types!
-                    contentList.add(object);
+                    contentList.get(object);
                 }
             } else if (contents.get(tag).types == Type.get("text")) {
                 if (Content.isText((String) object)) {
@@ -234,14 +375,14 @@ public class Construct extends Identifier {
         }
     }
 
-    public Feature get(String tag) {
-        if (features.containsKey(tag)) {
-            return features.get(tag);
-        }
-        return null;
-    }
+//    public Feature get(String tag) {
+//        if (features.containsKey(tag)) {
+//            return features.get(tag);
+//        }
+//        return null;
+//    }
 
-    // TODO: add <list-feature-identifier> : <object>
+    // TODO: get <list-feature-identifier> : <object>
 
     /**
      * Adds a {@code State} to a <em>list</em> {@code Construct}, which is a {@code Construct} with
@@ -252,14 +393,14 @@ public class Construct extends Identifier {
      * @param featureIdentifier
      * @param expression
      */
-    public void add(String featureIdentifier, String expression) {
+    public void get(String featureIdentifier, String expression) {
         if (features.containsKey(featureIdentifier)) {
             Feature feature = features.get(featureIdentifier);
-            State featureState = states.get(featureIdentifier);
+            Construct featureState = states.get(featureIdentifier);
 
             // Check if feature can be a list
             if (!feature.types.contains(Type.get("list"))) {
-                System.out.println(Application.ANSI_RED + "Error: Cannot add to a non-list." + Application.ANSI_RESET);
+                System.out.println(Application.ANSI_RED + "Error: Cannot get to a non-list." + Application.ANSI_RESET);
                 return;
             }
 
@@ -267,9 +408,9 @@ public class Construct extends Identifier {
             if (featureState.type != Type.get("list")) {
                 // Change the types of the stored object if it is not a list
                 if (featureState == null) {
-                    featureState = State.getState(Type.get("list"));
+                    featureState = Construct.get(Type.get("list"));
                 } else if (featureState.type != Type.get("list")) {
-                    featureState = State.getState(Type.get("list"));
+                    featureState = Construct.get(Type.get("list"));
                 }
             }
 
@@ -293,11 +434,11 @@ public class Construct extends Identifier {
 
                     // Change the types of the stored object if it is not a list
                     if (featureState == null) {
-                        featureState = State.getState(stateType);
+                        featureState = Construct.get(stateType);
                     } else if (featureState.type != stateType) {
 //                        featureContent.objectType = List.class;
 //                        featureContent.object = new ArrayList<>();
-                        featureState = State.getState(stateType);
+                        featureState = Construct.get(stateType);
                     }
 
                     // Update the object
@@ -319,17 +460,17 @@ public class Construct extends Identifier {
 //                    state.object = expression;
 
                     // Encapsulate text state
-                    State state = State.getState(expression);
+                    Construct construct = Construct.get(expression);
 
 
 //                    if (Content.isText((String) object)) {
 //                    if (feature.domain == null || feature.domain.contains((String) expression)) {
-                    if (feature.domain == null || feature.domain.contains(state)) {
+                    if (feature.domain == null || feature.domain.contains(construct)) {
                     // TODO: if (feature.domain == null || feature.domain.contains(state)) {
                             List list = (List) featureState.object;
 //                        contents.get(tag).state.object = (String) object;
-//                            list.add(expression);
-                            list.add(state);
+//                            list.get(expression);
+                            list.add(construct);
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
                         }
@@ -350,16 +491,16 @@ public class Construct extends Identifier {
 //                    }
 
                     // Encapsulate text state
-                    State state = State.getState(expression);
+                    Construct construct = Construct.get(expression);
 
                     // Add to the list in memory
 //                    if (Content.isText((String) object)) {
-                    if (state != null) {
+                    if (construct != null) {
 //                        if (feature.domain == null || feature.domain.contains((String) expression)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
-                        if (feature.domain == null || feature.domain.contains(state)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
+                        if (feature.domain == null || feature.domain.contains(construct)) { // TODO: Update domain to contain State objects so it can contain port and other Constructs
                             List list = (List) featureState.object;
 //                        contents.get(tag).state.object = (String) object;
-                            list.add(state);
+                            list.add(construct);
                         } else {
                             System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
                         }
@@ -387,15 +528,15 @@ public class Construct extends Identifier {
 //                if (contents.get(identifier).listType == Type.get("text")) {
                 if (contents.get(tag).listTypes.contains(Type.get("text"))) {
                     if (Content.isText((String) object)) {
-                        contentList.add(object);
+                        contentList.get(object);
                     } else {
-                        System.out.println("Error: Cannot add non-text to list (only can contain text).");
+                        System.out.println("Error: Cannot get non-text to list (only can contain text).");
                     }
 //                } else if (contents.get(identifier).listType == Type.get("construct")) {
 //                } else if (contents.get(identifier).listTypes.contains(Type.get("construct"))) {
                 } else {
                     // TODO: Determine if the construct object is allowed into the list based on the specific types!
-                    contentList.add(object);
+                    contentList.get(object);
                 }
             } else if (contents.get(tag).types == Type.get("text")) {
                 if (Content.isText((String) object)) {
@@ -412,7 +553,12 @@ public class Construct extends Identifier {
 
     @Override
     public String toString() {
-        return Application.ANSI_BLUE + type + Application.ANSI_RESET + " (id:" + uid + ")";
+        if (type == Type.get("text")) {
+            String content = (String) this.object;
+            return Application.ANSI_BLUE + type + Application.ANSI_RESET + " '" + content + "' (id:" + uid + ")";
+        } else {
+            return Application.ANSI_BLUE + type + Application.ANSI_RESET + " (id:" + uid + ")";
+        }
     }
 
 }

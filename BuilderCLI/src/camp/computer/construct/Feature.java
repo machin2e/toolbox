@@ -22,11 +22,12 @@ public class Feature extends Identifier {
     // TODO: Make identifier separate from feature in database so it's identified uniquely by it's types list and domain list?
 
     // Content Type (e.g., none, any, text, list, etc.)
-    public List<Type> types = new ArrayList<>(); // if size == 0, then unconstrained!
+//    public List<Type> types = new ArrayList<>(); // if size == 0, then unconstrained!
+    public List<Type> types = new ArrayList<>(); // if size == 0, then unconstrained! if null, then 'none' (impossible).
 
     // Content Domain (contains Identifier Types and Identifier Content)
     // NOTE: This only ever contains "text object" or references to specific constructs
-    public List<State> domain; // if size == 0, then 'none'! if null, then 'any'!
+    public List<Construct> domain; // if size == 0, then 'none'! if null, then 'any'!
     // TODO: Create a separate feature domain for each types in featureType
 
     /**

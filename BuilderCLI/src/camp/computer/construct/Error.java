@@ -15,7 +15,7 @@ public class Error {
     public String message = null;
 
     private Error(String message) {
-        this.message = Application.ANSI_RED + message + Application.ANSI_RESET;
+        this.message = Application.ANSI_RED + "Error: " + message + Application.ANSI_RESET;
     }
 
     public static Error get(String message) {
