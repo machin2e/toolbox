@@ -1,6 +1,6 @@
 package camp.computer.construct;
 
-import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 
 public class Error {
 
@@ -15,7 +15,7 @@ public class Error {
     public String message = null;
 
     private Error(String message) {
-        this.message = Application.ANSI_RED + "Error: " + message + Application.ANSI_RESET;
+        this.message = Color.ANSI_RED + "Error: " + message + Color.ANSI_RESET;
     }
 
     public static Error get(String message) {

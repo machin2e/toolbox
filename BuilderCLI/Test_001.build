@@ -12,3 +12,25 @@ has port list
 
 device
 # add port
+
+
+############
+
+# Note: Test this one with the debugger!
+# Date: 2017-03-01
+describe port
+has mode text
+port
+set mode 'digital'
+set mode 'analog'
+
+
+# Note: BUG. Calling "set port port(id:9)" repeatedly creates duplicate constructs!
+# Date: 2017-03-01
+describe ports
+has port
+port
+print port
+set port port(id:9)
+set port port(id:9)
+set port port(id:9)

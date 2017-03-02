@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 import camp.computer.workspace.Manager;
 
 public class Construct extends Identifier {
@@ -72,9 +73,8 @@ public class Construct extends Identifier {
                 features.put(feature.identifier, feature);
                 if (feature.types.size() == 1) {
                     // TODO: get default construct...
-//                    states.put(feature.identifier, Construct.get(feature.types.get(0))); // Initialize with only available types if there's only one available
-                    states.put(feature.identifier, Construct.get(feature.types.get(0).identifier)); // Initialize with only available types if there's only one available
-//                    states.put(feature.identifier, Manager.getPersistentConstruct(feature.types.get(0).identifier)); // Initialize with only available types if there's only one available
+//                    states.put(feature.identifier, Construct.get(feature.types.get(0).identifier)); // Initialize with only available types if there's only one available
+                    states.put(feature.identifier, Construct.get(Type.get("none"))); // Initialize with only available types if there's only one available
                 } else {
                     states.put(feature.identifier, null); // Default to "any" types by setting null
                 }
@@ -154,19 +154,24 @@ public class Construct extends Identifier {
                     // Create new State
                     // TODO: Add new state to persistent store
 
-                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
-                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
-                    String addressToken = expression.substring(expression.indexOf(":") + 1, expression.indexOf(")")).trim(); // text between ':' and ')'
+                    Concept conceptType = Concept.get(constructType);
+                    construct = new Construct(conceptType);
+                    long uid = Manager.add(construct);
+//                    construct.object = expression.substring(1, expression.length() - 1);
 
-                    long uid = Long.parseLong(addressToken.trim());
-                    Identifier identifier = Manager.get(uid);
-                    if (identifier != null) {
-                        construct = Construct.get(constructType);
-                        construct.object = identifier;
-                        return construct;
-                    } else {
-                        System.out.println(Error.get("Error: " + expression + " does not exist."));
-                    }
+//                    String typeIdentifierToken = expression.substring(0, expression.indexOf("(")).trim(); // text before '('
+//                    String addressTypeToken = expression.substring(expression.indexOf("(") + 1, expression.indexOf(":")).trim(); // text between '(' and ':'
+//                    String addressToken = expression.substring(expression.indexOf(":") + 1, expression.indexOf(")")).trim(); // text between ':' and ')'
+//
+//                    long uid = Long.parseLong(addressToken.trim());
+//                    Identifier identifier = Manager.get(uid);
+//                    if (identifier != null) {
+//                        construct = Construct.get(constructType);
+//                        construct.object = identifier;
+//                        return construct;
+//                    } else {
+//                        System.out.println(Error.get("Error: " + expression + " does not exist."));
+//                    }
                 }
                 return construct;
 
@@ -277,7 +282,7 @@ public class Construct extends Identifier {
                         states.put(featureIdentifier, construct);
                         // TODO: Update Construct in database
                     } else {
-                        System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
+                        System.out.println(Color.ANSI_RED + "Error: Specified text is not in the feature's domain." + Color.ANSI_RESET);
                     }
 
 //                } else if (stateType == Type.get("text")) {
@@ -298,7 +303,7 @@ public class Construct extends Identifier {
                 } else if (constructType == Type.get("list")) {
 
                     // TODO: Allow lists to be assigned? Yes!
-                    System.out.println(Application.ANSI_RED + "Error: Cannot SET on a list. (This might change!)." + Application.ANSI_RESET);
+                    System.out.println(Color.ANSI_RED + "Error: Cannot SET on a list. (This might change!)." + Color.ANSI_RESET);
 
                 } else {
 
@@ -324,10 +329,10 @@ public class Construct extends Identifier {
                             states.put(featureIdentifier, construct);
                             // TODO: Update Construct in database
                         } else {
-                            System.out.println(Application.ANSI_RED + "Error: Specified text is not in the feature's domain." + Application.ANSI_RESET);
+                            System.out.println(Color.ANSI_RED + "Error: Specified text is not in the feature's domain." + Color.ANSI_RESET);
                         }
                     } else {
-                        System.out.println(Application.ANSI_RED + "Error: Interpreter error. State is null." + Application.ANSI_RESET);
+                        System.out.println(Color.ANSI_RED + "Error: Interpreter error. State is null." + Color.ANSI_RESET);
                     }
 
 //                    System.out.println(Application.ANSI_RED + "Error: Feature types mismatches object types." + Application.ANSI_RESET);
@@ -400,7 +405,7 @@ public class Construct extends Identifier {
 
             // Check if feature can be a list
             if (!feature.types.contains(Type.get("list"))) {
-                System.out.println(Application.ANSI_RED + "Error: Cannot get to a non-list." + Application.ANSI_RESET);
+                System.out.println(Color.ANSI_RED + "Error: Cannot get to a non-list." + Color.ANSI_RESET);
                 return;
             }
 
@@ -472,7 +477,7 @@ public class Construct extends Identifier {
 //                            list.get(expression);
                             list.add(construct);
                         } else {
-                            System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
+                            System.out.println(Color.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Color.ANSI_RESET);
                         }
 //                    }
 //                    } else {
@@ -502,13 +507,13 @@ public class Construct extends Identifier {
 //                        contents.get(tag).state.object = (String) object;
                             list.add(construct);
                         } else {
-                            System.out.println(Application.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Application.ANSI_RESET);
+                            System.out.println(Color.ANSI_RED + "Error: Specified " + stateType + " is not in the feature's domain." + Color.ANSI_RESET);
                         }
                     }
 
                 }
             } else {
-                System.out.println(Application.ANSI_RED + "Error: Feature types mismatches object types." + Application.ANSI_RESET);
+                System.out.println(Color.ANSI_RED + "Error: Feature types mismatches object types." + Color.ANSI_RESET);
             }
 
 
@@ -555,9 +560,9 @@ public class Construct extends Identifier {
     public String toString() {
         if (type == Type.get("text")) {
             String content = (String) this.object;
-            return Application.ANSI_BLUE + type + Application.ANSI_RESET + " '" + content + "' (id:" + uid + ")";
+            return Color.ANSI_BLUE + type + Color.ANSI_RESET + " '" + content + "' (id:" + uid + ")";
         } else {
-            return Application.ANSI_BLUE + type + Application.ANSI_RESET + " (id:" + uid + ")";
+            return Color.ANSI_BLUE + type + Color.ANSI_RESET + " (id:" + uid + ")";
         }
     }
 

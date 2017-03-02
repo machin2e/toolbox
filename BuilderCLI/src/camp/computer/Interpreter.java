@@ -29,6 +29,7 @@ import camp.computer.data.format.configuration.Variable;
 import camp.computer.platform_infrastructure.LoadBuildFileTask;
 import camp.computer.util.Pair;
 import camp.computer.util.Tuple;
+import camp.computer.util.terminal.Color;
 import camp.computer.workspace.Manager_v1;
 import camp.computer.workspace.Manager;
 
@@ -193,7 +194,7 @@ public class Interpreter {
                             long uid = Long.parseLong(addressToken);
                             Identifier identifier = Manager.get(uid);
                             if (identifier == null) {
-                                System.out.println(Application.ANSI_RED + "Error: No concept with UID " + uid + Application.ANSI_RESET);
+                                System.out.println(Color.ANSI_RED + "Error: No concept with UID " + uid + Color.ANSI_RESET);
                             } else if (identifier.getClass() == Reference.class) {
                                 Reference reference = (Reference) identifier;
                                 Construct construct = (Construct) reference.object;
@@ -212,7 +213,7 @@ public class Interpreter {
                                 currentIdentifier = construct;
 
                             } else if (identifier.getClass() == Concept.class) {
-                                System.out.println(Application.ANSI_RED + "Error: The UID is for a concept." + Application.ANSI_RESET);
+                                System.out.println(Color.ANSI_RED + "Error: The UID is for a concept." + Color.ANSI_RESET);
 //                                Concept concept = (Concept) identifier;
 //                                System.out.println("Found " + concept.types + " with UID " + uid);
                             }
@@ -221,7 +222,7 @@ public class Interpreter {
                         }
                     }
                 } else {
-                    System.out.println(Application.ANSI_RED + "Error: Unsupported expression." + Application.ANSI_RESET);
+                    System.out.println(Color.ANSI_RED + "Error: Unsupported expression." + Color.ANSI_RESET);
                 }
             }
         }
@@ -295,7 +296,7 @@ public class Interpreter {
                 // <REFACTOR>
                 // Check if the feature already exists in the current object
                 if (((Concept) currentIdentifier).features.containsKey(featureIdentifierToken)) {
-                    System.out.println(Application.ANSI_RED + "Warning: Context already contains feature '" + featureIdentifierToken + "'. A new construct revision will be generated." + Application.ANSI_RESET);
+                    System.out.println(Color.ANSI_RED + "Warning: Context already contains feature '" + featureIdentifierToken + "'. A new construct revision will be generated." + Color.ANSI_RESET);
                 }
                 // </REFACTOR>
 
@@ -563,7 +564,7 @@ public class Interpreter {
 
             // Instantiate feature, get to construct, and print response
             if (hasError) {
-                System.out.println(Application.ANSI_RED + "Error: Conflicting types present in expression." + Application.ANSI_RESET);
+                System.out.println(Color.ANSI_RED + "Error: Conflicting types present in expression." + Color.ANSI_RESET);
             } else if (featureIdentifierToken != null) {
                 // Store feature. Allocates memory for and stores feature.
                 Feature feature = new Feature(featureIdentifierToken);
@@ -684,7 +685,7 @@ public class Interpreter {
 
             } else {
                 // Print response
-                System.out.println(Application.ANSI_RED + "Error: Bad feature syntax." + Application.ANSI_RESET);
+                System.out.println(Color.ANSI_RED + "Error: Bad feature syntax." + Color.ANSI_RESET);
             }
 
         } else if (isConceptContext()) {
@@ -728,7 +729,7 @@ public class Interpreter {
 //                    currentIdentifier = construct;
                     currentIdentifier = constructReference;
                 } else {
-                    System.out.println(Application.ANSI_RED + "Error: No types or concept matches '" + featureIdentifierToken + "'" + Application.ANSI_RESET);
+                    System.out.println(Color.ANSI_RED + "Error: No types or concept matches '" + featureIdentifierToken + "'" + Color.ANSI_RESET);
                 }
 
             }
@@ -798,7 +799,7 @@ public class Interpreter {
             }
 
         } else {
-            System.out.println(Application.ANSI_RED + "Error: Cannot set feature on concept." + Application.ANSI_RESET);
+            System.out.println(Color.ANSI_RED + "Error: Cannot set feature on concept." + Color.ANSI_RESET);
         }
 
     }
@@ -862,7 +863,7 @@ public class Interpreter {
             for (int i = 0; i < typeList.size(); i++) {
                 List<Construct> constructList = Manager.getConstructList(typeList.get(i));
                 // System.out.println("(id: " + typeList.get(i).uid + ") " + Application.ANSI_BLUE + typeList.get(i).identifier + Application.ANSI_RESET + " (" + constructList.size() + ") (uuid: " + typeList.get(i).uuid + ")");
-                System.out.println(Application.ANSI_BLUE + typeList.get(i).identifier + Application.ANSI_RESET + " (count: " + constructList.size() + ")");
+                System.out.println(Color.ANSI_BLUE + typeList.get(i).identifier + Color.ANSI_RESET + " (count: " + constructList.size() + ")");
             }
 
         } else if (inputLineTokens.length >= 2) {
@@ -880,7 +881,7 @@ public class Interpreter {
                     long uid = Long.parseLong(addressToken.trim());
                     Identifier identifier = Manager.get(uid);
                     if (identifier == null) {
-                        System.out.println(Application.ANSI_RED + "Error: No concept with UID " + uid + Application.ANSI_RESET);
+                        System.out.println(Color.ANSI_RED + "Error: No concept with UID " + uid + Color.ANSI_RESET);
                     } else if (identifier.getClass() == Construct.class) {
                         construct = (Construct) identifier;
 //                        } else if (identifier.getClass() == Concept.class) {
@@ -905,7 +906,7 @@ public class Interpreter {
 
                         } else {
 
-                            System.out.println(Application.ANSI_BLUE + construct.type.identifier + Application.ANSI_RESET);
+                            System.out.println(Color.ANSI_BLUE + construct.type.identifier + Color.ANSI_RESET);
 
                             HashMap<String, Feature> features = (HashMap<String, Feature>) construct.object;
                             for (String featureIdentifier : features.keySet()) {
@@ -917,7 +918,7 @@ public class Interpreter {
                                         featureTypes += ", ";
                                     }
                                 }
-                                System.out.println(Application.ANSI_GREEN + features.get(featureIdentifier).identifier + Application.ANSI_RESET + " " + Application.ANSI_BLUE + featureTypes + Application.ANSI_RESET);
+                                System.out.println(Color.ANSI_GREEN + features.get(featureIdentifier).identifier + Color.ANSI_RESET + " " + Color.ANSI_BLUE + featureTypes + Color.ANSI_RESET);
                                 // TODO: print current object types; print available feature types
                             }
 
@@ -1027,7 +1028,7 @@ public class Interpreter {
 //            }
 
         } else {
-            System.out.println(Application.ANSI_RED + "Error: Cannot set feature on concept." + Application.ANSI_RESET);
+            System.out.println(Color.ANSI_RED + "Error: Cannot set feature on concept." + Color.ANSI_RESET);
         }
 
     }

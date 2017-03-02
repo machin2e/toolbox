@@ -443,22 +443,31 @@ public class Manager {
 //                        }
 //                    }
 
-
-                    // Look for existing (persistent) state for the given expression
                     if (identifier != null) {
-                        List<Identifier> identiferList = Manager.get();
-                        for (int i = 0; i < identiferList.size(); i++) {
-                            if (identiferList.get(i).getClass() == Construct.class) {
-                                Construct construct = (Construct) identiferList.get(i);
-//                            String textContent = expression.substring(1, expression.length() - 1);
-                                // TODO: Also check Type?
-                                if (construct.objectType == Map.class && construct.object != null
-                                        && construct.object == identifier) {
-                                    return construct;
-                                }
-                            }
-                        }
+                        return (Construct) identifier;
                     }
+
+
+//                    // Look for existing (persistent) state for the given expression
+//                    if (identifier != null) {
+//                        List<Identifier> identiferList = Manager.get();
+//                        for (int i = 0; i < identiferList.size(); i++) {
+//                            if (identiferList.get(i).getClass() == Construct.class) {
+//                                Construct construct = (Construct) identiferList.get(i);
+////                            String textContent = expression.substring(1, expression.length() - 1);
+//                                // TODO: Also check Type?
+//                                if (construct.objectType == Map.class && construct.object != null) {
+////                                        && construct.object == identifier) {
+////                                        && construct.object == identifier) {
+//                                    for (Construct featureConstruct : construct.states.values()) {
+//                                        if (features.containsValue(identifier)) { // TODO: iterate through features to see if contains feature...
+//                                            return construct;
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
 
                 }
             }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 import camp.computer.workspace.Manager;
 
 public class Type extends Identifier {
@@ -75,7 +75,7 @@ public class Type extends Identifier {
 
     @Override
     public String toString() {
-        return Application.ANSI_BLUE + identifier + Application.ANSI_RESET;
+        return Color.ANSI_BLUE + identifier + Color.ANSI_RESET;
     }
 
 }

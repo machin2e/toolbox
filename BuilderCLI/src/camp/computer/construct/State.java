@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 import camp.computer.workspace.Manager;
 
 public class State extends Identifier {
@@ -121,7 +122,7 @@ public class State extends Identifier {
             } else if (type == Type.get("text")) {
                 // TODO: Print from "text" construct
 //                return "'" + (String) this.object + "' (id: " + this.uid + ")";
-                return Application.ANSI_YELLOW + "'" + this.object + "'" + Application.ANSI_RESET + " (id: " + this.uid + ")";
+                return Color.ANSI_YELLOW + "'" + this.object + "'" + Color.ANSI_RESET + " (id: " + this.uid + ")";
                 // return types + "('" + (String) this.object + "')";
             } else if (type == Type.get("number")) {
                 // TODO:

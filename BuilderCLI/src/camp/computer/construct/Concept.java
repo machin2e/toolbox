@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 import camp.computer.workspace.Manager;
 
 public class Concept extends Identifier {
@@ -66,7 +67,7 @@ public class Concept extends Identifier {
 
     @Override
     public String toString() {
-        return Application.ANSI_BLUE + Application.ANSI_BOLD_ON + type + Application.ANSI_RESET + " (id:" + uid + ")";
+        return Color.ANSI_BLUE + Color.ANSI_BOLD_ON + type + Color.ANSI_RESET + " (id:" + uid + ")";
     }
 
 }

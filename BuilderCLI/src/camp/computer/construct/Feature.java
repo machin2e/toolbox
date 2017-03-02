@@ -3,7 +3,7 @@ package camp.computer.construct;
 import java.util.ArrayList;
 import java.util.List;
 
-import camp.computer.Application;
+import camp.computer.util.terminal.Color;
 
 /**
  * An {@code VariableValueSet} stores a list of identifier values for a specified identifier identified by its unique label.
@@ -45,7 +45,7 @@ public class Feature extends Identifier {
 
     @Override
     public String toString() {
-        return Application.ANSI_YELLOW + Application.ANSI_BOLD_ON + identifier + Application.ANSI_RESET;
+        return Color.ANSI_YELLOW + Color.ANSI_BOLD_ON + identifier + Color.ANSI_RESET;
     }
 
 }
