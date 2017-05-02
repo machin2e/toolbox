@@ -67,7 +67,7 @@ public class Port {
 
         ObjectNode portNode = JsonNodeFactory.instance.objectNode();
 
-        portNode.put("_id", port.id);
+//        portNode.put("_id", port.id);
 //        portNode.put("_rev", port.rev);
 
         portNode.put("type", port.type);
