@@ -102,12 +102,12 @@
           <file leaf-file-name="CouchDB.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/camp/computer/util/CouchDB.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1784">
-                  <caret line="790" column="0" lean-forward="false" selection-start-line="790" selection-start-column="0" selection-end-line="790" selection-end-column="0" />
+                <state relative-caret-position="1170">
+                  <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="e#800#801#0" expanded="true" />
-                    <element signature="e#868#869#0" expanded="true" />
+                    <element signature="e#912#913#0" expanded="true" />
+                    <element signature="e#980#981#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -283,10 +283,10 @@
         <option value="$PROJECT_DIR$/src/camp/computer/model/Controller.java" />
         <option value="$PROJECT_DIR$/src/camp/computer/model/Project.java" />
         <option value="$PROJECT_DIR$/src/camp/computer/model/Port.java" />
-        <option value="$PROJECT_DIR$/src/camp/computer/util/CouchDB.java" />
         <option value="$PROJECT_DIR$/src/camp/computer/Application.java" />
         <option value="$PROJECT_DIR$/src/camp/computer/util/Builder.java" />
         <option value="$PROJECT_DIR$/src/camp/computer/Builder.java" />
+        <option value="$PROJECT_DIR$/src/camp/computer/util/CouchDB.java" />
       </list>
     </option>
   </component>
@@ -952,12 +952,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/camp/computer/util/CouchDB.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1784">
-          <caret line="790" column="0" lean-forward="false" selection-start-line="790" selection-start-column="0" selection-end-line="790" selection-end-column="0" />
+        <state relative-caret-position="1170">
+          <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#800#801#0" expanded="true" />
-            <element signature="e#868#869#0" expanded="true" />
+            <element signature="e#912#913#0" expanded="true" />
+            <element signature="e#980#981#0" expanded="true" />
           </folding>
         </state>
       </provider>

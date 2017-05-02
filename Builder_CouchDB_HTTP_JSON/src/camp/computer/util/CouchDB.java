@@ -20,12 +20,17 @@ import camp.computer.model.Project;
 
 public class CouchDB {
 
+    String baseUri = "http://localhost:5984";
 
+    // <DANGER>
     public static String ADMIN_USERNAME = "admin";
     public static String ADMIN_PASSWORD = "password";
+    // </DANGER>
 
+    // <DANGER>
     public String username = null;
     public String password = null;
+    // </DANGER>
 
     // <UTIL>
     public static String generateUuid() {
@@ -48,7 +53,7 @@ public class CouchDB {
 
             // Configure PUT request
             URL url = null;
-            url = new URL("http://localhost:5984/_users/org.couchdb.user:" + username);
+            url = new URL(baseUri + "/_users/org.couchdb.user:" + username);
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -142,7 +147,7 @@ public class CouchDB {
 
             // Configure PUT request
 //            URL url = null;
-            url = new URL("http://localhost:5984/" + username);
+            url = new URL(baseUri + "/" + username);
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -240,7 +245,7 @@ public class CouchDB {
 
             // Configure PUT request
 //            URL url = null;
-            url = new URL("http://localhost:5984/" + username + "/_security");
+            url = new URL(baseUri + "/" + username + "/_security");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -354,7 +359,7 @@ public class CouchDB {
 
             // Configure PUT request
             URL url = null;
-            url = new URL("http://localhost:5984/_session");
+            url = new URL(baseUri + "/_session");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
@@ -478,7 +483,7 @@ public class CouchDB {
 
             // Configure PUT request
             String documentUuid = CouchDB.generateUuid();
-            URL serverUri = new URL("http://localhost:5984/" + username + "/" + documentUuid);
+            URL serverUri = new URL(baseUri + "/" + username + "/" + documentUuid);
             httpConnection = (HttpURLConnection) serverUri.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -561,7 +566,7 @@ public class CouchDB {
 
             // Configure PUT request
             String documentUuid = CouchDB.generateUuid();
-            URL serverUri = new URL("http://localhost:5984/" + username + "/" + documentUuid);
+            URL serverUri = new URL(baseUri + "/" + username + "/" + documentUuid);
             httpConnection = (HttpURLConnection) serverUri.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -643,7 +648,7 @@ public class CouchDB {
 
             // Configure PUT request
             String documentUuid = CouchDB.generateUuid();
-            URL serverUri = new URL("http://localhost:5984/" + username + "/" + documentUuid);
+            URL serverUri = new URL(baseUri + "/" + username + "/" + documentUuid);
             httpConnection = (HttpURLConnection) serverUri.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("PUT");
@@ -729,7 +734,7 @@ public class CouchDB {
             final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
 
             URL url = null;
-            url = new URL("http://localhost:5984/" + username + "/_find?include_docs=true");
+            url = new URL(baseUri + "/" + username + "/_find?include_docs=true");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
@@ -843,7 +848,7 @@ public class CouchDB {
             final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
 
             URL url = null;
-            url = new URL("http://localhost:5984/" + username + "/_all_docs?include_docs=true");
+            url = new URL(baseUri + "/" + username + "/_all_docs?include_docs=true");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(false);
             httpConnection.setRequestMethod("GET");
@@ -950,7 +955,7 @@ public class CouchDB {
             final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
 
             URL url = null;
-            url = new URL("http://localhost:5984/" + username + "/_find?include_docs=true");
+            url = new URL(baseUri + "/" + username + "/_find?include_docs=true");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
@@ -1063,7 +1068,7 @@ public class CouchDB {
             final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
 
             URL url = null;
-            url = new URL("http://localhost:5984/" + username + "/_find?include_docs=true");
+            url = new URL(baseUri + "/" + username + "/_find?include_docs=true");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
