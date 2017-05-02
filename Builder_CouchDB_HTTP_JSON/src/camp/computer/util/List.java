@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Random;
 
 public class List<T> implements java.util.List<T> {
 
@@ -24,6 +25,39 @@ public class List<T> implements java.util.List<T> {
     public List() {
         elements = new ArrayList<>();
     }
+
+    // <UTILITY>
+    public static List<String> randomSublist(String... elements) {
+        List<String> sublist = new List<>();
+
+        Random random = new Random();
+        for (int i = 0; i < elements.length; i++) {
+            if (random.nextFloat() > 0.5) {
+                sublist.add(elements[i]);
+            }
+        }
+
+        // If the sublist is empty, add one random element so the sublist is non-empty
+        if (sublist.size() == 0) {
+            sublist.add(elements[random.nextInt(elements.length)]);
+        }
+
+        return sublist;
+    }
+
+
+    public static String selectRandomElement(List<String> elements) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(elements.size());
+        return elements.get(randomIndex);
+    }
+
+    public static String selectRandomElement(String... elements) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(elements.length);
+        return elements[randomIndex];
+    }
+    // </UTILITY>
 
     public List(Collection<? extends T> collection) {
         elements = new ArrayList(collection);

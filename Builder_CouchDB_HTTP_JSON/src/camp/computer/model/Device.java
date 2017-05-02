@@ -1,38 +1,33 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
-import camp.computer.util.JSON;
+import camp.computer.util.CouchDB;
+import camp.computer.util.Serialize;
 
 public class Device {
 
-    @JsonProperty("_id")
+    // <COUCHDB>
     public String id;
 
-    @JsonProperty("_rev")
     public String rev;
+    // </COUCHDB>
 
-    @JsonProperty("instance_id")
-    public String instance_id = UUID.randomUUID().toString();
-
-    @JsonProperty("type")
+    // <TEMPLATE/STATE>
     public String type;
 
-    @JsonProperty("ports")
     public List<Port> ports;
+    // </TEMPLATE/STATE>
+
+    // <INSTANCE>
+    public String instance_id = null; // UUID.randomUUID().toString();
+    // </INSTANCE>
 
     private Device() {
         type = "device";
@@ -47,66 +42,53 @@ public class Device {
         ports.add(port);
     }
 
-    public String serializeConfiguration() {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static ObjectNode serialize(Device device, Serialize.Policy serializationPolicy) {
 
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(Device.class, new DeviceSerializer());
-        objectMapper.registerModule(module);
+        ObjectNode deviceNode = JsonNodeFactory.instance.objectNode();
 
-        String serialized = null;
-        try {
-            serialized = objectMapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        deviceNode.put("_id", device.id);
+//        deviceNode.put("_rev", device.rev);
+
+        deviceNode.put("type", device.type);
+
+        if (serializationPolicy == Serialize.Policy.INSTANCE) {
+            deviceNode.put("instance_id", device.instance_id);
         }
 
-        return serialized;
-    }
-
-    @JsonValue
-    @JsonSerialize(using = DeviceSerializer.class)
-    public Device getConfiguration() {
-        return this;
-    }
-
-    public static ObjectNode serialize(Device device, JSON.SerializationPolicy serializationPolicy) {
-
-        if (serializationPolicy == JSON.SerializationPolicy.STRUCTURE) {
-
-            ObjectNode deviceNode = JsonNodeFactory.instance.objectNode();
-            deviceNode.put("_id", device.id);
-            deviceNode.put("_rev", device.rev);
-            deviceNode.put("type", device.type);
+        if (serializationPolicy == Serialize.Policy.TEMPLATE
+                || serializationPolicy == Serialize.Policy.INSTANCE) {
 
             ArrayNode portsNode = deviceNode.putArray("ports");
             for (int i = 0; i < device.ports.size(); i++) {
                 portsNode.add(Port.serialize(device.ports.get(i), serializationPolicy));
             }
 
-            return deviceNode;
+        }
 
-        } else if (serializationPolicy == JSON.SerializationPolicy.INSTANCE) {
-
-            // TODO:
-
-        } else if (serializationPolicy == JSON.SerializationPolicy.STATE) {
-
-            ObjectNode deviceNode = JsonNodeFactory.instance.objectNode();
-            deviceNode.put("_id", device.id);
-            deviceNode.put("_rev", device.rev);
-            deviceNode.put("type", device.type);
+        if (serializationPolicy == Serialize.Policy.STATE) {
 
             ArrayNode portsNode = deviceNode.putArray("ports");
             for (int i = 0; i < device.ports.size(); i++) {
                 portsNode.add(Port.serialize(device.ports.get(i), serializationPolicy));
             }
 
-            return deviceNode;
-
         }
 
-        return null;
+        return deviceNode;
+
+    }
+
+    public static Device generateRandom() {
+
+        Device device = Device.create();
+        device.id = CouchDB.generateUuid();
+
+        int portCount = (new Random()).nextInt(12);
+        for (int i = 0; i < portCount; i++) {
+            device.addPort(Port.generateRandom());
+        }
+
+        return device;
 
     }
 }

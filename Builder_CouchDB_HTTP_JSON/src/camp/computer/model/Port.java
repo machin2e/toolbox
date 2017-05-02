@@ -1,51 +1,40 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.UUID;
-
-import camp.computer.util.JSON;
+import camp.computer.util.CouchDB;
 import camp.computer.util.List;
+import camp.computer.util.Serialize;
 
 public class Port {
 
-    @JsonProperty("_id")
+    // <COUCHDB>
     public String id;
 
-    @JsonProperty("_rev")
     public String rev;
+    // </COUCHDB>
 
-    @JsonProperty("instance_id")
-    public String instance_id = UUID.randomUUID().toString();
-
-    @JsonProperty("type")
+    // <TEMPLATE>
     public String type;
 
-    // <DESCRIPTOR>
-    @JsonProperty("modes")
     public List<String> modes;
 
-    @JsonProperty("directions")
     public List<String> directions;
 
-    @JsonProperty("voltages")
     public List<String> voltages;
-    // </DESCRIPTOR>
+    // </TEMPLATE>
+
+    // <INSTANCE>
+    public String instance_id = null; // UUID.randomUUID().toString();
+    // </INSTANCE>
 
     // <STATE>
-    @JsonProperty("mode")
     public String mode;
 
-    @JsonProperty("direction")
     public String direction;
 
-    @JsonProperty("voltage")
     public String voltage;
     // </STATE>
 
@@ -74,48 +63,22 @@ public class Port {
         this.voltage = voltage;
     }
 
-    public static String serializeConfiguration(Port port) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static ObjectNode serialize(Port port, Serialize.Policy serializePolicy) {
 
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(Port.class, new PortSerializer());
-        objectMapper.registerModule(module);
+        ObjectNode portNode = JsonNodeFactory.instance.objectNode();
 
-        String serialized = null;
-        try {
-            serialized = objectMapper.writeValueAsString(port);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        portNode.put("_id", port.id);
+//        portNode.put("_rev", port.rev);
+
+        portNode.put("type", port.type);
+
+        if (serializePolicy == Serialize.Policy.INSTANCE
+                || serializePolicy == Serialize.Policy.STATE) {
+            portNode.put("instance_id", port.instance_id);
         }
 
-        return serialized;
-    }
-
-    public static String serializeState(Port port) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(Port.class, new PortStateSerializer());
-        objectMapper.registerModule(module);
-
-        String serialized = null;
-        try {
-            serialized = objectMapper.writeValueAsString(port);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return serialized;
-    }
-
-    public static ObjectNode serialize(Port port, JSON.SerializationPolicy serializationPolicy) {
-
-        if (serializationPolicy == JSON.SerializationPolicy.STRUCTURE) {
-
-            ObjectNode portNode = JsonNodeFactory.instance.objectNode();
-            portNode.put("_id", port.id);
-            portNode.put("_rev", port.rev);
-            portNode.put("type", port.type);
+        if (serializePolicy == Serialize.Policy.TEMPLATE
+                || serializePolicy == Serialize.Policy.INSTANCE) {
 
             ArrayNode modesNode = portNode.putArray("modes");
             for (int i = 0; i < port.modes.size(); i++) {
@@ -132,31 +95,42 @@ public class Port {
                 voltagesNode.add(port.voltages.get(i));
             }
 
-            return portNode;
+        }
 
-        } else if (serializationPolicy == JSON.SerializationPolicy.INSTANCE) {
-
-            // TODO:
-
-        } else if (serializationPolicy == JSON.SerializationPolicy.STATE) {
-
-            ObjectNode portNode = JsonNodeFactory.instance.objectNode();
-            portNode.put("_id", port.id);
-            portNode.put("_rev", port.rev);
-            portNode.put("type", port.type);
+        if (serializePolicy == Serialize.Policy.STATE) {
 
             portNode.put("mode", port.mode);
-
             portNode.put("direction", port.direction);
-
             portNode.put("voltage", port.voltage);
 
             return portNode;
 
         }
 
+        return portNode;
 
-        return null;
+    }
+
+    public static Port generateRandom() {
+
+//        String mode = List.selectRandomElement("digital", "analog", "pulse-width-modulation", "resistive-touch", "power", "i2c(scl)", "i2c(sda)", "spi(mosi)", "spi(miso)", "spi(ss)", "uart(rx)", "uart(tx)");
+//        String direction = List.selectRandomElement("input", "output", "bidirectional");
+//        String voltage = List.selectRandomElement("0v", "3.3v", "5v");
+
+        List<String> modes = List.randomSublist("digital", "analog", "pulse-width-modulation", "resistive-touch", "power", "i2c(scl)", "i2c(sda)", "spi(mosi)", "spi(miso)", "spi(ss)", "uart(rx)", "uart(tx)");
+        List<String> directions = List.randomSublist("input", "output", "bidirectional");
+        List<String> voltages = List.randomSublist("0v", "3.3v", "5v");
+
+        String mode = List.selectRandomElement(modes);
+        String direction = List.selectRandomElement(directions);
+        String voltage = List.selectRandomElement(voltages);
+
+        Port port = Port.create(modes, directions, voltages);
+        port.id = CouchDB.generateUuid();
+
+        port.set(mode, direction, voltage);
+
+        return port;
 
     }
 

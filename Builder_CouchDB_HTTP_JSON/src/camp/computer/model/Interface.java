@@ -1,32 +1,33 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import camp.computer.util.Serialize;
+
 public class Interface {
 
-    @JsonProperty("_id")
+    // <COUCHDB>
     public String id;
 
-    @JsonProperty("_rev")
     public String rev;
+    // </COUCHDB>
 
-    @JsonProperty("type")
+    // <TEMPLATE/STATE>
     public String type;
 
-    @JsonProperty("source")
     public Device source;
 
-    @JsonProperty("target")
     public Device target;
 
-    @JsonProperty("channels")
     public List<Channel> channels;
 
-    @JsonProperty("controller")
     public Controller controller;
+    // </TEMPLATE/STATE>
 
     public Interface(Device source, Device target) {
         this.type = "interface";
@@ -57,6 +58,46 @@ public class Interface {
             channels.add(channel);
         }
         return channel;
+    }
+
+    public static ObjectNode serialize(Interface iface, Serialize.Policy serializationPolicy) {
+
+        if (serializationPolicy == Serialize.Policy.TEMPLATE) {
+
+            // TODO:
+
+        } else if (serializationPolicy == Serialize.Policy.INSTANCE) {
+
+            // TODO:
+
+        } else if (serializationPolicy == Serialize.Policy.STATE) {
+
+            ObjectNode ifaceNode = JsonNodeFactory.instance.objectNode();
+//            ifaceNode.put("_id", iface.id);
+//            ifaceNode.put("_rev", iface.rev);
+            ifaceNode.put("type", iface.type);
+
+            ObjectNode sourceNode = ifaceNode.putObject("source");
+            sourceNode.put("type", iface.source.type);
+            sourceNode.put("instance_id", iface.source.instance_id);
+
+            ObjectNode targetNode = ifaceNode.putObject("target");
+            targetNode.put("type", iface.target.type);
+            targetNode.put("instance_id", iface.target.instance_id);
+
+            ArrayNode channelsNode = ifaceNode.putArray("channels");
+            for (int i = 0; i < iface.channels.size(); i++) {
+                channelsNode.add(Channel.serialize(iface.channels.get(i), serializationPolicy));
+            }
+
+            ifaceNode.set("controller", Controller.serialize(iface.controller, serializationPolicy));
+
+            return ifaceNode;
+
+        }
+
+        return null;
+
     }
 }
 

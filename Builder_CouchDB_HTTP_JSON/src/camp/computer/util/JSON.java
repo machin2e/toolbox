@@ -7,12 +7,6 @@ import java.util.UUID;
 
 public class JSON {
 
-    public enum SerializationPolicy {
-        STRUCTURE,
-        INSTANCE,
-        STATE
-    }
-
 
     public static String toPrettyString(String json) {
 

@@ -19,6 +19,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.UUID;
 
+import camp.computer.model.Controller;
 import camp.computer.model.Device;
 import camp.computer.model.Interface;
 import camp.computer.model.Port;
@@ -26,7 +27,9 @@ import camp.computer.model.Project;
 import camp.computer.model.Script;
 import camp.computer.model.Task;
 import camp.computer.util.CouchDB;
+import camp.computer.util.JSON;
 import camp.computer.util.List;
+import camp.computer.util.Serialize;
 
 public class Application {
 
@@ -574,18 +577,20 @@ public class Application {
 
     public void saveDocument(String type) {
         if (type.equals("port")) {
-            String mode = selectRandomElement("digital", "analog", "pulse-width-modulation", "resistive-touch", "power", "i2c(scl)", "i2c(sda)", "spi(mosi)", "spi(miso)", "spi(ss)", "uart(rx)", "uart(tx)");
-            String direction = selectRandomElement("input", "output", "bidirectional");
-            String voltage = selectRandomElement("0v", "3.3v", "5v");
-            savePortDocument(mode, direction, voltage);
+            Port port = Port.generateRandom();
+            savePortDocument(port);
         } else if (type.equals("device")) {
-            saveDeviceDocument("component name here", "component description here");
+            Device device = Device.generateRandom();
+//            saveDeviceDocument("component name here", "component description here");
+            saveDeviceDocument(device);
         } else if (type.equals("project")) {
-            saveProjectDocument("My Project Name", "My project description here!");
+            Project project = Project.generateRandom();
+//            saveProjectDocument("My Project Name", "My project description here!");
+            saveProjectDocument(project);
         }
     }
 
-    public void savePortDocument(String mode, String direction, String voltage) {
+    public void savePortDocument(Port port) {
 
         HttpURLConnection httpConnection = null;
 
@@ -609,16 +614,8 @@ public class Application {
             httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
             httpConnection.connect();
 
-            // Create JSON structure
-            JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
-            ObjectNode rootNode = jsonNodeFactory.objectNode();
-            rootNode.put("type", "port");
-            rootNode.put("modes", mode);
-            rootNode.put("directions", direction);
-            rootNode.put("voltages", voltage);
-
-            String jsonString = (new ObjectMapper()).writeValueAsString(rootNode);
-            // System.out.println(jsonString);
+            // Serialize
+            String jsonString = (new ObjectMapper()).writeValueAsString(Port.serialize(port, Serialize.Policy.TEMPLATE));
 
             // Write PUT request body (i.e., the JSON data to PUT)
             OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
@@ -675,7 +672,7 @@ public class Application {
         }
     }
 
-    public void saveDeviceDocument(String name, String description) {
+    public void saveDeviceDocument(Device device) {
 
         HttpURLConnection httpConnection = null;
 
@@ -700,37 +697,11 @@ public class Application {
             httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
             httpConnection.connect();
 
-            // Create JSON structure
-            JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
-            ObjectNode rootNode = jsonNodeFactory.objectNode();
-            rootNode.put("type", "device");
-            rootNode.put("name", name);
-            rootNode.put("description", description);
-            // Add ports to array:
-            ArrayNode portList = jsonNodeFactory.arrayNode();
-            // Port 1:
-            for (int i = 0; i < 3; i++) {
-                // Specify the port configuration
-                String mode = selectRandomElement("digital", "analog", "pulse-width-modulation", "resistive-touch", "power", "i2c(scl)", "i2c(sda)", "spi(mosi)", "spi(miso)", "spi(ss)", "uart(rx)", "uart(tx)");
-                String direction = selectRandomElement("input", "output", "bidirectional");
-                String voltage = selectRandomElement("0v", "3.3v", "5v");
-
-                // Create JSON object for port
-                ObjectNode portRootNode = jsonNodeFactory.objectNode();
-                portRootNode.put("type", "port");
-                portRootNode.put("modes", mode);
-                portRootNode.put("directions", direction);
-                portRootNode.put("voltages", voltage);
-                portList.add(portRootNode);
-            }
-            rootNode.set("ports", portList);
-
-            String jsonString = (new ObjectMapper()).writeValueAsString(rootNode);
-            // System.out.println(jsonString);
+            // Serialize
+            String jsonString = (new ObjectMapper()).writeValueAsString(Device.serialize(device, Serialize.Policy.TEMPLATE));
 
             // Write PUT request body (i.e., the JSON data to PUT)
             OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
-            // out.write("{ \"type\": \"port\", \"modes\": \"" + modes + "\", \"directions\": \"" + directions + "\", \"voltages\": \"" + voltages + "\" }");
             out.write(jsonString);
             out.close();
 
@@ -783,7 +754,7 @@ public class Application {
         }
     }
 
-    public void saveProjectDocument(String name, String description) {
+    public void saveProjectDocument(Project project) {
 
         HttpURLConnection httpConnection = null;
 
@@ -808,136 +779,11 @@ public class Application {
             httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
             httpConnection.connect();
 
-//            // Create JSON structure
-//            JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
-//            ObjectNode projectRootNode = jsonNodeFactory.objectNode();
-//            projectRootNode.put("type", "project");
-//            projectRootNode.put("name", name);
-//            projectRootNode.put("description", description);
-//
-//            // Add devices to array:
-//            ArrayNode deviceList = jsonNodeFactory.arrayNode();
-//            int deviceCount = 3;
-//            for (int deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++) {
-//                ObjectNode deviceRootNode = jsonNodeFactory.objectNode();
-//                deviceRootNode.put("type", "device");
-//                deviceRootNode.put("name", name);
-//                deviceRootNode.put("description", description);
-//                // Add ports to array:
-//                ArrayNode portList = jsonNodeFactory.arrayNode();
-//                for (int i = 0; i < 3; i++) {
-//                    // Specify the port configuration
-//                    String mode = selectRandomElement("digital", "analog", "pulse-width-modulation", "resistive-touch", "power", "i2c(scl)", "i2c(sda)", "spi(mosi)", "spi(miso)", "spi(ss)", "uart(rx)", "uart(tx)");
-//                    String direction = selectRandomElement("input", "output", "bidirectional");
-//                    String voltage = selectRandomElement("0v", "3.3v", "5v");
-//
-//                    // Create JSON object for port
-//                    ObjectNode portRootNode = jsonNodeFactory.objectNode();
-//                    portRootNode.put("type", "port");
-//                    portRootNode.put("modes", mode);
-//                    portRootNode.put("directions", direction);
-//                    portRootNode.put("voltages", voltage);
-//                    portList.add(portRootNode);
-//                }
-//                deviceRootNode.set("ports", portList);
-//                deviceList.add(deviceRootNode);
-//            }
-//            projectRootNode.set("devices", deviceList);
-//
-//            // Add interfaces to array:
-//            ArrayNode interfaceList = jsonNodeFactory.arrayNode();
-//            int interfaceCount = 2;
-//            for (int interfaceIndex = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
-//                ObjectNode interfaceRootNode = jsonNodeFactory.objectNode();
-//                interfaceRootNode.put("type", "interface");
-//                // Add channels to array:
-//                ArrayNode channelList = jsonNodeFactory.arrayNode();
-//                int channelCount = 3;
-//                for (int i = 0; i < channelCount; i++) {
-//                    // Create JSON object for channel
-//                    ObjectNode channelRootNode = jsonNodeFactory.objectNode();
-//                    channelRootNode.put("type", "channel");
-//                    // TODO: source and target device/port
-//                    channelList.add(channelRootNode);
-//                }
-//                interfaceRootNode.set("channels", channelList);
-//
-//                // Add control to array:
-//                ObjectNode controlRootNode = jsonNodeFactory.objectNode();
-//                ArrayNode taskList = jsonNodeFactory.arrayNode();
-//                int taskCount = 3;
-//                for (int i = 0; i < taskCount; i++) {
-//                    // Create JSON object for task
-//                    ObjectNode taskRootNode = jsonNodeFactory.objectNode();
-//                    taskRootNode.put("type", "task");
-//                    // Create JSON object for script
-//                    ObjectNode scriptRootNode = jsonNodeFactory.objectNode();
-//                    scriptRootNode.put("type", "script");
-//                    scriptRootNode.put("code", "javascript:task(data) { /* function body */ }");
-//                    taskRootNode.set("script", scriptRootNode);
-//                    taskList.add(taskRootNode);
-//                }
-//                controlRootNode.set("tasks", taskList);
-//                interfaceRootNode.set("control", controlRootNode);
-//
-//                interfaceList.add(interfaceRootNode);
-//            }
-//            projectRootNode.set("interfaces", interfaceList);
-
-            Port port = null;
-
-            Project project = new Project();
-            project.id = CouchDB.generateUuid();
-//            Interface iface = new Interface();
-//            iface.controller = new Controller();
-            Task task = new Task();
-            task.script = new Script();
-//            iface.controller.tasks.add(task);
-//            project.interfaces.add(iface);
-            Device irRangefinderDevice = Device.create();
-            port = Port.create(new List("power"), new List("input"), new List("cmos"));
-            port.set("power", "input", "cmos");
-            irRangefinderDevice.ports.add(port);
-            port = Port.create(new List("digital", "analog"), new List("input", "output"), new List("cmos", "ttl"));
-            port.set("digital", "output", "cmos");
-            irRangefinderDevice.ports.add(port);
-            port = Port.create(new List("digital", "analog"), new List("input", "output"), new List("cmos", "ttl"));
-            port.set("analog", "input", "cmos");
-            irRangefinderDevice.ports.add(port);
-            Device servoDevice = Device.create();
-            servoDevice.ports.add(Port.create());
-            servoDevice.ports.add(Port.create());
-            servoDevice.ports.add(Port.create());
-//            project.devices.add(device1);
-
-            Interface iface = project.addInterface(irRangefinderDevice, servoDevice);
-            iface.addChannel(irRangefinderDevice.ports.get(0), servoDevice.ports.get(1));
-            iface.addChannel(irRangefinderDevice.ports.get(1), servoDevice.ports.get(2));
-            iface.addChannel(irRangefinderDevice.ports.get(2), servoDevice.ports.get(0));
-//            project.addInterface(servoDevice, irRangefinderDevice);
-//            iface.addChannel(irRangefinderDevice.ports.get(0), servoDevice.ports.get(1));
-//            iface.addChannel(irRangefinderDevice.ports.get(1), servoDevice.ports.get(2));
-//            iface.addChannel(irRangefinderDevice.ports.get(2), servoDevice.ports.get(0));
-//            System.out.println("interface #: " + project.interfaces.size());
-//            System.out.println("channel #: " + iface.channels.size());
-
-//            ObjectMapper mapper = new ObjectMapper();
-            //By default all fields without explicit view definition are included, disable this
-//            mapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
-//            mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
-//            String json = mapper
-//                    .writerWithView(Views.StateOnly.class)
-//                    .writeValueAsString(project);
-
-//            String json = new ObjectMapper().writeValueAsString(device);
-            String jsonString = new ObjectMapper().writeValueAsString(project);
-            Object jsonObject = new ObjectMapper().readValue(jsonString, Object.class);
-            String prettyString = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-            System.out.println(prettyString);
-//            System.out.println(json);
-
-//            String jsonString = (new ObjectMapper()).writeValueAsString(projectRootNode);
-            // System.out.println(jsonString);
+            // Serialize object
+            String jsonString = (new ObjectMapper()).writeValueAsString(Project.serialize(project, Serialize.Policy.STATE));
+            // Object jsonObject = new ObjectMapper().readValue(jsonString, Object.class);
+            // String prettyString = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            // System.out.println(prettyString);
 
             // Write PUT request body (i.e., the JSON data to PUT)
             OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
@@ -972,8 +818,8 @@ public class Application {
                 if (!prettyPrint) {
                     System.out.println(response.toString());
                 } else {
-                    jsonObject = objectMapper.readValue(response.toString(), Object.class);
-                    prettyString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+                    Object jsonObject = objectMapper.readValue(response.toString(), Object.class);
+                    String prettyString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
                     System.out.println(prettyString);
                 }
 
@@ -1425,9 +1271,4 @@ public class Application {
         return false;
     }
 
-    public static String selectRandomElement(String... elements) {
-        Random random = new Random();
-        int randomIndex = random.nextInt(elements.length);
-        return elements[randomIndex];
-    }
 }
