@@ -22,10 +22,15 @@ public class Project {
 
     public List<Interface> interfaces;
 
-    public Project() {
+    private Project() {
         type = "project";
         devices = new List<>();
         interfaces = new List<>();
+    }
+
+    public static Project create() {
+        Project project = new Project();
+        return project;
     }
 
     public Interface getInterface(Device source, Device target) {
@@ -119,32 +124,10 @@ public class Project {
 
     public static Project generateRandom() {
 
-        Port port = null;
-
-        Project project = new Project();
-        project.id = CouchDB.generateUuid();
-
-        Task task = new Task();
-        task.script = new Script();
-//            iface.controller.tasks.add(task);
-//            project.interfaces.add(iface);
-//        Device irRangefinderDevice = Device.create();
-//        port = Port.create(new List("power"), new List("input"), new List("cmos"));
-//        port.set("power", "input", "cmos");
-//        irRangefinderDevice.ports.add(port);
-//        port = Port.create(new List("digital", "analog"), new List("input", "output"), new List("cmos", "ttl"));
-//        port.set("digital", "output", "cmos");
-//        irRangefinderDevice.ports.add(port);
-//        port = Port.create(new List("digital", "analog"), new List("input", "output"), new List("cmos", "ttl"));
-//        port.set("analog", "input", "cmos");
-//        irRangefinderDevice.ports.add(port);
-//        Device servoDevice = Device.create();
-//        servoDevice.ports.add(Port.create());
-//        servoDevice.ports.add(Port.create());
-//        servoDevice.ports.add(Port.create());
-////            project.devices.add(device1);
-
         Random random = new Random();
+
+        Project project = Project.create();
+        project.id = CouchDB.generateUuid();
 
         int deviceCount = 2 + random.nextInt(4);
         for (int i = 0; i < deviceCount; i++) {
@@ -170,21 +153,12 @@ public class Project {
                 iface.addChannel(sourceDevice.ports.get(sourcePortIndex), targetDevice.ports.get(targetPortIndex));
             }
 
-            iface.controller = new Controller();
+
+            Task task = Task.create();
+            task.script = Script.create();
+
+            iface.controller = Controller.generateRandom();
         }
-
-//        Interface iface = project.addInterface(irRangefinderDevice, servoDevice);
-//        iface.addChannel(irRangefinderDevice.ports.get(0), servoDevice.ports.get(1));
-//        iface.addChannel(irRangefinderDevice.ports.get(1), servoDevice.ports.get(2));
-//        iface.addChannel(irRangefinderDevice.ports.get(2), servoDevice.ports.get(0));
-//            project.addInterface(servoDevice, irRangefinderDevice);
-//            iface.addChannel(irRangefinderDevice.ports.get(0), servoDevice.ports.get(1));
-//            iface.addChannel(irRangefinderDevice.ports.get(1), servoDevice.ports.get(2));
-//            iface.addChannel(irRangefinderDevice.ports.get(2), servoDevice.ports.get(0));
-//            System.out.println("interface #: " + project.interfaces.size());
-//            System.out.println("channel #: " + iface.channels.size());
-
-//            iface.controller
 
         return project;
 

@@ -3,6 +3,7 @@ package camp.computer.model;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
 public class Script {
@@ -19,8 +20,13 @@ public class Script {
 
     public String code;
 
-    public Script() {
+    private Script() {
         this.type = "script";
+    }
+
+    public static Script create() {
+        Script script = new Script();
+        return script;
     }
 
     public static ObjectNode serialize(Script script, Serialize.Policy serializePolicy) {
@@ -39,6 +45,17 @@ public class Script {
         scriptNode.put("code", script.code);
 
         return scriptNode;
+
+    }
+
+    public static Script generateRandom() {
+
+        Script script = new Script();
+        script.id = CouchDB.generateUuid();
+
+        script.code = "javascript:function(data) { /* TODO */ }";
+
+        return script;
 
     }
 

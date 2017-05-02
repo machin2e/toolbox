@@ -16,6 +16,10 @@ public class Port {
     public String rev;
     // </COUCHDB>
 
+    // <INSTANCE>
+    public String instance_id = null; // UUID.randomUUID().toString();
+    // </INSTANCE>
+
     // <TEMPLATE>
     public String type;
 
@@ -25,10 +29,6 @@ public class Port {
 
     public List<String> voltages;
     // </TEMPLATE>
-
-    // <INSTANCE>
-    public String instance_id = null; // UUID.randomUUID().toString();
-    // </INSTANCE>
 
     // <STATE>
     public String mode;

@@ -1,20 +1,18 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
 public class Task {
 
+    // <COUCHDB>
     public String id;
 
     public String rev;
+    // <COUCHDB>
 
     // <INSTANCE>
     public String instance_id = null; // UUID.randomUUID().toString();
@@ -24,8 +22,13 @@ public class Task {
 
     public Script script;
 
-    public Task() {
+    private Task() {
         this.type = "task";
+    }
+
+    public static Task create() {
+        Task task = new Task();
+        return task;
     }
 
     public static ObjectNode serialize(Task task, Serialize.Policy serializePolicy) {
@@ -55,6 +58,17 @@ public class Task {
 //        }
 
         return taskNode;
+
+    }
+
+    public static Task generateRandom() {
+
+        Task task = new Task();
+        task.id = CouchDB.generateUuid();
+
+        task.script = Script.generateRandom();
+
+        return task;
 
     }
 

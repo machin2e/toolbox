@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
 public class Controller {
@@ -24,8 +26,13 @@ public class Controller {
 
     public List<Task> tasks;
 
-    public Controller() {
+    private Controller() {
         tasks = new ArrayList<>();
+    }
+
+    public static Controller create() {
+        Controller controller = new Controller();
+        return controller;
     }
 
     public static ObjectNode serialize(Controller controller, Serialize.Policy serializationPolicy) {
@@ -61,6 +68,20 @@ public class Controller {
 //        }
 
         return controllerNode;
+
+    }
+
+    public static Controller generateRandom() {
+
+        Controller controller = Controller.create();
+        controller.id = CouchDB.generateUuid();
+
+        int taskCount = (new Random()).nextInt(5);
+        for (int i = 0; i < taskCount; i++) {
+            controller.tasks.add(Task.generateRandom());
+        }
+
+        return controller;
 
     }
 }
