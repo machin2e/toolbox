@@ -1,10 +1,14 @@
 package camp.computer.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -75,6 +79,46 @@ public class Device {
         }
 
         return deviceNode;
+
+    }
+
+    public static Device deserialize(String json) {
+
+        try {
+
+            Device device = Device.create();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                device.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                device.type = rootNode.path("type").asText();
+            }
+
+            if (rootNode.has("instance_id")) {
+                device.instance_id = rootNode.path("instance_id").asText();
+            }
+
+            if (rootNode.has("ports")) {
+                JsonNode portsNode = rootNode.path("ports");
+                for (Iterator<JsonNode> it = portsNode.elements(); it.hasNext(); ) {
+                    JsonNode portNode = it.next();
+                    Port port = Port.deserialize(portNode.toString());
+                    device.ports.add(port);
+                }
+            }
+
+            return device;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 

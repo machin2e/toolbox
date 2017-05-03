@@ -1,10 +1,12 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import camp.computer.util.JSON;
+import java.io.IOException;
+
 import camp.computer.util.Serialize;
 
 public class Channel {
@@ -18,6 +20,10 @@ public class Channel {
     public Port source;
 
     public Port target;
+
+    private Channel() {
+        this.type = "channel";
+    }
 
     public Channel(Port source, Port target) {
         this.type = "channel";
@@ -82,6 +88,48 @@ public class Channel {
 
             return channelNode;
 
+        }
+
+        return null;
+
+    }
+
+    public static Channel deserialize(String json) {
+
+        try {
+
+//            Interface iface = Interface.create();
+            Channel channel = new Channel();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                channel.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                channel.type = rootNode.path("type").asText();
+            }
+
+//            if (rootNode.has("instance_id")) {
+//                iface.instance_id = rootNode.path("instance_id").asText();
+//            }
+
+            if (rootNode.has("source")) {
+                Port sourcePort = Port.deserialize(rootNode.path("source").toString());
+                channel.source = sourcePort;
+            }
+
+            if (rootNode.has("target")) {
+                Port targetPort = Port.deserialize(rootNode.path("target").toString());
+                channel.target = targetPort;
+            }
+
+            return channel;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;

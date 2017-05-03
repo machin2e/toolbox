@@ -1,8 +1,13 @@
 package camp.computer.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.IOException;
+import java.util.Iterator;
 
 import camp.computer.util.CouchDB;
 import camp.computer.util.List;
@@ -108,6 +113,73 @@ public class Port {
         }
 
         return portNode;
+
+    }
+
+    public static Port deserialize(String json) {
+
+        try {
+
+            Port port = Port.create();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                port.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                port.type = rootNode.path("type").asText();
+            }
+
+            if (rootNode.has("instance_id")) {
+                port.instance_id = rootNode.path("instance_id").asText();
+            }
+
+            if (rootNode.has("modes")) {
+                JsonNode modesNode = rootNode.path("modes");
+                for (Iterator<JsonNode> it = modesNode.elements(); it.hasNext(); ) {
+                    JsonNode modeNode = it.next();
+                    port.modes.add(modeNode.asText());
+                }
+            }
+
+            if (rootNode.has("directions")) {
+                JsonNode directionsNode = rootNode.path("directions");
+                for (Iterator<JsonNode> it = directionsNode.elements(); it.hasNext(); ) {
+                    JsonNode directionNode = it.next();
+                    port.directions.add(directionNode.asText());
+                }
+            }
+
+            if (rootNode.has("voltages")) {
+                JsonNode voltagesNode = rootNode.path("voltages");
+                for (Iterator<JsonNode> it = voltagesNode.elements(); it.hasNext(); ) {
+                    JsonNode voltageMode = it.next();
+                    port.voltages.add(voltageMode.asText());
+                }
+            }
+
+            if (rootNode.has("mode")) {
+                port.mode = rootNode.path("mode").asText();
+            }
+
+            if (rootNode.has("direction")) {
+                port.direction = rootNode.path("direction").asText();
+            }
+
+            if (rootNode.has("voltage")) {
+                port.voltage = rootNode.path("voltage").asText();
+            }
+
+            return port;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 

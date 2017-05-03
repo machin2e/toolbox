@@ -1,11 +1,14 @@
 package camp.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -68,6 +71,47 @@ public class Controller {
 //        }
 
         return controllerNode;
+
+    }
+
+    public static Controller deserialize(String json) {
+
+        try {
+
+//            Interface iface = Interface.create();
+            Controller controller = new Controller();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                controller.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                controller.type = rootNode.path("type").asText();
+            }
+
+//            if (rootNode.has("instance_id")) {
+//                iface.instance_id = rootNode.path("instance_id").asText();
+//            }
+
+            if (rootNode.has("tasks")) {
+                JsonNode tasksNode = rootNode.path("tasks");
+                for (Iterator<JsonNode> it = tasksNode.elements(); it.hasNext(); ) {
+                    JsonNode taskNode = it.next();
+                    Task task = Task.deserialize(taskNode.toString());
+                    controller.tasks.add(task);
+                }
+            }
+
+            return controller;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 

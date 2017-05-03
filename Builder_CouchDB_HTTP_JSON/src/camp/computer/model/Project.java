@@ -1,9 +1,13 @@
 package camp.computer.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Random;
 
 import camp.computer.util.CouchDB;
@@ -116,6 +120,58 @@ public class Project {
 
             return projectNode;
 
+        }
+
+        return null;
+
+    }
+
+    public static Project deserialize(String json) {
+
+        try {
+
+            Project project = Project.create();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                project.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                project.type = rootNode.path("type").asText();
+            }
+
+//            if (rootNode.has("instance_id")) {
+//                project.instance_id = rootNode.path("instance_id").asText();
+//            }
+
+            if (rootNode.has("assets")) {
+                JsonNode assetsNode = rootNode.path("assets");
+                if (assetsNode.has("devices")) {
+                    JsonNode devicesNode = assetsNode.path("devices");
+                    for (Iterator<JsonNode> it = devicesNode.elements(); it.hasNext(); ) {
+                        JsonNode deviceNode = it.next();
+                        Device device = Device.deserialize(deviceNode.toString());
+                        project.devices.add(device);
+                    }
+                }
+            }
+
+            if (rootNode.has("interfaces")) {
+                JsonNode interfacesNode = rootNode.path("interfaces");
+                for (Iterator<JsonNode> it = interfacesNode.elements(); it.hasNext(); ) {
+                    JsonNode interfaceNode = it.next();
+                    Interface iface = Interface.deserialize(interfaceNode.toString());
+                    project.interfaces.add(iface);
+                }
+            }
+
+            return project;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;

@@ -1,7 +1,11 @@
 package camp.computer.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.IOException;
 
 import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
@@ -58,6 +62,44 @@ public class Task {
 //        }
 
         return taskNode;
+
+    }
+
+    public static Task deserialize(String json) {
+
+        try {
+
+//            Interface iface = Interface.create();
+            Task task = new Task();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                task.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                task.type = rootNode.path("type").asText();
+            }
+
+//            if (rootNode.has("instance_id")) {
+//                iface.instance_id = rootNode.path("instance_id").asText();
+//            }
+
+            if (rootNode.has("script")) {
+                JsonNode scriptNode = rootNode.path("script");
+                Script script = Script.deserialize(scriptNode.toString());
+                task.script = script;
+            }
+
+            return task;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 

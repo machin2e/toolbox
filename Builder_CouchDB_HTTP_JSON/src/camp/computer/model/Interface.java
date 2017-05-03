@@ -1,10 +1,14 @@
 package camp.computer.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import camp.computer.util.Serialize;
@@ -28,6 +32,11 @@ public class Interface {
 
     public Controller controller;
     // </TEMPLATE/STATE>
+
+    private Interface() {
+        this.type = "interface";
+        this.channels = new ArrayList<>();
+    }
 
     public Interface(Device source, Device target) {
         this.type = "interface";
@@ -94,6 +103,62 @@ public class Interface {
 
             return ifaceNode;
 
+        }
+
+        return null;
+
+    }
+
+    public static Interface deserialize(String json) {
+
+        try {
+
+//            Interface iface = Interface.create();
+            Interface iface = new Interface();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(json.toString());
+
+            if (rootNode.has("_id")) {
+                iface.id = rootNode.path("_id").asText();
+            }
+
+            if (rootNode.has("type")) {
+                iface.type = rootNode.path("type").asText();
+            }
+
+//            if (rootNode.has("instance_id")) {
+//                iface.instance_id = rootNode.path("instance_id").asText();
+//            }
+
+            if (rootNode.has("source")) {
+                Device sourceDevice = Device.deserialize(rootNode.path("source").toString());
+                iface.source = sourceDevice;
+            }
+
+            if (rootNode.has("target")) {
+                Device targetDevice = Device.deserialize(rootNode.path("target").toString());
+                iface.target = targetDevice;
+            }
+
+            if (rootNode.has("channels")) {
+                JsonNode channelsNode = rootNode.path("channels");
+                for (Iterator<JsonNode> it = channelsNode.elements(); it.hasNext(); ) {
+                    JsonNode channelNode = it.next();
+                    Channel channel = Channel.deserialize(channelNode.toString());
+                    iface.channels.add(channel);
+                }
+            }
+
+            if (rootNode.has("controller")) {
+                Controller controller = Controller.deserialize(rootNode.path("controller").toString());
+                iface.controller = controller;
+            }
+
+            return iface;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;

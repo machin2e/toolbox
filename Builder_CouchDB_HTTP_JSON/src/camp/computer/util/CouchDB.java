@@ -20,7 +20,9 @@ import camp.computer.model.Project;
 
 public class CouchDB {
 
-    String baseUri = "http://localhost:5984";
+    public static String DEFAULT_URI = "http://localhost:5984";
+
+    private String baseUri = "http://localhost:5984";
 
     // <DANGER>
     public static String ADMIN_USERNAME = "admin";
@@ -31,6 +33,10 @@ public class CouchDB {
     public String username = null;
     public String password = null;
     // </DANGER>
+
+    public CouchDB() {
+        this.baseUri = CouchDB.DEFAULT_URI;
+    }
 
     // <UTIL>
     public static String generateUuid() {
@@ -106,47 +112,7 @@ public class CouchDB {
                 System.out.println("Unauthorized.");
             }
 
-            /*
-            //read JSON like DOM Parser
-            JsonNode rootNode = objectMapper.readTree(response.toString());
-//            JsonNode idNode = rootNode.path("id");
-//            System.out.println("id = "+idNode.asInt());
-//            JsonNode totalRows = rootNode.path("total_rows");
-//            System.out.println("id = " + totalRows.asInt());
-
-            System.out.println("-----------------------------------------------------------");
-
-            JsonNode rowsNode = rootNode.path("rows");
-            for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                JsonNode node = it.next();
-
-//                JsonNode idNode = node.path("id");
-//                JsonNode revNode = node.path("rev");
-//                System.out.println("id = " + idNode);
-//                System.out.println("rev = " + revNode);
-
-                JsonNode docNode = node.path("doc");
-                JsonNode docIdNode = docNode.path("_id");
-                JsonNode docType = docNode.path("type");
-
-                if (type != null && docType.asText().equals(type)) {
-                    System.out.println("doc  = " + docNode);
-                    System.out.println("_id  = " + docIdNode);
-                    System.out.println("type = " + docType);
-
-                    Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                    System.out.println(perttyStr);
-                    System.out.println();
-                }
-
-            }
-            */
-
-            /* ---------------------------------------------------------------------------------- */
-
             // Configure PUT request
-//            URL url = null;
             url = new URL(baseUri + "/" + username);
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
@@ -158,13 +124,11 @@ public class CouchDB {
             httpConnection.connect();
 
             // Write PUT request body (i.e., the JSON data to PUT)
-//            OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
             out = new OutputStreamWriter(httpConnection.getOutputStream());
             out.write("{ \"name\": \"" + username + "\", \"password\": \"" + password + "\", \"roles\": [], \"type\": \"user\" }");
             out.close();
 
             // Read PUT response (from CouchDB server)
-//            int httpResponseCode = httpConnection.getResponseCode();
             httpResponseCode = httpConnection.getResponseCode();
 
             if (httpResponseCode == 201) {
@@ -172,9 +136,6 @@ public class CouchDB {
 
                 System.out.println(httpResponseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
 
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -183,8 +144,6 @@ public class CouchDB {
                     response.append(inputLine);
                 }
                 in.close();
-
-
 
                 //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -202,49 +161,9 @@ public class CouchDB {
                 System.out.println("Unauthorized.");
             }
 
-            /*
-            //read JSON like DOM Parser
-            JsonNode rootNode = objectMapper.readTree(response.toString());
-//            JsonNode idNode = rootNode.path("id");
-//            System.out.println("id = "+idNode.asInt());
-//            JsonNode totalRows = rootNode.path("total_rows");
-//            System.out.println("id = " + totalRows.asInt());
-
-            System.out.println("-----------------------------------------------------------");
-
-            JsonNode rowsNode = rootNode.path("rows");
-            for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                JsonNode node = it.next();
-
-//                JsonNode idNode = node.path("id");
-//                JsonNode revNode = node.path("rev");
-//                System.out.println("id = " + idNode);
-//                System.out.println("rev = " + revNode);
-
-                JsonNode docNode = node.path("doc");
-                JsonNode docIdNode = docNode.path("_id");
-                JsonNode docType = docNode.path("type");
-
-                if (type != null && docType.asText().equals(type)) {
-                    System.out.println("doc  = " + docNode);
-                    System.out.println("_id  = " + docIdNode);
-                    System.out.println("type = " + docType);
-
-                    Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                    System.out.println(perttyStr);
-                    System.out.println();
-                }
-
-            }
-            */
-
-            /* ---------------------------------------------------------------------------------- */
-
             System.out.println("Setting up security... ");
 
             // Configure PUT request
-//            URL url = null;
             url = new URL(baseUri + "/" + username + "/_security");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
@@ -271,9 +190,6 @@ public class CouchDB {
 
                 System.out.println(httpResponseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
 
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -282,8 +198,6 @@ public class CouchDB {
                     response.append(inputLine);
                 }
                 in.close();
-
-
 
                 //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -300,43 +214,6 @@ public class CouchDB {
             } else if (httpResponseCode == 400) {
                 System.out.println("Bad Request.");
             }
-
-            /*
-            //read JSON like DOM Parser
-            JsonNode rootNode = objectMapper.readTree(response.toString());
-//            JsonNode idNode = rootNode.path("id");
-//            System.out.println("id = "+idNode.asInt());
-//            JsonNode totalRows = rootNode.path("total_rows");
-//            System.out.println("id = " + totalRows.asInt());
-
-            System.out.println("-----------------------------------------------------------");
-
-            JsonNode rowsNode = rootNode.path("rows");
-            for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                JsonNode node = it.next();
-
-//                JsonNode idNode = node.path("id");
-//                JsonNode revNode = node.path("rev");
-//                System.out.println("id = " + idNode);
-//                System.out.println("rev = " + revNode);
-
-                JsonNode docNode = node.path("doc");
-                JsonNode docIdNode = docNode.path("_id");
-                JsonNode docType = docNode.path("type");
-
-                if (type != null && docType.asText().equals(type)) {
-                    System.out.println("doc  = " + docNode);
-                    System.out.println("_id  = " + docIdNode);
-                    System.out.println("type = " + docType);
-
-                    Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                    System.out.println(perttyStr);
-                    System.out.println();
-                }
-
-            }
-            */
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -358,14 +235,13 @@ public class CouchDB {
         try {
 
             // Configure PUT request
-            URL url = null;
-            url = new URL(baseUri + "/_session");
+            URL url = new URL(baseUri + "/_session");
             httpConnection = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
             httpConnection.setUseCaches(false);
-//            httpConnection.setRequestProperty("Accept", "application/json");
-//            httpConnection.setRequestProperty("Content-Type", "application/json");
+            // httpConnection.setRequestProperty("Accept", "application/json");
+            // httpConnection.setRequestProperty("Content-Type", "application/json");
             httpConnection.connect();
 
             // Write PUT request body (i.e., the JSON data to PUT)
@@ -383,9 +259,6 @@ public class CouchDB {
 
                 System.out.println(httpResponseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
 
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -394,8 +267,6 @@ public class CouchDB {
                     response.append(inputLine);
                 }
                 in.close();
-
-
 
                 //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -416,43 +287,6 @@ public class CouchDB {
                 System.out.println("Unauthorized.");
             }
 
-            /*
-            //read JSON like DOM Parser
-            JsonNode rootNode = objectMapper.readTree(response.toString());
-//            JsonNode idNode = rootNode.path("id");
-//            System.out.println("id = "+idNode.asInt());
-//            JsonNode totalRows = rootNode.path("total_rows");
-//            System.out.println("id = " + totalRows.asInt());
-
-            System.out.println("-----------------------------------------------------------");
-
-            JsonNode rowsNode = rootNode.path("rows");
-            for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                JsonNode node = it.next();
-
-//                JsonNode idNode = node.path("id");
-//                JsonNode revNode = node.path("rev");
-//                System.out.println("id = " + idNode);
-//                System.out.println("rev = " + revNode);
-
-                JsonNode docNode = node.path("doc");
-                JsonNode docIdNode = docNode.path("_id");
-                JsonNode docType = docNode.path("type");
-
-                if (type != null && docType.asText().equals(type)) {
-                    System.out.println("doc  = " + docNode);
-                    System.out.println("_id  = " + docIdNode);
-                    System.out.println("type = " + docType);
-
-                    Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                    System.out.println(perttyStr);
-                    System.out.println();
-                }
-
-            }
-            */
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
@@ -466,6 +300,109 @@ public class CouchDB {
         }
 
         return false;
+    }
+
+    public void listDocuments(String type) {
+
+        HttpURLConnection httpConnection = null;
+
+        try {
+
+            // HTTP Basic Authentication
+            // References:
+            // - RFC 1945 https://tools.ietf.org/html/rfc1945#section-11.1
+            // - Wikipedia https://en.wikipedia.org/wiki/Basic_access_authentication
+            final String basicAuthorizationEncoding = new sun.misc.BASE64Encoder().encode((username + ":" + password).getBytes());
+            final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
+
+            URL url = new URL(baseUri + "/" + username + "/_find?include_docs=true");
+            httpConnection = (HttpURLConnection) url.openConnection();
+            httpConnection.setDoOutput(true);
+            httpConnection.setRequestMethod("POST");
+            httpConnection.setUseCaches(false);
+            httpConnection.setRequestProperty("Accept", "application/json");
+            httpConnection.setRequestProperty("Content-Type", "application/json");
+            httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
+            httpConnection.connect();
+
+            // Write PUT request body (i.e., the JSON data to PUT)
+            OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
+            out.write("{ \"selector\": { \"type\": { \"$eq\": \"" + type + "\" } } }");
+            out.close();
+
+            // Read PUT response (from CouchDB server)
+            int httpResponseCode = httpConnection.getResponseCode();
+            System.out.println(httpResponseCode);
+            // System.out.println(httpConnection.getResponseMessage());
+            if (httpResponseCode == 200) {
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+
+                // Buffer response data
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Deserialize response
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(response.toString());
+                JsonNode documentsNode = rootNode.path("docs");
+                for (Iterator<JsonNode> it = documentsNode.elements(); it.hasNext(); ) {
+                    JsonNode documentNode = it.next();
+
+                    String documentType = null;
+                    if (documentNode.has("type")) {
+                        documentType = documentNode.path("type").asText();
+                    }
+
+                    if (documentType != null) {
+                        if (type != null && documentType.equals("port")) {
+
+                            Port port = Port.deserialize(documentNode.toString());
+
+                            // TODO: Cache/Manage the deserialized Port entity!
+                            System.out.println(port.id + "\t" + port.type);
+
+                        } else if (type != null && documentType.equals("device")) {
+
+                            Device device = Device.deserialize(documentNode.toString());
+
+                            // TODO: Cache/Manage the deserialized Port entity!
+                            System.out.println(device.id + "\t" + device.type);
+
+                        } else if (type != null && documentType.equals("project")) {
+
+                            Project project = Project.deserialize(documentNode.toString());
+
+                            // TODO: Cache/Manage the deserialized Port entity!
+                            System.out.println(project.id + "\t" + project.type);
+
+                        } else if (type != null && documentType.equals(type)) {
+                            Object jsonObject = objectMapper.readValue(documentNode.toString(), Object.class);
+                            String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+                            System.out.println(perttyStr);
+                            System.out.println();
+                        }
+                    }
+                }
+            } else if (httpResponseCode == 403) {
+                System.out.println("Forbidden.");
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (httpConnection != null) {
+                httpConnection.disconnect();
+            }
+        }
     }
 
     public void savePortDocument(Port port) {
@@ -720,226 +657,6 @@ public class CouchDB {
     }
 
 
-    public void listDocuments(String type) {
-
-        HttpURLConnection httpConnection = null;
-
-        try {
-
-            // HTTP Basic Authentication
-            // References:
-            // - RFC 1945 https://tools.ietf.org/html/rfc1945#section-11.1
-            // - Wikipedia https://en.wikipedia.org/wiki/Basic_access_authentication
-            final String basicAuthorizationEncoding = new sun.misc.BASE64Encoder().encode((username + ":" + password).getBytes());
-            final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
-
-            URL url = null;
-            url = new URL(baseUri + "/" + username + "/_find?include_docs=true");
-            httpConnection = (HttpURLConnection) url.openConnection();
-            httpConnection.setDoOutput(true);
-            httpConnection.setRequestMethod("POST");
-            httpConnection.setUseCaches(false);
-            httpConnection.setRequestProperty("Accept", "application/json");
-            httpConnection.setRequestProperty("Content-Type", "application/json");
-            httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
-            httpConnection.connect();
-
-            // Write PUT request body (i.e., the JSON data to PUT)
-            OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
-            out.write("{ \"selector\": { \"type\": { \"$eq\": \"" + type + "\" } } }");
-            out.close();
-
-            // Read PUT response (from CouchDB server)
-            int httpResponseCode = httpConnection.getResponseCode();
-            System.out.println(httpResponseCode);
-            if (httpResponseCode == 200) {
-
-                System.out.println(httpResponseCode);
-                BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
-
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                //create ObjectMapper instance
-                ObjectMapper objectMapper = new ObjectMapper();
-
-//                //print result
-//                boolean prettyPrint = true;
-//                if (!prettyPrint) {
-//                    System.out.println(response.toString());
-//                } else {
-//                    Object jsonObject = objectMapper.readValue(response.toString(), Object.class);
-//                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-//                    System.out.println(perttyStr);
-//                }
-
-                //read JSON like DOM Parser
-                JsonNode rootNode = objectMapper.readTree(response.toString());
-                //            JsonNode idNode = rootNode.path("id");
-                //            System.out.println("id = "+idNode.asInt());
-//                            JsonNode totalRows = rootNode.path("total_rows");
-//                            System.out.println("id = " + totalRows.asInt());
-
-                System.out.println("-----------------------------------------------------------");
-
-                JsonNode rowsNode = rootNode.path("docs");
-                for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                    JsonNode docNode = it.next();
-
-                    //                JsonNode idNode = node.path("id");
-                    //                JsonNode revNode = node.path("rev");
-                    //                System.out.println("id = " + idNode);
-                    //                System.out.println("rev = " + revNode);
-
-//                    JsonNode docNode = node.path("doc");
-                    JsonNode docIdNode = docNode.path("_id");
-                    JsonNode docType = docNode.path("type");
-
-                    if (type != null && docType.asText().equals(type)) {
-//                        System.out.println("doc  = " + docNode);
-//                        System.out.println("_id  = " + docIdNode);
-//                        System.out.println("type = " + docType);
-
-                        Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                        String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                        System.out.println(perttyStr);
-                        System.out.println();
-                    }
-
-                }
-
-
-            } else if (httpResponseCode == 403) {
-                System.out.println("Forbidden.");
-            }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (httpConnection != null) {
-                httpConnection.disconnect();
-            }
-        }
-    }
-
-    public void listDocuments2(String type) {
-
-        HttpURLConnection httpConnection = null;
-
-        try {
-
-            // HTTP Basic Authentication
-            // References:
-            // - RFC 1945 https://tools.ietf.org/html/rfc1945#section-11.1
-            // - Wikipedia https://en.wikipedia.org/wiki/Basic_access_authentication
-            final String basicAuthorizationEncoding = new sun.misc.BASE64Encoder().encode((username + ":" + password).getBytes());
-            final String authorizationHeaderField = "Basic " + basicAuthorizationEncoding;
-
-            URL url = null;
-            url = new URL(baseUri + "/" + username + "/_all_docs?include_docs=true");
-            httpConnection = (HttpURLConnection) url.openConnection();
-            httpConnection.setDoOutput(false);
-            httpConnection.setRequestMethod("GET");
-            httpConnection.setUseCaches(false);
-            httpConnection.setRequestProperty("Accept", "application/json");
-            httpConnection.setRequestProperty("Content-Type", "application/json");
-            httpConnection.setRequestProperty("Authorization", authorizationHeaderField);
-
-            int httpResponseCode = httpConnection.getResponseCode();
-
-            if (httpResponseCode == 200) {
-
-                System.out.println(httpResponseCode);
-                BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
-
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                //create ObjectMapper instance
-                ObjectMapper objectMapper = new ObjectMapper();
-
-                //print result
-                /*
-                boolean prettyPrint = true;
-                if (!prettyPrint) {
-                    System.out.println(response.toString());
-                } else {
-                    Object jsonObject = objectMapper.readValue(response.toString(), Object.class);
-                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                    System.out.println(perttyStr);
-                }
-                */
-
-                //read JSON like DOM Parser
-                JsonNode rootNode = objectMapper.readTree(response.toString());
-                //            JsonNode idNode = rootNode.path("id");
-                //            System.out.println("id = "+idNode.asInt());
-                //            JsonNode totalRows = rootNode.path("total_rows");
-                //            System.out.println("id = " + totalRows.asInt());
-
-                System.out.println("-----------------------------------------------------------");
-
-                JsonNode rowsNode = rootNode.path("rows");
-                for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
-                    JsonNode node = it.next();
-
-                    //                JsonNode idNode = node.path("id");
-                    //                JsonNode revNode = node.path("rev");
-                    //                System.out.println("id = " + idNode);
-                    //                System.out.println("rev = " + revNode);
-
-                    JsonNode docNode = node.path("doc");
-                    JsonNode docIdNode = docNode.path("_id");
-                    JsonNode docType = docNode.path("type");
-
-                    if (type != null && docType.asText().equals(type)) {
-                        System.out.println("doc  = " + docNode);
-                        System.out.println("_id  = " + docIdNode);
-                        System.out.println("type = " + docType);
-
-                        Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
-                        String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-                        System.out.println(perttyStr);
-                        System.out.println();
-                    }
-
-                }
-            } else if (httpResponseCode == 403) {
-                System.out.println("Forbidden.");
-            }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (httpConnection != null) {
-                httpConnection.disconnect();
-            }
-        }
-    }
 
     public void findPortDocument(String mode, String direction, String voltage) {
 
@@ -977,9 +694,6 @@ public class CouchDB {
 
                 System.out.println(httpResponseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
 
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -992,35 +706,13 @@ public class CouchDB {
                 //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
 
-//                //print result
-//                boolean prettyPrint = true;
-//                if (!prettyPrint) {
-//                    System.out.println(response.toString());
-//                } else {
-//                    Object jsonObject = objectMapper.readValue(response.toString(), Object.class);
-//                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-//                    System.out.println(perttyStr);
-//                }
-
                 //read JSON like DOM Parser
                 JsonNode rootNode = objectMapper.readTree(response.toString());
-                //            JsonNode idNode = rootNode.path("id");
-                //            System.out.println("id = "+idNode.asInt());
-//                            JsonNode totalRows = rootNode.path("total_rows");
-//                            System.out.println("id = " + totalRows.asInt());
-
-                System.out.println("-----------------------------------------------------------");
 
                 JsonNode rowsNode = rootNode.path("docs");
                 for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
                     JsonNode docNode = it.next();
 
-                    //                JsonNode idNode = node.path("id");
-                    //                JsonNode revNode = node.path("rev");
-                    //                System.out.println("id = " + idNode);
-                    //                System.out.println("rev = " + revNode);
-
-//                    JsonNode docNode = node.path("doc");
                     JsonNode docIdNode = docNode.path("_id");
                     JsonNode docType = docNode.path("type");
 
@@ -1080,9 +772,6 @@ public class CouchDB {
 
             // Write PUT request body (i.e., the JSON data to PUT)
             OutputStreamWriter out = new OutputStreamWriter(httpConnection.getOutputStream());
-//            out.write("{ \"selector\": { \"type\": { \"$eq\": \"device\" }, \"modes\": \"" + modes + "\", \"directions\": \"" + directions + "\", \"voltages\": \"" + voltages + "\" } }");
-//            out.write("{ \"selector\": { \"type\": { \"$eq\": \"device\" }, \"ports[0].modes\": \"spi(mosi)\" } }");
-//            out.write("{ \"selector\": { \"type\": { \"$eq\": \"device\" }, \"ports\": { \"$elemMatch\": { \"modes\": \"spi(mosi)\" } } } }");
             out.write("{ \"selector\": { \"type\": { \"$eq\": \"device\" }, \"$and\": [ { \"ports\": { \"$elemMatch\": { \"modes\": \"spi(mosi)\" } } }, { \"ports\": { \"$elemMatch\": { \"modes\": \"uart(rx)\" } } }, { \"ports\": { \"$elemMatch\": { \"modes\": \"power\" } } } ] } }");
             out.close();
 
@@ -1093,9 +782,6 @@ public class CouchDB {
 
                 System.out.println(httpResponseCode);
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                //            System.out.println(httpCon.getResponseCode());
-                //            System.out.println(httpCon.getResponseMessage());
-                //            out.close();
 
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -1108,36 +794,17 @@ public class CouchDB {
                 //create ObjectMapper instance
                 ObjectMapper objectMapper = new ObjectMapper();
 
-//                //print result
-//                boolean prettyPrint = true;
-//                if (!prettyPrint) {
-//                    System.out.println(response.toString());
-//                } else {
-//                    Object jsonObject = objectMapper.readValue(response.toString(), Object.class);
-//                    String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-//                    System.out.println(perttyStr);
-//                }
-
                 //read JSON like DOM Parser
                 JsonNode rootNode = objectMapper.readTree(response.toString());
-                //            JsonNode idNode = rootNode.path("id");
-                //            System.out.println("id = "+idNode.asInt());
-//                            JsonNode totalRows = rootNode.path("total_rows");
-//                            System.out.println("id = " + totalRows.asInt());
 
                 JsonNode rowsNode = rootNode.path("docs");
                 for (Iterator<JsonNode> it = rowsNode.elements(); it.hasNext(); ) {
                     JsonNode docNode = it.next();
 
-//                    JsonNode docIdNode = docNode.path("_id");
                     JsonNode docType = docNode.path("type");
 
                     String type = "device";
                     if (type != null && docType.asText().equals(type)) {
-//                        System.out.println("doc  = " + docNode);
-//                        System.out.println("_id  = " + docIdNode);
-//                        System.out.println("type = " + docType);
-
                         Object jsonObject = objectMapper.readValue(docNode.toString(), Object.class);
                         String perttyStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
                         System.out.println(perttyStr);
