@@ -15,7 +15,7 @@ import java.util.Random;
 import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
-public class Controller {
+public class Controller extends Entity {
 
     public String id;
 

@@ -302,7 +302,7 @@ public class CouchDB {
         return false;
     }
 
-    public void listDocuments(String type) {
+    public String listDocuments(String type) {
 
         HttpURLConnection httpConnection = null;
 
@@ -346,6 +346,9 @@ public class CouchDB {
                 }
                 in.close();
 
+                return response.toString();
+
+                /*
                 // Deserialize response
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(response.toString());
@@ -388,6 +391,8 @@ public class CouchDB {
                         }
                     }
                 }
+                */
+
             } else if (httpResponseCode == 403) {
                 System.out.println("Forbidden.");
             }
@@ -403,6 +408,8 @@ public class CouchDB {
                 httpConnection.disconnect();
             }
         }
+
+        return null;
     }
 
     public void savePortDocument(Port port) {

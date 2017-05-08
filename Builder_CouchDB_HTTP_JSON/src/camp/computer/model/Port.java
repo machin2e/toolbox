@@ -13,33 +13,29 @@ import camp.computer.util.CouchDB;
 import camp.computer.util.List;
 import camp.computer.util.Serialize;
 
-public class Port {
+public class Port extends Entity {
 
     // <COUCHDB>
     public String id;
-
     public String rev;
     // </COUCHDB>
 
     // <INSTANCE>
     public String instance_id = null; // UUID.randomUUID().toString();
+    public int index = -1;
     // </INSTANCE>
 
-    // <TEMPLATE>
     public String type;
 
+    // <TEMPLATE>
     public List<String> modes;
-
     public List<String> directions;
-
     public List<String> voltages;
     // </TEMPLATE>
 
     // <STATE>
     public String mode;
-
     public String direction;
-
     public String voltage;
     // </STATE>
 

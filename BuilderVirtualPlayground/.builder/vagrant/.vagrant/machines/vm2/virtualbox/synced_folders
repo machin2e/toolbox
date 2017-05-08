@@ -1,0 +1,1 @@
+{"virtualbox":{"/builder/slight-cat":{"guestpath":"/builder/slight-cat","hostpath":"C:/Users/mokogobo/Workspace/Checkouts/Toolbox/BuilderVirtualPlayground/slight-cat","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/mokogobo/Workspace/Checkouts/Toolbox/BuilderVirtualPlayground/.builder/vagrant","disabled":false,"__vagrantfile":true}}}

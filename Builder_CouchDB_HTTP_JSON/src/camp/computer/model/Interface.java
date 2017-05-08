@@ -13,7 +13,7 @@ import java.util.List;
 
 import camp.computer.util.Serialize;
 
-public class Interface {
+public class Interface extends Entity {
 
     // <COUCHDB>
     public String id;

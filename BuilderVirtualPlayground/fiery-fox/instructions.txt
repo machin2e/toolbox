@@ -1,0 +1,10 @@
+contains IASM instructions
+
+contains BOM, links to order parts (from our store)
+- includes generated link to order entire kit (via curl/cli!)
+
+contains description of where to find code and of development environment so people can understand what's going on and keep digging deeper. all information that is provided should be written in a way that makes you want to keep digging/exploring. interactive piecewise manpages. MUD building game.
+
+---
+
+(generate IASM light feedback/IO in visualizer HUD)

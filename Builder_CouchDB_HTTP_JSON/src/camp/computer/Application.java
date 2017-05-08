@@ -5,14 +5,20 @@ import java.util.Scanner;
 import camp.computer.model.Device;
 import camp.computer.model.Port;
 import camp.computer.model.Project;
+import camp.computer.util.Cache;
 import camp.computer.util.CouchDB;
+import camp.computer.util.List;
 
 public class Application {
 
+    Cache cache;
     CouchDB couchDB;
+    Builder builder;
 
     public Application() {
+        cache = new Cache();
         couchDB = new CouchDB();
+        builder = new Builder(cache, couchDB);
     }
 
     public void start() {
@@ -75,7 +81,16 @@ public class Application {
             if (inputTokens.length == 1) {
                 couchDB.listDocuments(null);
             } else if (inputTokens.length == 2) {
-                couchDB.listDocuments(inputTokens[1]);
+                if (inputTokens[1].equals("port")) {
+                    List<Port> ports = builder.requestPorts(couchDB);
+                    for (int i = 0; i < ports.size(); i++) {
+                        System.out.println(ports.get(i).id + "\t" + ports.get(i).type);
+                        long entityID = builder.cache.add(ports.get(i));
+                    }
+                    System.out.println("cache size: " + builder.cache.size());
+                } else {
+                    couchDB.listDocuments(inputTokens[1]);
+                }
             }
         } else if (inputLine.matches("^(save)($|[ ]+.*)")) {
             // save [port|device|project|...]

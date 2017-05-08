@@ -1,0 +1,1 @@
+{"virtualbox":{"/builder/fiesty-fox":{"guestpath":"/builder/fiesty-fox","hostpath":"C:/Users/mokogobo/Workspace/Checkouts/Toolbox/BuilderVirtualPlayground/fiesty-fox","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/mokogobo/Workspace/Checkouts/Toolbox/BuilderVirtualPlayground/.builder/vagrant","disabled":false,"__vagrantfile":true}}}

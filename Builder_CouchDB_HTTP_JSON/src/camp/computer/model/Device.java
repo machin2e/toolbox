@@ -15,17 +15,16 @@ import java.util.Random;
 import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
-public class Device {
+public class Device extends Entity {
 
     // <COUCHDB>
     public String id;
-
     public String rev;
     // </COUCHDB>
 
-    // <TEMPLATE/STATE>
     public String type;
 
+    // <TEMPLATE/STATE>
     public List<Port> ports;
     // </TEMPLATE/STATE>
 

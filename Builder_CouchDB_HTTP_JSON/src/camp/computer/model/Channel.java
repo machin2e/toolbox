@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import camp.computer.util.Serialize;
 
-public class Channel {
+public class Channel extends Entity {
 
     public String id;
 

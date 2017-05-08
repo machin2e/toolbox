@@ -14,11 +14,12 @@ import camp.computer.util.CouchDB;
 import camp.computer.util.List;
 import camp.computer.util.Serialize;
 
-public class Project {
+public class Project extends Entity {
 
+    // <COUCHDB>
     public String id;
-
     public String rev;
+    // </COUCHDB>
 
     public String type;
 
@@ -39,7 +40,8 @@ public class Project {
 
     public Interface getInterface(Device source, Device target) {
         for (int i = 0; i < interfaces.size(); i++) {
-            if (interfaces.get(i).source == source && interfaces.get(i).target == target) {
+            if ((interfaces.get(i).source == source && interfaces.get(i).target == target)
+                    || (interfaces.get(i).source == target && interfaces.get(i).target == source)) {
                 return interfaces.get(i);
             }
         }
@@ -65,25 +67,6 @@ public class Project {
         }
         return iface;
     }
-
-//    // TODO: Delete!
-//    public static Project deserialize(String json) {
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        SimpleModule module = new SimpleModule();
-//        module.addDeserializer(Project.class, new ProjectDeserializer());
-//        mapper.registerModule(module);
-//
-//        Project project = null;
-//        try {
-//            project = mapper.readValue(json, Project.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return project;
-//
-//    }
 
     public static ObjectNode serialize(Project project, Serialize.Policy serializationPolicy) {
 

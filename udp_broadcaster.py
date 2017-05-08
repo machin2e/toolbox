@@ -26,11 +26,15 @@ while 1:
 
     print data
 
-    s.sendto(data, ('<broadcast>', PORT))
+    #s.sendto(data, ('<broadcast>', PORT))
+    #s.sendto(data, ('192.168.1.255', PORT)) # Works
+    #s.sendto(data, ('192.168.1.7', PORT)) # Works
+    s.sendto(data, ('192.168.1.255', PORT)) # Works
+    #s.sendto(data, ('192.168.255.255', PORT)) # Works
     i = i+1
     time.sleep(1)
 
     # data = "\f52\t58392\ttext\tannounce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
     data = "announce device 4d3d999d-1954-4187-ad2f-7e8139e02a2e"
-    print data
-    s.sendto(data, ('<broadcast>', PORT))
+    #print data
+    #s.sendto(data, ('<broadcast>', PORT))

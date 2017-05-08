@@ -10,7 +10,7 @@ import java.io.IOException;
 import camp.computer.util.CouchDB;
 import camp.computer.util.Serialize;
 
-public class Script {
+public class Script extends Entity {
 
     public String id;
 
