@@ -4,6 +4,11 @@ import sys
 
 import os
 
+# References:
+# - https://stackoverflow.com/questions/2408560/python-nonblocking-console-input
+# - https://code.activestate.com/recipes/197140-key-press-detection-for-windows-text-only-console-/
+# - https://stackoverflow.com/questions/11457931/running-an-interactive-command-from-within-python
+
 # Windows
 if os.name == 'nt':
     import msvcrt
@@ -23,7 +28,6 @@ class KBHit:
     def __init__(self):
         '''Creates a KBHit object that you can call to do various keyboard things.
         '''
-
         if os.name == 'nt':
             pass
 

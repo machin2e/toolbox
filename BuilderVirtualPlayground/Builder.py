@@ -9,12 +9,17 @@
 
 # This file can also be loaded as module to access the Builder API from a Python script.
 
+#from __future__ import absolute_import
 import argparse
 import builder
+#import service
+#from imports import *
 
 import petname
 
-def builder2():
+
+def builder2(command=None):
+
 	parser = argparse.ArgumentParser(description='Process some integers.')
 	parser.add_argument("command")
 	parser.add_argument("option1", nargs='?', default=None)
@@ -22,9 +27,12 @@ def builder2():
 	#parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
 	#parser.add_argument('--sum', dest='accumulate', action='store_const', const=sum, default=max, help='sum the integers (default: find the max)')
 
-	myargs = [ 'start', 'broadcast' ]
-
-	args = parser.parse_args(myargs)
+	args = None
+	if not command == None:
+		myargs = command.split(' ')
+		args = parser.parse_args(myargs)
+	else:
+		args = parser.parse_args()
 	print(args)
 	#print(args.accumulate(args.integers))
 
@@ -73,6 +81,7 @@ def builder2():
 		builder.configure(pair[0], pair[1])
 
 if __name__ == "__main__":
+#	builder.service.broadcast()
 	builder2()
 
 # Reference:
