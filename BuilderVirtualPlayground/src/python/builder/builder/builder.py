@@ -73,7 +73,7 @@ def builder(command=None):
 		# "IT'S ACTUALLY FUN TO PROGRAM BY JUMPING AROUND SEEING THE HIGHLIGHTED DEVICE SO YOU KNOW WHERE YOU'RE WORKING, AND SEEING HUD ON PHONE AND IN WINDOWS ON DESKTOP (SUMMONABLE/ASSIGNABLE VIA COMMAND LINE. SHOW UP AS SNAPPABLE WINDOWS. CAN SAVE AND CHANGE VIEWS WITH A COMMAND AS WELL. CAN MAKE ALWAYS ON TOP, TOO.).
 		# TODO: ./builder @fiery-fox start discovery
 		# TODO: builder.host.list()
-		builder.list()
+		list()
 	elif args.command == "configure":
 		pair = args.option1.split(':')
 		builder.configure(pair[0], pair[1])

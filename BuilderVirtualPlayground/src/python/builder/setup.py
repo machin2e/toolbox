@@ -6,5 +6,8 @@ setup(
 	url="https://github.com/mokogobo/builder",
 	author="Builder Network",
 	zip_safe=False,
-	packages=find_packages()
+	packages=find_packages(),
+	entry_points = {
+		'console_scripts': ['builder=builder.command_line:main'],
+	},
 )
